@@ -27,17 +27,20 @@ body {
 
     --heading-large: clamp(1.5rem, 2vw, 1.3rem);
     --heading-medium: clamp(1.3rem, 2vw, 1.3rem);
-    --paragraph: clamp(1.1rem, 2vw, 1.3rem);
+    --paragraph: 1rem;
 
     /* colors */
 
     --primary: hsl(33, 100%, 56%);
+    --hover-primary: #f58700;
     --secondary: hsl(205, 68%, 51%);
     --accent: hsl(354, 61%, 66%);
     --main-background: hsl(0, 0%, 100%);
     --surface: hsl(33, 40%, 94%);
     --dark-text: hsl(0, 0%, 20%);
-    --light-text: hsl(0, 0%, 94%);
+    --light-text: hsl(0, 0%, 100%);
+
+    --hover-radius: .5rem;
     
 }
 

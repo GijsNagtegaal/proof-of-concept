@@ -1,15 +1,38 @@
 header {
     display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 4rem;
-    
+    height: 3.7rem;
+    background-color: var(--primary);
+
+    a {
+        @media (min-width: 768px) {        
+            padding: .3rem .5rem;
+            border-radius: var(--hover-radius);
+            transition: background-color .3s ease-out;
+
+            &:hover {
+                background-color: var(--hover-primary);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            padding: .7rem .5rem;
+        }
+    }
 
     nav.parent-nav {
         display: flex;
         justify-content: space-between;
         width: 100%;
+        max-width: 65rem;
         padding-inline: .5rem;
-        background-color: var(--primary);
+
+        @media (min-width: 768px) {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+        }
 
         img {
             width: 6rem;
@@ -25,12 +48,16 @@ header {
             background-color: transparent;
             border: none;
             color: var(--light-text);
+
+            @media (min-width: 768px) {
+                display: none;
+            }
         }
 
-        nav.mobile {
+        nav.quicklinks {
             display: flex;
             width: fit-content;
-            gap: 1rem;
+            gap: .7rem;
 
             a {
                 display: flex;
@@ -41,23 +68,51 @@ header {
                 font-size: .8rem;
                 color: var(--light-text);
 
+                @media (min-width: 768px) {
+                    font-size: var(--paragraph);
+                }
+
+                @media (min-width: 1024px) {
+                    flex-direction: row;
+                }
+
+                
+
                 svg {
                     width: 2rem;
                     height: 2rem;
-                }
-            }
 
-            @media (min-width: 768px) {
-                display: none;
+                    @media (min-width: 768px) {
+                        width:1.5rem;
+                        height: 1.5rem;
+                    }
+
+                    @media (min-width: 1024px) {
+                        margin-right: .5rem;
+                    }
+                }
+
             }
         }
 
-        nav.desktop {
+        nav.desktop-menu {
             display: none;
             grid-template-columns: 1fr 1fr 1fr;
 
+            a {
+                color: var(--light-text);
+                width: fit-content;
+                padding: .7rem .5rem;
+                border-radius: var(--hover-radius);
+                transition: background-color .3s ease-out;
+            }
+
             @media (min-width: 768px) {
-                display: grid;
+                display: flex;
+                padding-inline: 1rem;
+                justify-content: flex-start;
+                align-items: center;
+                gap: .7rem;
             }
         }
     }
