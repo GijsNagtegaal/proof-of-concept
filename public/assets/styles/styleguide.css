@@ -26,12 +26,13 @@ body {
 
     /* colors */
 
-    --color-primary: hsl(205, 68%, 51%);
-    --color-secondary: hsl(33, 100%, 56%);
-    --color-accent: hsl(354, 61%, 66%);
-    --color-background: hsl(0, 0%, 100%);
-    --color-surface: hsl(33, 40%, 94%);
-    --color-text: hsl(0, 0%, 20%);
+    --primary: hsl(33, 100%, 56%);
+    --secondary: hsl(205, 68%, 51%);
+    --accent: hsl(354, 61%, 66%);
+    --main-background: hsl(0, 0%, 100%);
+    --surface: hsl(33, 40%, 94%);
+    --dark-text: hsl(0, 0%, 20%);
+    --light-text: hsl(0, 0%, 94%);
     
 }
 
@@ -42,9 +43,10 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.1;
 }
 
-p {
+p, a, button {
     font-family: proxreg;
     font-size: var(--paragraph);
     color: var(--color-text);
     line-height: 1.5;   
+    text-decoration: none;
 }
