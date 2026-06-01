@@ -12,6 +12,8 @@ header {
         background-color: var(--primary);
 
         img {
+            width: 6rem;
+            height: auto;
             align-self: center;
         }
 

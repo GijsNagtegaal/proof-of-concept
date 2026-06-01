@@ -35,16 +35,14 @@ app.get('/alle-huizen', async (req, res) => {
 // get the house detail page
 app.get('/huis/:house_slug', async (req, res) => {
     try {
-        const response = await fetch(api + "f_houses");
+        const response = await fetch(api + "f_houses?fields=*.*.*");
         const json = await response.json();
         const houses = json.data;
 
-        // take what the user types in the url and make it the slug
         const slug = req.params.house_slug.toLowerCase().trim();
 
-        // look for the house in the api database
-        const house = houses.find(house => {
-            return house.street && house.street.toLowerCase().trim() === slug;
+        const house = houses.find(h => {
+            return h.street && h.street.toLowerCase().trim() === slug;
         });
 
         if (!house) {

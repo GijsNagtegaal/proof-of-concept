@@ -1,4 +1,9 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
+    <section>
+        {% if house.poster_image.id %}
+            <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="Poster van {{ house.street }}">
+        {% endif %}
+    </section>
 {% endblock %}
