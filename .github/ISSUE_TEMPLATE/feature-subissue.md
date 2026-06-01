@@ -7,4 +7,12 @@ assignees: ''
 
 ---
 
-Feature subissue
+I will link all commits related to this {{ replace for feature }} to this issue.
+
+The Design:
+
+Mobile
+
+Ipad
+
+Desktop
