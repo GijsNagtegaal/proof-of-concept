@@ -1,0 +1,50 @@
+@font-face {
+    font-family: proxreg;
+    src: url(/assets/fonts/regprox.woff);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: proxsemi;
+    src: url(/assets/fonts/semiprox.woff2);
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    /* font sizes */
+
+    --heading-large: clamp(1.5rem, 2vw, 1.3rem);
+    --heading-medium: clamp(1.3rem, 2vw, 1.3rem);
+    --paragraph: clamp(1.1rem, 2vw, 1.3rem);
+
+    /* colors */
+
+    --color-primary: hsl(205, 68%, 51%);
+    --color-secondary: hsl(33, 100%, 56%);
+    --color-accent: hsl(354, 61%, 66%);
+    --color-background: hsl(0, 0%, 100%);
+    --color-surface: hsl(33, 40%, 94%);
+    --color-text: hsl(0, 0%, 20%);
+    
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: proxsemi;
+    font-size: var(--heading-large);
+    color: var(--color-text);
+    line-height: 1.1;
+}
+
+p {
+    font-family: proxreg;
+    font-size: var(--paragraph);
+    color: var(--color-text);
+    line-height: 1.5;   
+}

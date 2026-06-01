@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <title>Funda | Jouw huizen</title>
+
+    <link rel="preload" href="/assets/fonts/regprox.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/semiprox.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/italic-font.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <link rel="stylesheet" href="/assets/styles/styleguide.css">
+    <link rel="stylesheet" href="/assets/styles/style.css">
+    <link rel="stylesheet" href="/assets/styles/partials.css">
+    <link rel="stylesheet" href="/assets/styles/keyframes.css">
+</head>
+<body>
+
+<header>
+    {% block header %}
+        {% render 'partials/header.liquid' %}
+    {% endblock %}
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    {% block footer %}
+        {% render 'partials/footer.liquid' %}
+    {% endblock %}
+</footer>
+
+</body>
+</html>
