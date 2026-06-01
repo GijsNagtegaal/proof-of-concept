@@ -1,48 +1,62 @@
 header {
-    display: grid;
+    display: flex;
     width: 100%;
     height: 4rem;
-    grid-template-columns: 1fr 1fr max-content;
-    background-color: var(--primary);
+    
 
-    img {
-        align-self: center;
-    }
-
-    nav.mobile {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+    nav.parent-nav {
+        display: flex;
+        justify-content: space-between;
         width: 100%;
+        padding-inline: .5rem;
+        background-color: var(--primary);
 
-        a {
+        img {
+            align-self: center;
+        }
+
+        button {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            align-self: center;
-            justify-self: center;
-            width: 100%;
-            font-size: .9rem;
-            color: var(--light-text)
+            background-color: transparent;
+            border: none;
+            color: var(--light-text);
+        }
 
-            svg {
-                width: 2rem;
-                height: 2rem;
+        nav.mobile {
+            display: flex;
+            width: fit-content;
+            gap: 1rem;
+
+            a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                font-size: .8rem;
+                color: var(--light-text);
+
+                svg {
+                    width: 2rem;
+                    height: 2rem;
+                }
+            }
+
+            @media (min-width: 768px) {
+                display: none;
             }
         }
 
-        @media (min-width: 768px) {
+        nav.desktop {
             display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+
+            @media (min-width: 768px) {
+                display: grid;
+            }
         }
     }
-
-    nav.desktop {
-        display: none;
-        grid-template-columns: 1fr 1fr 1fr;
-
-        @media (min-width: 768px) {
-            display: grid;
-        }
-    }
-
 }

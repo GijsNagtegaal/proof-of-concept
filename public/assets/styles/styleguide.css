@@ -50,3 +50,13 @@ p, a, button {
     line-height: 1.5;   
     text-decoration: none;
 }
+
+svg {
+    width: 2rem;
+    height: 2rem;
+
+    &.menu {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
