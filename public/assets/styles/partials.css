@@ -117,3 +117,18 @@ header {
         }
     }
 }
+
+nav.breadcrumb {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 25rem;
+    width: fit-content;
+    max-width: 25rem;
+    padding-block: .5rem;
+
+
+    @media (min-width: 768px) {
+        display: flex;
+    }
+}

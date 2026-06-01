@@ -39,6 +39,7 @@ body {
     --surface: hsl(33, 40%, 94%);
     --dark-text: hsl(0, 0%, 20%);
     --light-text: hsl(0, 0%, 100%);
+    --active-link: rgba(0, 113, 179, 1);
 
     --hover-radius: .5rem;
     
@@ -57,6 +58,16 @@ p, a, button {
     color: var(--color-text);
     line-height: 1.5;   
     text-decoration: none;
+}
+
+a {
+    color: var(--active-link);
+
+    &.breadcrumb {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 svg {
