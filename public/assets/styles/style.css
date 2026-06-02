@@ -1,6 +1,15 @@
 main {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100dvh;
+    
     @media(min-width: 768px) {
         padding-inline: 1rem;
+    }
+    
+    @media(min-width: 65rem) {
+        padding-inline: 0;
     }
 }
 
@@ -180,5 +189,152 @@ nav.extras {
     }
 }
 
+div.main-aside-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-inline: 1rem;
+    gap: 1rem;
 
+    @media(min-width: 768px) {
+        padding-inline: 0rem;
+        grid-template-columns: 7fr 3fr;
+    }
+}
 
+section.details {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    width: 100%;
+    margin-top: 1.5rem;
+
+    article.house-details {
+        
+        h1.street {
+            font-size: var(--heading-large);
+            margin-top: 0;
+        }
+
+        p.postalcode {
+            color: var(--inactive)
+        }
+
+        h2.price {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: var(--heading-medium);
+
+            @media(min-width: 768px) {
+                flex-direction: row;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            a.calculator {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}
+
+figure.map {
+    width: 100%;
+
+    a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: center;
+
+        svg {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
+
+article.important-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 1rem;
+    grid-column: 1 / span 2;
+
+    p:not(span) {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-family: proxsemi;
+    }
+
+    span {
+        display: none;
+        margin-left: .5rem;
+
+        @media (min-width: 768px) {
+            display: inline;
+        }
+    }
+}
+
+article.description {
+    grid-column: 1 / span 2;
+    h2 {
+        font-size: 1.3rem;
+
+        @media (min-width: 768px) {
+            font-size: 1.7rem;
+        }
+    }
+
+    button {
+        border: none;
+        background-color: transparent;
+
+        span {
+            color: var(--active-link);
+        }
+    }
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-text);
+    border: 1px solid var(--seperator);
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border-radius: var(--small-radius);
+    background: linear-gradient(
+        to bottom, 
+        var(--primary) 0%, 
+        var(--primary) 40%, 
+        var(--light-text) 40%, 
+        var(--light-text) 100%
+    );
+
+    @media(min-width: 1024px) {
+        gap: 1rem;
+    }
+
+    img.agent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30%;
+        height: auto;
+        aspect-ratio: 1/1;
+        padding: 1rem;
+        background-color: var(--main-background);
+        border: 1px solid var(--seperator);
+        border-radius: var(--small-radius);
+    }
+
+    a {
+        font-family: proxsemi;
+    }
+}

@@ -1,13 +1,18 @@
 @font-face {
     font-family: proxreg;
-    src: url(/assets/fonts/regprox.woff);
+    src: url(/assets/fonts/proxreg.woff2);
     font-display: swap;
 }
 
 @font-face {
     font-family: proxsemi;
-    src: url(/assets/fonts/semiprox.woff2);
+    src: url(/assets/fonts/proxsemi.woff2);
     font-display: swap;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 * {
@@ -25,7 +30,7 @@ body {
 
     /* font sizes */
 
-    --heading-large: clamp(1.5rem, 2vw, 1.3rem);
+    --heading-large: clamp(1.7rem, 2.5vw, 1.6rem);
     --heading-medium: clamp(1.3rem, 2vw, 1.3rem);
     --paragraph: 1rem;
 
@@ -40,13 +45,14 @@ body {
     --dark-text: hsl(0, 0%, 20%);
     --light-text: hsl(0, 0%, 100%);
     --active-link: rgba(0, 113, 179, 1);
-    --inactive: hsl(0, 0%, 30%);
+    --inactive: hsl(0, 0%, 56%);
     --seperator: hsl(0, 0%, 77%);
 
     --small-radius: .5rem;
     --round-radius: 100%;
+    --badge-radius: 5px;
 
-    --max-width: 65;
+    --max-width: 63rem;
     --gallery-width: 73rem;
 
 }
@@ -106,9 +112,11 @@ a {
     }
 }
 
-.inactive {
+.inactive, span {
     color: var(--inactive);
+    font-family: proxreg;
 }
+
 
 svg {
     width: 1.5rem;
@@ -117,22 +125,38 @@ svg {
 
 .max-width {
 
-    @media (min-width: 65rem) {
+    @media (min-width: 63rem) {
         padding-inline: 0;
-        width: 65rem; 
-        margin-left: calc((100vw - 65rem) / 2);
-        margin-right: calc((100vw - 65rem) / 2);
+        width: var(--max-width); 
+        margin-left: calc((100vw - var(--max-width)) / 2);
+        margin-right: calc((100vw - var(--max-width)) / 2);
     }
 }
 
+/* very nasty way of creating a full width seperator */
 .seperator {
-    --spacing: .25rem;
-
     display: block;
-    width: auto;
-    margin-left: calc(var(--spacing) * -4);
-    margin-right: calc(var(--spacing) * -4);
-    margin-inline: -1rem;
+    width: 100%;
     height: 1px;
     background-color: var(--seperator);
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+.badge {
+    display: flex;
+    width: fit-content;
+    font-family: proxsemi;
+    padding: 0rem .3rem;
+    border-radius: var(--badge-radius);
+    background-color: var(--primary);
+    color: var(--light-text);
+}
+
+.breathingspace {
+    margin-block: .5rem;
 }
