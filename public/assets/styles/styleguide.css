@@ -110,13 +110,8 @@ a {
 }
 
 svg {
-    width: 2rem;
-    height: 2rem;
-
-    &.menu {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .max-width {

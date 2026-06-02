@@ -1,0 +1,31 @@
+{% layout "layouts/no-header-layout.liquid" %}
+
+{% block content %}
+    {% render 'partials/breadcrumbs.liquid' house: house, %}
+        <section class="gallery">
+            <h2 class="vs-hidden">Bekijk de fotos van dit huis</h2>
+            <a class="poster" href="/huis/{{ house.slug }}/media/fotos">
+                {% if house.poster_image.id %}
+                    <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="Hoofdfoto van {{ house.street | strip }}">
+                {% endif %}
+            </a>
+            
+            {% if house.gallery and house.gallery.size > 0 %}
+                {% for item in house.gallery %}
+                    {% if item.directus_files_id %}
+                        <a class="gallery" href="/huis/{{ house.slug }}/media/fotos">
+                            <img src="https://fdnd-agency.directus.app/assets/{{ item.directus_files_id }}" alt="Extra foto van {{ house.street | strip }}">
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </section>
+
+        <section>
+            <iframe data-testid="embed-iframe" src="https://funda.cloudpano.com/tours/GtxCOT8rnaYZ#sceneId=QZXuzBoapT" class="size-full"></iframe>
+        </section>
+
+        <section>
+            <iframe data-testid="embed-iframe" src="https://fmlpub.s3-eu-west-1.amazonaws.com/embed.html?designId=303579373&amp;projectId=186223444" class="size-full"></iframe>
+        </section>
+{% endblock %}

@@ -9,7 +9,7 @@ header {
     a {
         @media (min-width: 768px) {        
             padding: .3rem .5rem;
-            border-radius: var(--hover-radius);
+            border-radius: var(--small-radius);
             transition: background-color .3s ease-out;
 
             &:hover {
@@ -32,6 +32,10 @@ header {
         @media (min-width: 768px) {
             display: grid;
             grid-template-columns: auto 1fr auto;
+        }
+
+        @media (min-width: 65rem) {
+            padding: 0;
         }
 
         img {
@@ -103,7 +107,7 @@ header {
                 color: var(--light-text);
                 width: fit-content;
                 padding: .7rem .5rem;
-                border-radius: var(--hover-radius);
+                border-radius: var(--small-radius);
                 transition: background-color .3s ease-out;
             }
 
@@ -122,10 +126,9 @@ nav.breadcrumb {
     display: none;
     align-items: center;
     justify-content: space-between;
-    min-width: 25rem;
     width: fit-content;
-    max-width: 25rem;
-    padding-block: .5rem;
+    gap: 1rem;
+    padding-block: 1rem;
 
 
     @media (min-width: 768px) {

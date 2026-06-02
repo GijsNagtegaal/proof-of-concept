@@ -1,10 +1,102 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-    {% render 'partials/breadcrumbs.liquid' house: house, %}
-    <section>
-        {% if house.poster_image.id %}
-            <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="Poster van {{ house.street }}">
-        {% endif %}
-    </section>
+    {% assign clean_street = house.street | strip %}
+    {% assign clean_nr = house.house_nr | strip %}
+    {% assign current_house = clean_street | append: " " | append: clean_nr %}
+
+    {% render 'partials/breadcrumbs.liquid' house: house, current_house: current_house %}
+        {% comment %}
+            Section displaying a gallery, mobile first uses the poster image and the gallery
+        {% endcomment %}
+        <section class="gallery">
+            <a class="gallery-item" href="/huis/{{ house.slug }}/media/fotos">
+                {% if house.poster_image.id %}
+                    <img class="poster" src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="Hoofdfoto van {{ house.street | strip }}">
+                {% endif %}
+            </a>
+            
+            {% if house.gallery and house.gallery.size > 0 %}
+                {% for item in house.gallery %}
+                    {% if item.directus_files_id %}
+                        <a class="gallery-item" href="/huis/{{ house.slug }}/media/fotos">
+                            <img src="https://fdnd-agency.directus.app/assets/{{ item.directus_files_id }}" alt="Extra foto van {{ house.street | strip }}">
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </section>
+    
+        <section class="media max-width">
+            <nav class="extras"> 
+                <a class="all-pictures" href="/huis/{{ house.slug }}/media/fotos">
+                    <figure>
+                        <svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 1.5H1.5V12.5H2V14H0.75C0.335786 14 0 13.6642 0 13.25V0.75C0 0.335786 0.335786 0 0.75 0H15.25C15.6642 0 16 0.335786 16 0.75V2H14.5V1.5Z" fill="#0071B3"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 3H18.25C18.6642 3 19 3.33579 19 3.75V16.25C19 16.6642 18.6642 17 18.25 17H3.75C3.33579 17 3 16.6642 3 16.25V3.75C3 3.33579 3.33579 3 3.75 3ZM17.5 4.5H4.5V15.5H17.5V4.5Z" fill="#0071B3"/>
+                        </svg>
+                    </figure>
+                    <figcaption>
+                        Foto's 
+                        <span>{{ house.gallery.size }}</span>
+                    </figcaption>
+                </a>
+
+                <a href="/huis/{{ house.slug }}/media/plattegrond">
+                    <figure class="map">
+                        <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M21 3.75C21 3.33579 20.6642 3 20.25 3H3.75C3.33579 3 3 3.33579 3 3.75V20.25C3 20.6642 3.33579 21 3.75 21H9V19.5H4.5V4.5H19.5V19.5H15.62L10.4 14.28L9.34 15.34L15 21H20.25C20.6642 21 21 20.6642 21 20.25V3.75Z" fill="white"/>
+                        </svg>
+
+                    </figure>
+                    <figcaption>
+                        Plattegrond
+                    </figcaption>
+                </a>
+
+                <a href="/huis/{{ house.slug }}/media/360fotos">
+                    <figure class="treesixty">
+                        <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5181 4.75002C20.5181 4.3358 20.1823 4.00002 19.7681 4.00002H14.7681C14.3539 4.00002 14.0181 4.3358 14.0181 4.75002V9.75002C14.0181 10.1642 14.3539 10.5 14.7681 10.5C15.1823 10.5 15.5181 10.1642 15.5181 9.75002V6.25002C18.3575 8.22143 19.3328 11.9703 17.8141 15.0755C16.2953 18.1807 12.7373 19.7124 9.43795 18.6814C6.13858 17.6503 4.08582 14.3653 4.60541 10.9478C5.125 7.53038 8.06135 5.00388 11.5181 5.00002V3.50002C7.39312 3.49165 3.85757 6.44608 3.13298 10.5069C2.4084 14.5677 4.70395 18.5626 8.57723 19.9814C12.4505 21.4002 16.7834 19.8333 18.8532 16.2652C20.9231 12.6972 20.1324 8.15806 16.9781 5.50002H19.7681C20.1823 5.50002 20.5181 5.16423 20.5181 4.75002Z" fill="white"/>
+                        </svg>
+                    </figure>
+                    <figcaption>
+                        360° foto's
+                    </figcaption>
+                </a>
+
+                <a href="/huis/{{ house.slug }}/media/video">
+                    <figure class="video">
+                        <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.6967 11.625C20.6321 11.5258 20.5447 11.4435 20.4417 11.385L20.3867 11.34L7.77669 3.15003L7.69669 3.11003H7.65169L7.56169 3.08003H7.50669L7.41669 3.03003H7.21169C7.00704 3.06402 6.82584 3.18181 6.71169 3.35503C6.69251 3.38704 6.67579 3.42047 6.66169 3.45503C6.64738 3.48909 6.63568 3.52419 6.62669 3.56003V3.60003C6.62444 3.63332 6.62444 3.66673 6.62669 3.70003C6.62669 3.70003 6.62669 3.73003 6.62669 3.74503V20.245C6.62669 20.245 6.62669 20.275 6.62669 20.29C6.62445 20.3233 6.62445 20.3567 6.62669 20.39V20.43C6.63568 20.4659 6.64738 20.501 6.66169 20.535C6.67719 20.5714 6.69558 20.6066 6.71669 20.64C6.83084 20.8133 7.01204 20.931 7.21669 20.965H7.56669L7.65669 20.935H7.69669L7.77669 20.895L20.4817 12.645C20.8165 12.4185 20.9116 11.9674 20.6967 11.625ZM8.11669 5.16003L18.6967 12.03L8.11669 18.9V5.16003Z" fill="#0071B3"/>
+                        </svg>
+                    </figure>
+                    <figcaption>
+                        Video
+                    </figcaption>
+                </a>
+            </nav>
+
+            <a class="all-media" href="/huis/{{ house.slug }}/media/fotos">
+                <figure>
+                <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.2506 4.41613e-07H0.7506C0.651687 -1.31131e-06 0.55375 0.0195626 0.462428 0.0575659C0.371106 0.0955692 0.288204 0.151261 0.218495 0.221436C0.148785 0.29161 0.0936448 0.374881 0.0562491 0.466453C0.0188534 0.558025 -5.9139e-05 0.65609 0.000600285 0.755001V7.255C-0.00344245 7.35599 0.0129673 7.45675 0.048844 7.55124C0.0847208 7.64572 0.139325 7.73198 0.209375 7.80483C0.279426 7.87769 0.363479 7.93563 0.456485 7.97518C0.549492 8.01473 0.649533 8.03508 0.7506 8.035H8.2506C8.44951 8.035 8.64028 7.95598 8.78093 7.81533C8.92158 7.67468 9.0006 7.48391 9.0006 7.285V0.785001C9.00534 0.683604 8.98944 0.582302 8.95388 0.487229C8.91831 0.392156 8.86382 0.305291 8.7937 0.231897C8.72358 0.158503 8.63929 0.100108 8.54593 0.0602469C8.45258 0.0203862 8.35211 -0.000109706 8.2506 4.41613e-07ZM1.5006 1.505H7.5006V6.535H1.5006V1.505Z" fill="#0071B3"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.750616 10.0349H8.25062C8.44953 10.0349 8.64029 10.1139 8.78095 10.2546C8.9216 10.3952 9.00062 10.586 9.00062 10.7849V17.2849C9.00062 17.4838 8.9216 17.6746 8.78095 17.8152C8.64029 17.9559 8.44953 18.0349 8.25062 18.0349H0.750616C0.651277 18.0349 0.552927 18.0152 0.461275 17.9769C0.369623 17.9386 0.286495 17.8824 0.216719 17.8117C0.146943 17.741 0.091908 17.6571 0.0548104 17.565C0.0177129 17.4728 -0.000708523 17.3742 0.000615991 17.2749V10.7749C0.00324521 10.5777 0.083422 10.3895 0.22379 10.251C0.364159 10.1125 0.553424 10.0349 0.750616 10.0349ZM7.50062 11.5349H1.50062V16.5349H7.50062V11.5349Z" fill="#0071B3"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.7506 10.0349H19.2506C19.4495 10.0349 19.6403 10.1139 19.7809 10.2546C19.9216 10.3952 20.0006 10.586 20.0006 10.7849V17.2849C20.0006 17.4838 19.9216 17.6746 19.7809 17.8152C19.6403 17.9559 19.4495 18.0349 19.2506 18.0349H11.7506C11.5517 18.0349 11.3609 17.9559 11.2203 17.8152C11.0796 17.6746 11.0006 17.4838 11.0006 17.2849V10.7849C11.0006 10.586 11.0796 10.3952 11.2203 10.2546C11.3609 10.1139 11.5517 10.0349 11.7506 10.0349ZM18.5006 11.5349H12.5006V16.5349H18.5006V11.5349Z" fill="#0071B3"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.7506 0.0349126H19.2506C19.4495 0.0349126 19.6403 0.11393 19.7809 0.254582C19.9216 0.395235 20.0006 0.586 20.0006 0.784913V7.28491C20.0006 7.48382 19.9216 7.67459 19.7809 7.81524C19.6403 7.95589 19.4495 8.03491 19.2506 8.03491H11.7506C11.6508 8.03493 11.5521 8.01505 11.4601 7.97642C11.3681 7.9378 11.2847 7.88121 11.2149 7.80997C11.1451 7.73873 11.0901 7.65427 11.0533 7.56153C11.0165 7.4688 10.9986 7.36966 11.0006 7.26991V0.769912C11.0045 0.573611 11.0853 0.386677 11.2255 0.249253C11.3657 0.111829 11.5543 0.0348733 11.7506 0.0349126ZM18.5006 1.53491H12.5006V6.53491H18.5006V1.53491Z" fill="#0071B3"/>
+                </svg>
+                </figure>
+                <figcaption>
+                    Alle media
+                </figcaption>
+            </a>
+        </section>
+
+        <section class="max-width">
+            <h1>{{ current_house }}</h1>
+        </section>
+
 {% endblock %}
