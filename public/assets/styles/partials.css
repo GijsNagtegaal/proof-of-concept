@@ -122,6 +122,10 @@ header {
     }
 }
 
+section.breadcrumb-wrapper {
+    width: 100%;
+}
+
 nav.breadcrumb {
     display: none;
     align-items: center;
