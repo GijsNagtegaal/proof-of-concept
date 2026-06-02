@@ -40,9 +40,14 @@ body {
     --dark-text: hsl(0, 0%, 20%);
     --light-text: hsl(0, 0%, 100%);
     --active-link: rgba(0, 113, 179, 1);
+    --inactive: hsl(0, 0%, 30%);
 
-    --hover-radius: .5rem;
-    
+    --small-radius: .5rem;
+    --round-radius: 100%;
+
+    --max-width: 65;
+    --gallery-width: 73rem;
+
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -60,6 +65,17 @@ p, a, button {
     text-decoration: none;
 }
 
+.vs-hidden {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
 a {
     color: var(--active-link);
 
@@ -67,7 +83,30 @@ a {
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+
+        &::before {
+            content: "";
+            position: absolute;
+            display: block;
+            min-width: 1rem;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        &:hover::before {
+            transform: scaleX(1);
+        }
     }
+}
+
+.inactive {
+    color: var(--inactive);
 }
 
 svg {
@@ -77,5 +116,15 @@ svg {
     &.menu {
         width: 1.5rem;
         height: 1.5rem;
+    }
+}
+
+.max-width {
+
+    @media (min-width: 65rem) {
+        padding-inline: 0;
+        width: 65rem; 
+        margin-left: calc((100vw - 65rem) / 2);
+        margin-right: calc((100vw - 65rem) / 2);
     }
 }
