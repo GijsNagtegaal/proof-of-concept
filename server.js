@@ -23,7 +23,7 @@ app.engine('liquid', engine.express());
 app.set('views', './views');
 app.set('view engine', 'liquid');
 
-// --- Helper Functions & Middleware --
+// Helper function te create house slug
 
 async function getHouseBySlug(slug) {
 
@@ -45,7 +45,6 @@ async function getHouseBySlug(slug) {
 
     if (!foundHouse) return null;
 
-    // Return cleaned house object
     return {
         ...foundHouse,
         street: foundHouse.street.trim(),
@@ -53,9 +52,9 @@ async function getHouseBySlug(slug) {
     };
 }
 
-/**
- * Middleware to handle repetitive house fetching for detail routes
- */
+
+// Give house info to all pages
+
 async function loadHouseMiddleware(req, res, next) {
     try {
         const house = await getHouseBySlug(req.params.house_slug);
@@ -70,7 +69,7 @@ async function loadHouseMiddleware(req, res, next) {
     }
 }
 
-// --- Routes ---
+// Routes
 
 app.get('/', async (req, res) => {
     res.render('index.liquid', { testje: "Funda" });

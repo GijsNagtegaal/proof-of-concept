@@ -3,6 +3,7 @@ main {
     flex-direction: column;
     width: 100vw;
     min-height: 100dvh;
+    margin-bottom: 5rem;
     
     @media(min-width: 768px) {
         padding-inline: 1rem;
