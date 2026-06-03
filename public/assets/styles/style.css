@@ -357,4 +357,30 @@ aside {
     a {
         font-family: proxsemi;
     }
+
+    .phone-link {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        justify-content: flex-start;
+
+        .placeholder-text {
+            display: none;
+        }
+
+        .actual-number {
+            display: inline;
+        }
+    }
+
+    .js-enabled .placeholder-text {
+        display: inline;
+    }
+
+    .js-enabled .actual-number {
+        display: none;
+    }
 }
+
+
+

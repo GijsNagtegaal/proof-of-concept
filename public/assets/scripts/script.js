@@ -1,18 +1,17 @@
-// phone number show
 const phoneLink = document.getElementById('phone-reveal-link');
 
 if (phoneLink) {
+
+    phoneLink.classList.add('js-enabled');
+    phoneLink.setAttribute('data-revealed', 'false');
+
     phoneLink.addEventListener('click', function(event) {
         const isRevealed = this.getAttribute('data-revealed') === 'true';
 
         if (!isRevealed) {
             event.preventDefault(); 
 
-            const placeholder = this.querySelector('.placeholder-text');
-            const actualNumber = this.querySelector('.actual-number');
-
-            if (placeholder) placeholder.style.display = 'none';
-            if (actualNumber) actualNumber.style.display = 'inline';
+            this.classList.remove('js-enabled');
             
             this.setAttribute('data-revealed', 'true');
         }
