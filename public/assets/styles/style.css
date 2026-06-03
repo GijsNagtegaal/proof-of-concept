@@ -33,9 +33,29 @@ section.gallery {
 
     a.gallery-item {
         display: flex;
+        overflow: hidden;
 
-        &:has(:not(.poster)) {
+        picture {
+            display: flex;
+        }
+
+        img {
+            transition: all .4s ease;
+            object-fit: cover;
+
+            &:hover {
+                opacity: .9;
+                transform: scale(1.05) ; 
+            }
+        }
+
+
+        &:not(.poster) {
             display: none;
+        }
+
+        .poster {
+            display: flex;
         }
         
         @media(min-width: 768px) {
@@ -312,8 +332,8 @@ aside {
     background: linear-gradient(
         to bottom, 
         var(--primary) 0%, 
-        var(--primary) 40%, 
-        var(--light-text) 40%, 
+        var(--primary) 4rem, 
+        var(--light-text) 4rem, 
         var(--light-text) 100%
     );
 

@@ -3,18 +3,24 @@
 {% block content %}
     {% render 'partials/breadcrumbs.liquid' house: house, %}
         <section class="gallery">
-            <h2 class="vs-hidden">Bekijk de fotos van dit huis</h2>
-            <a class="poster" href="/huis/{{ house.slug }}/media/fotos">
+            <a class="gallery-item poster" href="/huis/{{ house.slug }}/media/fotos">
                 {% if house.poster_image.id %}
-                    <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="Hoofdfoto van {{ house.street | strip }}">
+                    {% render 'partials/picture.liquid',
+                        imagesrc: house.poster_image.id,
+                        fetch: "high",
+                        class: "poster",
+                    %}
                 {% endif %}
             </a>
             
             {% if house.gallery and house.gallery.size > 0 %}
                 {% for item in house.gallery %}
                     {% if item.directus_files_id %}
-                        <a class="gallery" href="/huis/{{ house.slug }}/media/fotos">
-                            <img src="https://fdnd-agency.directus.app/assets/{{ item.directus_files_id }}" alt="Extra foto van {{ house.street | strip }}">
+                        <a class="gallery-item" href="/huis/{{ house.slug }}/media/fotos">
+                            {% render 'partials/picture.liquid',
+                                imagesrc: item.directus_files_id,
+                                fetch: "high",
+                            %}
                         </a>
                     {% endif %}
                 {% endfor %}
