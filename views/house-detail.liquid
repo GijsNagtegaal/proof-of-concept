@@ -258,134 +258,120 @@
                 </button>
             </article>
 
-            {% comment %}
-                In a datalist only divs are allowed, no articles or sections
-                https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dl
-
-                I used a datalist here becuase of better screenreader performance and Seo
-            {% endcomment %}
             <h3 class="breatingspace-section">Kenmerken</h3>
-            <dl class="all-info breathingspace">
-                <div class="feature-group overdracht">
+            
+            <div class="all-info breathingspace">
+                
+                <section class="feature-group overdracht">
                     <header class="group-head">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0557 20.8917C9.76275 21.1822 9.28875 21.1817 8.99725 20.8897C8.70575 20.5982 8.70525 20.1242 8.99525 19.8317L8.99725 19.8292L9.88175 18.9447L10.9423 20.0052L10.0557 20.8917ZM7.93625 18.7687C7.93575 18.7692 7.93475 18.7697 7.93425 18.7707C7.64175 19.0607 7.16775 19.0602 6.87575 18.7687C6.58425 18.4767 6.58375 18.0027 6.87375 17.7102C6.87475 17.7097 6.87525 17.7087 6.87575 17.7082L7.40675 17.1767L7.76025 16.8237C7.76075 16.8237 7.76075 16.8232 7.76075 16.8232C8.05325 16.5307 8.52875 16.5312 8.82125 16.8232C9.11375 17.1157 9.11375 17.5917 8.82125 17.8842L7.93625 18.7687ZM6.70025 15.7627H6.69975L5.81525 16.6472C5.81425 16.6482 5.81375 16.6482 5.81275 16.6492C5.52025 16.9397 5.04625 16.9392 4.75475 16.6472C4.46275 16.3557 4.46225 15.8817 4.75275 15.5887L5.63925 14.7017L5.91375 14.4277L7.40675 12.9342C7.69925 12.6417 8.17525 12.6417 8.46775 12.9342C8.75975 13.2267 8.75975 13.7022 8.46775 13.9947C8.46725 13.9947 8.46725 13.9952 8.46725 13.9952L6.70025 15.7627ZM17.1297 18.7677C17.3167 18.5807 17.4552 18.3662 17.5623 18.1402C17.6903 17.8712 17.7623 17.5852 17.7773 17.2942C18.0688 17.2792 18.3547 17.2072 18.6232 17.0792C18.8492 16.9717 19.0642 16.8337 19.2507 16.6467C19.4377 16.4597 19.5763 16.2447 19.6838 16.0192C20.0468 15.2557 19.9573 14.3367 19.4132 13.6557L22.4322 10.6372C22.4322 10.6367 22.4328 10.6367 22.4333 10.6362C22.4333 10.6357 22.4333 10.6357 22.4338 10.6352C22.7257 10.3422 22.7257 9.86774 22.4333 9.57524C22.1403 9.28274 21.6652 9.28274 21.3722 9.57524L18.3668 12.5807L12.3567 6.57024L12.5332 6.39374C12.8263 6.10074 12.8263 5.62574 12.5332 5.33274C12.2402 5.04024 11.7657 5.04024 11.4727 5.33274L10.0317 6.77374L9.89775 6.90824L8.99825 7.80674L8.99725 7.80824C8.70475 8.10024 8.22925 8.09974 7.93725 7.80774C7.64525 7.51524 7.64475 7.04024 7.93675 6.74774L9.12475 5.55974L9.17425 5.50974L11.4727 3.21124C11.5347 3.14924 11.6062 3.10374 11.6812 3.06774C11.9597 2.93524 12.3027 2.98124 12.5332 3.21124L14.3013 4.97924C14.5943 5.27224 15.0693 5.27224 15.3617 4.97924L15.8923 4.44924L16.0697 4.27124C16.3573 3.98374 16.3608 3.52224 16.0837 3.22824C16.0787 3.22224 16.0752 3.21624 16.0697 3.21074C16.0642 3.20524 16.0582 3.20174 16.0522 3.19674C15.7583 2.91974 15.2968 2.92324 15.0087 3.21074L14.8313 3.38824L13.5942 2.15074C13.4067 1.96374 13.1932 1.82324 12.9668 1.71774C12.6982 1.59224 12.4113 1.51824 12.1208 1.50324C12.0417 1.49924 11.9642 1.49924 11.8857 1.50324C11.5947 1.51824 11.3083 1.59224 11.0398 1.71774C10.8133 1.82324 10.5992 1.96374 10.4122 2.15074L9.88325 2.67924C9.88275 2.68024 9.88225 2.68074 9.88175 2.68124C9.88175 2.68124 9.88125 2.68124 9.88125 2.68174L9.17425 3.38824L8.64575 2.85974C8.64525 2.85924 8.64475 2.85824 8.64425 2.85774C8.64375 2.85724 8.64325 2.85724 8.64275 2.85674C8.34975 2.56524 7.87625 2.56574 7.58375 2.85774C7.29075 3.15074 7.29075 3.62574 7.58375 3.91874L8.11375 4.44924L6.87575 5.68724C6.18425 6.37874 6.04675 7.40524 6.44375 8.24074C6.55125 8.46624 6.68975 8.68124 6.87675 8.86824C7.06375 9.05524 7.27875 9.19374 7.50425 9.30124C8.33975 9.69874 9.36625 9.56024 10.0577 8.86874C10.0582 8.86874 10.0588 8.86874 10.0588 8.86824L11.2957 7.63124L18.1877 14.5232L18.1922 14.5272C18.2537 14.5892 18.2992 14.6602 18.3342 14.7347C18.4662 15.0127 18.4207 15.3557 18.1903 15.5857C17.9603 15.8157 17.6178 15.8617 17.3393 15.7297C17.2648 15.6942 17.1938 15.6487 17.1322 15.5877L17.1297 15.5857L14.6547 13.1112C14.3617 12.8182 13.8872 12.8182 13.5942 13.1112C13.3012 13.4037 13.3012 13.8787 13.5942 14.1717L16.0693 16.6467C16.0697 16.6472 16.0703 16.6482 16.0708 16.6487C16.1322 16.7107 16.1773 16.7817 16.2128 16.8562C16.3453 17.1347 16.2992 17.4772 16.0693 17.7072C15.8387 17.9372 15.4962 17.9832 15.2177 17.8512C15.1432 17.8157 15.0722 17.7702 15.0107 17.7092C15.0097 17.7082 15.0087 17.7077 15.0083 17.7072L12.5332 15.2322C12.2408 14.9397 11.7657 14.9397 11.4727 15.2322C11.1797 15.5252 11.1797 16.0002 11.4727 16.2932L13.9478 18.7677C13.9482 18.7687 13.9487 18.7697 13.9497 18.7702C14.0107 18.8317 14.0563 18.9027 14.0913 18.9772C14.2238 19.2557 14.1777 19.5982 13.9478 19.8282C13.7172 20.0587 13.3747 20.1047 13.0962 19.9722C13.0217 19.9372 12.9513 19.8917 12.8892 19.8302L10.9427 17.8842L10.5293 17.4712C10.5487 17.1027 10.4692 16.7347 10.3108 16.3947C10.2048 16.1677 10.0697 15.9502 9.88175 15.7627C9.69525 15.5757 9.47975 15.4372 9.25425 15.3297L9.52825 15.0557C9.64975 14.9342 9.75075 14.8002 9.83875 14.6602C10.1982 14.0897 10.2722 13.3947 10.0702 12.7692C9.96475 12.4422 9.78825 12.1332 9.52825 11.8737C9.27025 11.6157 8.96425 11.4432 8.64025 11.3392C8.37425 11.2532 8.09675 11.2112 7.81975 11.2257C7.28375 11.2537 6.75575 11.4642 6.34625 11.8737L5.63925 12.5807L2.28075 9.22274C2.28075 9.22224 2.28075 9.22224 2.28025 9.22174L2.27975 9.22124C1.98675 8.92924 1.51225 8.92924 1.21975 9.22174C0.92675 9.51474 0.92675 9.98974 1.21975 10.2827L4.57825 13.6412L3.69175 14.5282C3.00225 15.2202 2.86375 16.2452 3.26075 17.0802C3.36825 17.3062 3.50725 17.5212 3.69425 17.7082C3.88075 17.8952 4.09575 18.0337 4.32175 18.1407C4.59025 18.2687 4.87625 18.3407 5.16725 18.3557C5.18275 18.6467 5.25475 18.9327 5.38225 19.2012C5.48975 19.4277 5.62825 19.6422 5.81525 19.8292C6.00225 20.0162 6.21725 20.1547 6.44325 20.2622C6.71175 20.3897 6.99775 20.4617 7.28875 20.4772C7.30425 20.7682 7.37575 21.0542 7.50375 21.3227C7.61125 21.5487 7.74975 21.7637 7.93675 21.9507C8.12325 22.1377 8.33825 22.2762 8.56425 22.3837C9.39875 22.7807 10.4242 22.6427 11.1163 21.9527C11.1167 21.9517 11.1177 21.9512 11.1187 21.9507C11.1192 21.9502 11.1198 21.9492 11.1208 21.9482L12.0173 21.0517C12.6982 21.5952 13.6178 21.6847 14.3807 21.3222C14.6062 21.2147 14.8212 21.0762 15.0083 20.8892C15.1953 20.7022 15.3337 20.4872 15.4412 20.2617C15.5693 19.9927 15.6407 19.7067 15.6558 19.4157C15.9473 19.4002 16.2332 19.3282 16.5017 19.2007C16.7277 19.0932 16.9427 18.9547 17.1297 18.7677Z" fill="#333333"/>
                         </svg>
                         Overdracht
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Aangeboden sinds</dt>
-                        <dd>{{ house.listed_date }}</dd>
-                    </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Aangeboden sinds</dt>
+                            <dd>{{ house.listed_date }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Status</dt>
+                            <dd>{{ house.availability }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Aanvaarding</dt>
+                            <dd>{{ house.agreement }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Vraagprijs</dt>
+                            <dd>
+                                {% if house.price > 0 %}
+                                    € {{ house.price | divided_by: 1000.0 | round }}.000 Kosten koper
+                                {% else %}
+                                    Prijs op aanvraag
+                                {% endif %}
+                            </dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Vraagprijs per m²</dt>
+                            <dd>
+                                {% if house.price > 0 %}
+                                    € {{ house.price_m2 }}
+                                {% else %}
+                                    N.v.t.
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </dl>
+                </section>
 
-                    <div class="feature-row">
-                        <dt>Status</dt>
-                        <dd>{{ house.availability }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Aanvaarding</dt>
-                        <dd>{{ house.agreement }}</dd>
-                    </div>
-
-                    <div class="feature-row">
-                        <dt>Vraagprijs</dt>
-                        <dd>
-                            {% if house.price > 0 %}
-                                € {{ house.price | divided_by: 1000.0 | round }}.000 Kosten koper
-                            {% else %}
-                                Prijs op aanvraag
-                            {% endif %}
-                        </dd>
-                    </div>
-
-                    <div class="feature-row">
-                        <dt>Vraagprijs per m²</dt>
-                        <dd>
-                            {% if house.price > 0 %}
-                                € {{ house.price_m2 }}
-                            {% else %}
-                                N.v.t.
-                            {% endif %}
-                        </dd>
-                    </div>
-                </div>
-
-                <div class="feature-group bouw">
+                <section class="feature-group bouw">
                     <header class="group-head">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M21 5.255C21.0014 5.05522 20.9229 4.86317 20.7821 4.72144C20.6413 4.5797 20.4498 4.5 20.25 4.5H11.75C11.4481 4.49933 11.1755 4.681 11.06 4.96C11.0196 5.05128 10.9991 5.15016 11 5.25V9H7.50003C7.19847 9.00067 6.92663 9.18189 6.81003 9.46C6.76958 9.55128 6.74912 9.65016 6.75003 9.75V13.5H3.25003C2.94847 13.5007 2.67663 13.6819 2.56003 13.96C2.51958 14.0513 2.49912 14.1502 2.50003 14.25V18.75C2.50003 19.1642 2.83582 19.5 3.25003 19.5H20.25C20.6642 19.5 21 19.1642 21 18.75V5.255ZM4.00003 15H11V18H4.00003V15ZM19.5 10.5V13.5H16.75V10.5H19.5ZM15.25 10.5V13.5H8.25003V10.5H15.25ZM12.51 15H19.51V18H12.51V15ZM12.51 6H19.51V9H12.51V6Z" fill="#333333"/>
                         </svg>
                         Bouw
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Soort woonhuis</dt>
-                        <dd>{{ house.house_type }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Soort bouw</dt>
-                        <dd>Bestaande bouw</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Bouwjaar</dt>
-                        <dd>{{ house.construction_year }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Specifiek</dt>
-                        <dd>Gedeeltelijk gestoffeerd</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Soort dak</dt>
-                        <dd>Schilddak bedekt met pannen</dd>
-                    </div>
-                </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Soort woonhuis</dt>
+                            <dd>{{ house.house_type }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Soort bouw</dt>
+                            <dd>Bestaande bouw</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Bouwjaar</dt>
+                            <dd>{{ house.construction_year }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Specifiek</dt>
+                            <dd>Gedeeltelijk gestoffeerd</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Soort dak</dt>
+                            <dd>Schilddak bedekt met pannen</dd>
+                        </div>
+                    </dl>
+                </section>
 
-                <div class="feature-group oppervlakten">
+                <section class="feature-group oppervlakten">
                     <header class="group-head"> 
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M19.2644 16.1394V7.8894C20.4018 7.53919 21.1346 6.43577 21.0163 5.2516C20.898 4.06742 19.9614 3.13078 18.7772 3.01249C17.593 2.89419 16.4896 3.62703 16.1394 4.7644H7.8894C7.53919 3.62703 6.43577 2.89419 5.2516 3.01249C4.06742 3.13078 3.13078 4.06742 3.01249 5.2516C2.89419 6.43577 3.62703 7.53919 4.7644 7.8894V16.1394C3.62703 16.4896 2.89419 17.593 3.01249 18.7772C3.13078 19.9614 4.06742 20.898 5.2516 21.0163C6.43577 21.1346 7.53919 20.4018 7.8894 19.2644H16.1394C16.4896 20.4018 17.593 21.1346 18.7772 21.0163C19.9614 20.898 20.898 19.9614 21.0163 18.7772C21.1346 17.593 20.4018 16.4896 19.2644 16.1394ZM16.1394 17.7644H7.8894C7.64354 16.9911 7.03768 16.3853 6.2644 16.1394V7.8894C7.03768 7.64354 7.64354 7.03768 7.8894 6.2644H16.1394C16.3853 7.03768 16.9911 7.64354 17.7644 7.8894V16.1394C16.9911 16.3853 16.3853 16.9911 16.1394 17.7644ZM18.5144 4.5144C19.0667 4.5144 19.5144 4.96212 19.5144 5.5144C19.5144 6.06669 19.0667 6.5144 18.5144 6.5144C17.9621 6.5144 17.5144 6.06669 17.5144 5.5144C17.5144 4.96212 17.9621 4.5144 18.5144 4.5144ZM5.5144 4.5144C6.06669 4.5144 6.5144 4.96212 6.5144 5.5144C6.5144 6.06669 6.06669 6.5144 5.5144 6.5144C4.96212 6.5144 4.5144 6.06669 4.5144 5.5144C4.5144 4.96212 4.96212 4.5144 5.5144 4.5144ZM5.5144 19.5144C4.96212 19.5144 4.5144 19.0667 4.5144 18.5144C4.5144 17.9621 4.96212 17.5144 5.5144 17.5144C6.06669 17.5144 6.5144 17.9621 6.5144 18.5144C6.5144 19.0667 6.06669 19.5144 5.5144 19.5144ZM18.5144 19.5144C17.9621 19.5144 17.5144 19.0667 17.5144 18.5144C17.5144 17.9621 17.9621 17.5144 18.5144 17.5144C19.0667 17.5144 19.5144 17.9621 19.5144 18.5144C19.5144 19.0667 19.0667 19.5144 18.5144 19.5144Z" fill="#333333"/>
                         </svg>
                         Oppervlakten en inhoud
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Wonen</dt>
-                        <dd>{{ house.m2 }} m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Overige inpandige ruimte</dt>
-                        <dd>19 m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Gebouwgebonden buitenruimte</dt>
-                        <dd>19 m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Externe bergruimte</dt>
-                        <dd>20 m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Perceel</dt>
-                        <dd>{{ house.m2_garden }} m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Inhoud</dt>
-                        <dd>1.204 m³</dd>
-                    </div>
-                </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Wonen</dt>
+                            <dd>{{ house.m2 }} m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Overige inpandige ruimte</dt>
+                            <dd>19 m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Gebouwgebonden buitenruimte</dt>
+                            <dd>19 m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Externe bergruimte</dt>
+                            <dd>20 m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Perceel</dt>
+                            <dd>{{ house.m2_garden }} m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Inhoud</dt>
+                            <dd>1.204 m³</dd>
+                        </div>
+                    </dl>
+                </section>
 
-                <div class="feature-group indeling">
+                <section class="feature-group indeling">
                     <header class="group-head">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.5605 2.46833L21.1665 12.0263C21.4435 12.3343 21.4185 12.8083 21.111 13.0858C20.803 13.3628 20.329 13.3378 20.052 13.0303L11.9995 4.08683L3.94854 13.0278C3.67154 13.3358 3.19754 13.3603 2.88954 13.0833C2.58154 12.8063 2.55654 12.3318 2.83354 12.0243L11.44 2.46633C11.4478 2.45745 11.4574 2.4515 11.467 2.44556C11.4747 2.4408 11.4824 2.43606 11.489 2.42983C11.5014 2.41844 11.5147 2.40925 11.5282 2.39998C11.536 2.39461 11.5438 2.3892 11.5515 2.38333C11.6095 2.33883 11.67 2.29983 11.7355 2.27483C11.7578 2.26629 11.7806 2.26161 11.8036 2.2569C11.8116 2.25527 11.8196 2.25363 11.8275 2.25183C11.8875 2.23733 11.9475 2.22583 12.0085 2.22583C12.0431 2.22667 12.0774 2.23321 12.1115 2.23974C12.1179 2.24095 12.1242 2.24216 12.1305 2.24333C12.1805 2.25233 12.2305 2.26133 12.2785 2.28033C12.328 2.30033 12.3735 2.33183 12.4185 2.36333C12.4256 2.36813 12.4327 2.37283 12.4398 2.37752C12.4673 2.39579 12.4948 2.41396 12.519 2.43783C12.5248 2.44332 12.5314 2.44735 12.5381 2.45139C12.5461 2.45619 12.554 2.46101 12.5605 2.46833Z" fill="#333333"/>
@@ -393,83 +379,78 @@
                         </svg>
                         Indeling
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Aantal kamers</dt>
-                        <dd>{{ house.rooms_detail }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Aantal badkamers</dt>
-                        <dd>{{ house.bathrooms_detail }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Badkamervoorzieningen</dt>
-                        <dd>{{ house.bathroom_features }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Aantal woonlagen</dt>
-                        <dd>3 woonlagen</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Voorzieningen</dt>
-                        <dd>Buitenzonwering, glasvezelkabel, mechanische ventilatie, natuurlijke ventilatie, rookkanaal, TV kabel, en zonnepanelen</dd>
-                    </div>
-                </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Aantal kamers</dt>
+                            <dd>{{ house.rooms_detail }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Aantal badkamers</dt>
+                            <dd>{{ house.bathrooms_detail }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Badkamervoorzieningen</dt>
+                            <dd>{{ house.bathroom_features }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Aantal woonlagen</dt>
+                            <dd>3 woonlagen</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Voorzieningen</dt>
+                            <dd>Buitenzonwering, glasvezelkabel, mechanische ventilatie, natuurlijke ventilatie, rookkanaal, TV kabel, en zonnepanelen</dd>
+                        </div>
+                    </dl>
+                </section>
 
-                <div class="feature-group energie">
+                <section class="feature-group energie">
                     <header class="group-head">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M11.8376 6.44552L8.41164 12.9768L11.9275 13.7908L12.1735 17.7268L15.829 11.0404L12.0738 10.2253L11.8376 6.44552ZM13.0625 1.99704L13.5002 9.00001L16.6369 9.68085C17.4472 9.85673 17.7847 10.5901 17.3868 11.3181L11.4775 22.1269C11.2129 22.6109 10.9723 22.5536 10.9379 22.003L10.5002 15L7.64332 14.3386C6.83705 14.1519 6.49345 13.4045 6.87879 12.6699L12.5368 1.88333C12.7924 1.39617 13.0281 1.4464 13.0625 1.99704Z" fill="#333333"/>
                         </svg>
                         Energie
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Energielabel</dt>
-                        <dd><span class="label-badge">{{ house.energy_label }}</span></dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Isolatie</dt>
-                        <dd>Dakisolatie, grotendeels dubbelglas, HR-glas, muurisolatie en vloerisolatie</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Verwarming</dt>
-                        <dd>Open haard en gedeeltelijke vloerverwarming</dd>
-                    </div>
-                </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Energielabel</dt>
+                            <dd><span class="label-badge">{{ house.energy_label }}</span></dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Isolatie</dt>
+                            <dd>Dakisolatie, grotendeels dubbelglas, HR-glas, muurisolatie en vloerisolatie</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Verwarming</dt>
+                            <dd>Open haard en gedeeltelijke vloerverwarming</dd>
+                        </div>
+                    </dl>
+                </section>
 
-                <div class="feature-group kadaster">
+                <section class="feature-group kadaster">
                     <header class="group-head"> 
                         <svg width="38" height="40" viewBox="0 0 38 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M38 1.5C38 0.67157 37.3284 0 36.5 0H1.5C0.67157 0 0 0.67157 0 1.5V38.5C0 39.3284 0.67157 40 1.5 40H36.5C37.3284 40 38 39.3284 38 38.5V1.5ZM3 10.5H16V15.5C16 16.3284 16.6716 17 17.5 17H25V37H3V10.5ZM28 15.5C28 14.6716 27.3284 14 26.5 14H19V9C19 8.1716 18.3284 7.5 17.5 7.5H3V3H35V37H28V15.5Z" fill="black"/>
                         </svg>
                         Kadastrale gegevens
                     </header>
-                    
-                    <div class="feature-row">
-                        <dt>Kadastrale aanduiding</dt>
-                        <dd>{{ house.cadastral_id }}</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Oppervlakte</dt>
-                        <dd>{{ house.m2_garden }} m²</dd>
-                    </div>
-                    
-                    <div class="feature-row">
-                        <dt>Eigendomssituatie</dt>
-                        <dd>{{ house.ownership }}</dd>
-                    </div>
-                </div>
+                    <dl>
+                        <div class="feature-row">
+                            <dt>Kadastrale aanduiding</dt>
+                            <dd>{{ house.cadastral_id }}</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Oppervlakte</dt>
+                            <dd>{{ house.m2_garden }} m²</dd>
+                        </div>
+                        <div class="feature-row">
+                            <dt>Eigendomssituatie</dt>
+                            <dd>{{ house.ownership }}</dd>
+                        </div>
+                    </dl>
+                </section>
 
                 {% if house.has_garden %}
-                    <div class="feature-group buitenruimte">
+                    <section class="feature-group buitenruimte">
                         <header class="group-head">
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M24 12C24.8284 12 25.5 11.3284 25.5 10.5V5.5C25.5 4.67157 24.8284 4 24 4C23.1716 4 22.5 4.67157 22.5 5.5V10.5C22.5 11.3284 23.1716 12 24 12Z" fill="black"/>
@@ -484,36 +465,33 @@
                             </svg>
                             Buitenruimte
                         </header>
-                        
-                        <div class="feature-row">
-                            <dt>Ligging</dt>
-                            <dd>In bosrijke omgeving, in centrum en vrij uitzicht</dd>
-                        </div>
-                        
-                        <div class="feature-row">
-                            <dt>Tuin</dt>
-                            <dd>Achtertuin, tuin rondom, voortuin en zijtuin</dd>
-                        </div>
-                        
-                        <div class="feature-row">
-                            <dt>Achtertuin</dt>
-                            <dd>357 m² (17,00 meter diep en 21,00 meter breed)</dd>
-                        </div>
-                        
-                        <div class="feature-row">
-                            <dt>Ligging tuin</dt>
-                            <dd>Gelegen op het noordoosten bereikbaar via achterom</dd>
-                        </div>
-                        
-                        <div class="feature-row">
-                            <dt>Balkon/dakterras</dt>
-                            <dd>Balkon aanwezig</dd>
-                        </div>
-                    </div>
+                        <dl>
+                            <div class="feature-row">
+                                <dt>Ligging</dt>
+                                <dd>In bosrijke omgeving, in centrum en vrij uitzicht</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Tuin</dt>
+                                <dd>Achtertuin, tuin rondom, voortuin en zijtuin</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Achtertuin</dt>
+                                <dd>357 m² (17,00 meter diep en 21,00 meter breed)</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Ligging tuin</dt>
+                                <dd>Gelegen op het noordoosten bereikbaar via achterom</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Balkon/dakterras</dt>
+                                <dd>Balkon aanwezig</dd>
+                            </div>
+                        </dl>
+                    </section>
                 {% endif %}
 
                 {% if house.has_garage %}
-                    <div class="feature-group garage">
+                    <section class="feature-group garage">
                         <header class="group-head">
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M43.6999 20.4601L24.8599 7.27007C24.7893 7.21675 24.712 7.17304 24.6299 7.14007L24.4199 7.07007H23.6799L23.4699 7.14007C23.3878 7.17304 23.3105 7.21675 23.2399 7.27007L4.29994 20.4601C4.12058 20.5638 3.96463 20.7035 3.84193 20.8704C3.71924 21.0373 3.63244 21.2278 3.58703 21.43C3.54161 21.6321 3.53856 21.8414 3.57806 22.0448C3.61755 22.2482 3.69875 22.4411 3.81653 22.6116C3.9343 22.782 4.08611 22.9262 4.26237 23.035C4.43863 23.1439 4.63553 23.2151 4.84066 23.244C5.04579 23.273 5.2547 23.2592 5.45422 23.2035C5.65374 23.1477 5.83955 23.0512 5.99994 22.9201L23.9999 10.3301L41.9999 22.9201C42.1614 23.033 42.3436 23.1131 42.5361 23.1556C42.7285 23.1981 42.9275 23.2023 43.1215 23.168C43.3156 23.1336 43.501 23.0614 43.6672 22.9553C43.8333 22.8493 43.977 22.7116 44.0899 22.5501C44.2028 22.3886 44.2829 22.2064 44.3254 22.0139C44.3679 21.8215 44.3721 21.6226 44.3378 21.4285C44.3034 21.2344 44.2312 21.049 44.1251 20.8828C44.0191 20.7167 43.8814 20.573 43.7199 20.4601H43.6999Z" fill="black"/>
@@ -521,25 +499,25 @@
                             </svg>
                             Garage
                         </header>
-                        
-                        <div class="feature-row">
-                            <dt>Soort garage</dt>
-                            <dd>Vrijstaande stenen garage</dd>
-                        </div>
-
-                        <div class="feature-row">
-                            <dt>Capaciteit</dt>
-                            <dd>1 auto</dd>
-                        </div>
-                        <div class="feature-row">
-                            <dt>Voorzieningen</dt>
-                            <dd>Elektra</dd>
-                        </div>
-                    </div>
+                        <dl>
+                            <div class="feature-row">
+                                <dt>Soort garage</dt>
+                                <dd>Vrijstaande stenen garage</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Capaciteit</dt>
+                                <dd>1 auto</dd>
+                            </div>
+                            <div class="feature-row">
+                                <dt>Voorzieningen</dt>
+                                <dd>Elektra</dd>
+                            </div>
+                        </dl>
+                    </section>
                 {% endif %}
 
                 {% if house.has_parking %}
-                    <div class="feature-group parkeren">
+                    <section class="feature-group parkeren">
                         <header class="group-head">
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M18 27C18 27.8284 18.6716 28.5 19.5 28.5H28.5C29.3284 28.5 30 27.8284 30 27C30 26.1716 29.3284 25.5 28.5 25.5H19.5C18.6716 25.5 18 26.1716 18 27Z" fill="black"/>
@@ -549,14 +527,15 @@
                             </svg>
                             Parkeergelegenheid
                         </header>
-                        
-                        <div class="feature-row">
-                            <dt>Soort parkeergelegenheid</dt>
-                            <dd>Op eigen terrein</dd>
-                        </div>
-                    </div>
+                        <dl>
+                            <div class="feature-row">
+                                <dt>Soort parkeergelegenheid</dt>
+                                <dd>Op eigen terrein</dd>
+                            </div>
+                        </dl>
+                    </section>
                 {% endif %}
-            </dl>
+            </div>
             
         </section>
 

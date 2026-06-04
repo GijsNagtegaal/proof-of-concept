@@ -402,13 +402,13 @@ article.description {
     }
 }
 
-dl.all-info {
+div.all-info {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     grid-column: 1 / span 2;
 
-    div.feature-group {
+    section.feature-group {
         display: flex;
         list-style: none;
         flex-direction: column;
