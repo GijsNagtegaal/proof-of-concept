@@ -30,7 +30,7 @@ body {
 
     /* font sizes */
 
-    --heading-large: clamp(1.7rem, 2.5vw, 1.6rem);
+    --heading-large: clamp(1.5rem, 3vw, 1.8rem);
     --heading-medium: clamp(1.3rem, 2vw, 1.9rem);
     --paragraph: 1rem;
 
@@ -47,7 +47,7 @@ body {
     --active-link: rgba(0, 113, 179, 1);
     --btn-hover: rgb(211, 239, 255);
     --inactive: hsl(0, 0%, 56%);
-    --seperator: hsl(0, 0%, 77%);
+    --seperator: hsl(0, 0%, 92%);
 
     --small-radius: .5rem;
     --round-radius: 100%;
@@ -71,6 +71,11 @@ p, a, button, ul, li, dl, dd {
     color: var(--dark-text);
     line-height: 1.5;   
     text-decoration: none;
+}
+
+strong {
+    font-family: proxsemi;
+    font-size: var(--paragraph);
 }
 
 .vs-hidden {
@@ -150,8 +155,6 @@ svg {
         margin-left: -50vw;
         margin-right: -50vw;
     }
-
-
 }
 
 .badge {
@@ -170,4 +173,55 @@ svg {
 
 .breatingspace-section {
     margin-block: clamp(.7rem, 2dvh, 1.2rem);
+}
+
+button.warning {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    
+    svg {
+        path {
+            fill: var(--primary);
+        }
+    }
+}
+
+section.popover {
+    width: 100vw;
+    height: fit-content;
+    top: auto; 
+    bottom: 0;
+    left: 0px;
+    margin: 0;
+    border: none;
+    padding: 1rem;
+    border-radius: var(--image-radius);
+
+    @media (min-width: 768px) {
+        width: 40vw;
+        margin: auto auto;
+        padding: 1rem 3rem;
+        border-radius: var(--image-radius);
+        top: 50%; 
+        bottom: 50%;
+    }
+
+    &::backdrop {
+        background-color: black;
+        opacity: 0.7;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border: none;
+        }
+    }
 }

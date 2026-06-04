@@ -1,0 +1,12 @@
+<section class="{{ popover_class }}" id="{{ popover_id }}" popover="auto">
+    <header>
+        <strong>Let op! Woning met groot perceel</strong>
+        <button popovertarget="{{ popover_id }}">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M26.2865 24.1655L36.8935 13.5595C37.4765 12.9755 37.4765 12.0205 36.8935 11.4375C36.3095 10.8535 35.3555 10.8535 34.7715 11.4375L24.1655 22.0445L13.5585 11.4375C12.9755 10.8535 12.0205 10.8535 11.4375 11.4375C10.8535 12.0205 10.8535 12.9755 11.4375 13.5595L22.0435 24.1655L11.4375 34.7715C10.8535 35.3555 10.8535 36.3105 11.4375 36.8935C12.0205 37.4775 12.9755 37.4775 13.5585 36.8935L24.1655 26.2865L34.7715 36.8935C35.3555 37.4775 36.3095 37.4775 36.8935 36.8935C37.4765 36.3105 37.4765 35.3555 36.8935 34.7715L26.2865 24.1655Z" fill="black"/>
+            </svg>
+        </button>
+    </header>
+    <p>De vraagprijs per m² wordt berekend door de vraagprijs van de woning € ({{ house_price | divided_by: 1000 }}.000) te delen door de gebruiksoppervlakte wonen ({{house_m2}}m²). Hierbij wordt geen rekening gehouden met de perceeloppervlakte en eventuele bijgebouwen.</p>
+    <p>Door de grote perceeloppervlakte is de vraagprijs per m² in deze situatie minder geschikt voor het vergelijken van woningen en adviseren we je contact op te nemen met een makelaar voor verdere interpretatie.</p>
+</section>
