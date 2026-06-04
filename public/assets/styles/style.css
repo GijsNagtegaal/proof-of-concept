@@ -12,10 +12,15 @@ main {
     @media(min-width: 65rem) {
         padding-inline: 0;
     }
+
+    h3 {
+        font-size: var(--heading-medium);
+    }
 }
 
 section.gallery {
     display: flex;
+    position: relative;
     width: 100%;
     gap: 4px;
     border-radius: var(--border-image);
@@ -103,6 +108,53 @@ section.gallery {
 
                 img {
                     border-bottom-right-radius: var(--small-radius);
+                }
+            }
+        }
+    }
+    
+    article.btngroup {
+        display: flex;
+        gap: 1rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .3rem;
+            background-color: var(--light-text);
+            padding: 0.7rem 0.5rem;
+            border-radius: var(--small-radius);
+            border: none;
+            color: var(--active-link);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            opacity: 1;
+
+
+            &:hover {
+                opacity: 1;
+                transform: scale(1.05);
+                background-color: var(--btn-hover); 
+                color: var(--dark-text);
+
+                svg {
+                    fill: var(--dark-text);
+
+                    path {
+                        fill: var(--dark-text);
+                    }
+                }
+            }
+
+            svg {
+                fill: var(--active-link);
+
+                path {
+                    fill: var(--active-link);
                 }
             }
         }
@@ -214,7 +266,7 @@ div.main-aside-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     padding-inline: 1rem;
-    gap: 1rem;
+    gap: 2rem;
 
     @media(min-width: 768px) {
         padding-inline: 0rem;
@@ -241,18 +293,13 @@ section.details {
 
         h2.price {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            font-size: var(--heading-medium);
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.2em;
 
-            @media(min-width: 768px) {
+            @media(min-width: 500px) {
                 flex-direction: row;
                 gap: 1rem;
-                align-items: center;
-            }
-
-            a.calculator {
-                display: flex;
                 align-items: center;
             }
         }
@@ -301,9 +348,30 @@ article.important-info {
     }
 }
 
+a.calculator {
+    display: flex;
+
+    &.mobile {
+        display: flex; 
+        align-items: center;
+
+        @media (min-width: 500px) {
+            display: none;
+        }
+    }
+
+    &.desktop {
+        display: none;
+
+        @media (min-width: 500px) {
+            display: flex;
+        }
+    }
+}
+
 article.description {
     grid-column: 1 / span 2;
-       
+
     h2 {
         font-size: 1.3rem;
 
@@ -334,7 +402,61 @@ article.description {
     }
 }
 
-aside {
+dl.all-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    grid-column: 1 / span 2;
+
+    div.feature-group {
+        display: flex;
+        list-style: none;
+        flex-direction: column;
+        border: 1px solid var(--seperator);
+        border-radius: var(--small-radius);
+        padding: 1rem;
+        padding-bottom: 0;;
+
+        header.group-head {
+            display: flex;
+            gap: .5rem;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: var(--paragraph);
+            font-family: proxsemi;
+        }
+
+        div.feature-row {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--seperator);
+            padding: 0.45rem 0;
+
+            @media (min-width: 500px) {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            dt {
+                text-align: left;
+                width: 40%;
+            }
+
+            dd {
+                text-align: left;
+                width: 60%;
+            }
+
+            &:last-of-type {
+                border-bottom: 0;
+            }
+        }
+    }
+}
+
+
+
+section.agent {
     display: flex;
     flex-direction: column;
     background-color: var(--light-text);
@@ -395,6 +517,8 @@ aside {
         display: none;
     }
 }
+
+
 
 
 
