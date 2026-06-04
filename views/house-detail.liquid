@@ -1,6 +1,49 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
+
+        {% capture warning_markup %}
+        <p>De vraagprijs per m² wordt berekend door de vraagprijs van de woning € ({{ house.price | divided_by: 1000 }}.000) te delen door de gebruiksoppervlakte wonen ({{ house.m2 }}m²).</p>
+        <p>Door de grote perceeloppervlakte is de vraagprijs per m² in deze situatie minder geschikt...</p>
+        {% endcapture %}
+
+        {% render 'partials/popover.liquid', 
+            popover_id: "popover-warning", 
+            popover_class: "popover variant-warning", 
+            title: "Let op! Woning met groot perceel",
+            content: warning_markup
+        %}
+
+        {% capture save_form_markup %}
+        <form action="/favorieten/opslaan" method="POST">
+            <input type="hidden" name="house_id" value="{{ house.id }}">
+            <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.slug }}">
+            
+            <article class="list-options">
+                {% for list in lists %}
+                    <label class="option-row">
+                        <input class="vs-hidden" type="radio" name="list_id" value="{{ list.id }}" required>
+                        <span>{{ list.title }} ({{ list.houses.size }})</span>
+                    </label>
+                {% endfor %}
+            </article>
+            <footer>
+                {% if lists.size > 0 %}
+                <button type="submit" class="btn-submit-save">In lijst opslaan</button>
+                {% endif %}
+            </footer>
+        </form>
+
+
+        {% endcapture %}
+
+        {% render 'partials/popover.liquid', 
+            popover_id: "save-popover", 
+            popover_class: "popover variant-save-box", 
+            title: "Kies een lijstje",
+            content: save_form_markup
+        %}
+
     {% assign clean_street = house.street | strip %}
     {% assign clean_nr = house.house_nr | strip %}
     {% assign current_house = clean_street | append: " " | append: clean_nr %}
@@ -17,6 +60,8 @@
                     imagesrc: house.poster_image.id,
                     fetch: "high",
                     class: "poster",
+                    width: "400",
+                    height: "300",
                 %}
             {% endif %}
         </a>
@@ -42,7 +87,7 @@
                 Delen
             </button>
 
-            <button>
+            <button class="btn-save-trigger" id="popover-trigger" popovertarget="save-popover">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M38.9999 9.86009C37.1209 8.0425 34.6141 7.01829 31.9999 7.00008C29.835 6.99279 27.7274 7.69533 25.9999 9.00009C25.2427 9.56965 24.5695 10.2429 23.9999 11.0001C23.4303 10.2429 22.7571 9.56965 21.9999 9.00009C20.2749 7.68785 18.1673 6.97729 15.9999 6.97729C13.8325 6.97729 11.7249 7.68785 9.99988 9.00009C8.75211 9.9261 7.73983 11.1328 7.04493 12.5226C6.35003 13.9124 5.99203 15.4463 5.99988 17.0001C5.99988 32.0001 21.9999 41.0001 23.9999 41.0001C25.9999 41.0001 41.9999 32.0001 41.9999 17.0001C41.9997 15.6703 41.7343 14.3539 41.2192 13.1279C40.7041 11.9019 39.9496 10.791 38.9999 9.86009ZM23.9999 37.8601C18.6342 35.2054 14.1992 30.9865 11.2799 25.7601C9.81664 23.0698 9.03387 20.0624 8.99988 17.0001C9.00053 15.3934 9.5539 13.8357 10.5671 12.5887C11.5803 11.3417 12.9917 10.4812 14.5643 10.1517C16.1369 9.82216 17.7749 10.0437 19.2035 10.779C20.6321 11.5144 21.7643 12.7188 22.4099 14.1901C22.4699 14.3301 22.5199 14.4801 22.5799 14.6301C22.6804 14.9242 22.8703 15.1796 23.1232 15.3604C23.376 15.5412 23.6791 15.6384 23.9899 15.6384C24.3007 15.6384 24.6038 15.5412 24.8566 15.3604C25.1095 15.1796 25.2994 14.9242 25.3999 14.6301C25.4499 14.4801 25.5099 14.3301 25.5699 14.1901C26.2082 12.7065 27.3398 11.4893 28.773 10.7448C30.2062 10.0002 31.8528 9.77417 33.4336 10.1049C35.0144 10.4357 36.4323 11.3029 37.4467 12.5596C38.4612 13.8163 39.0099 15.3851 38.9999 17.0001C38.9741 20.0793 38.1911 23.1049 36.7199 25.8101C33.8006 31.0365 29.3656 35.2554 23.9999 37.9101V37.8601Z" fill="black"/>
                 </svg>
@@ -260,8 +305,7 @@
 
             <h3 class="breatingspace-section">Kenmerken</h3>
             
-            <div class="all-info breathingspace">
-                
+            <div class="all-info breathingspace">            
                 <section class="feature-group overdracht">
                     <header class="group-head">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -300,6 +344,13 @@
                                 {% else %}
                                     N.v.t.
                                 {% endif %}
+                                <button class="warning" popovertarget="popover-warning">
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M22.4089 18.8301C22.4089 18.0017 23.0804 17.3301 23.9089 17.3301C24.7373 17.3301 25.4089 18.0017 25.4089 18.8301V30.8301C25.4089 31.6585 24.7373 32.3301 23.9089 32.3301C23.0804 32.3301 22.4089 31.6585 22.4089 30.8301V18.8301Z" fill="black"/>
+                                        <path d="M23.9089 34.3301C23.0804 34.3301 22.4089 35.0017 22.4089 35.8301C22.4089 36.6585 23.0804 37.3301 23.9089 37.3301C24.7373 37.3301 25.4089 36.6585 25.4089 35.8301C25.4089 35.0017 24.7373 34.3301 23.9089 34.3301Z" fill="black"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M45.779 42.45L45.699 42.59L45.589 42.76L45.489 42.89L45.399 42.98L45.279 43.08L45.159 43.17H45.079L44.939 43.23H2.90896L2.71896 43.12H2.63896L2.50896 43.03L2.39896 42.94L2.29896 42.83L2.20896 42.72L2.12896 42.59L2.05896 42.47C2.03997 42.4242 2.02329 42.3775 2.00896 42.33V42.06C2.00608 42.0067 2.00608 41.9533 2.00896 41.9V41.76C1.99701 41.6604 1.99701 41.5596 2.00896 41.46V41.33L2.10896 41.15V41.08L22.739 5.56L22.789 5.49L22.879 5.37L22.979 5.26L23.079 5.17L23.219 5.07H23.289L23.439 5H24.549L24.699 5.07H24.769L24.909 5.17L24.969 5.22L25.069 5.33L25.159 5.5L25.209 5.57L45.719 41.12V41.2L45.779 41.34C45.7815 41.39 45.7815 41.44 45.779 41.49V41.62C45.7826 41.6799 45.7826 41.7401 45.779 41.8V41.87C45.7826 41.9299 45.7826 41.9901 45.779 42.05V42.17C45.7818 42.2233 45.7818 42.2767 45.779 42.33V42.45ZM41.809 40.33L23.909 9.33L6.00896 40.33H41.809Z" fill="black"/>
+                                    </svg>
+                                </button>
                             </dd>
                         </div>
                     </dl>
@@ -563,5 +614,34 @@
                 <a href="/huis/{{ house.slug }}/afspraak"></a>
             </section>
         </aside>
-    </div>
 {% endblock %}
+
+ {% comment %} <div class="save-container">
+  <button type="button" class="btn-save-trigger" onclick="document.getElementById('save-popover').classList.toggle('active')">
+    &star; Bewaren
+  </button>
+
+  <div id="save-popover" class="save-popover-box">
+    <h4>Kies een lijstje</h4>
+    <form action="/favorieten/opslaan" method="POST">
+      <input type="hidden" name="house_id" value="{{ house.id }}">
+      
+      <div class="list-options">
+        {% for list in lists %}
+          <label class="option-row">
+            <input type="radio" name="list_id" value="{{ list.id }}" required>
+            <span>{{ list.title }} ({{ list.houses.size }})</span>
+          </label>
+        {% else %}
+          <p>Je hebt nog geen lijstjes aangemaakt.</p>
+        {% endfor %}
+      </div>
+
+      {% if lists.size > 0 %}
+        <button type="submit" class="btn-submit-save">In lijst opslaan</button>
+      {% endif %}
+      <button type="button" class="btn-close-popover" onclick="document.getElementById('save-popover').classList.remove('active')">Sluiten</button>
+    </form>
+  </div>
+</div>
+    </div> {% endcomment %}

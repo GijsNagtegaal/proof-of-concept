@@ -5,25 +5,47 @@ This is a partial to load all images in better sizes and better quality
 {% if imagesrc contains '/assets/images' and format != "svg" %}
 
     <picture>
-        <source srcset="{{ imagesrc }}.avif?width={{ width }}&height={{ height }}&quality=60" type="image/avif">
-        <source srcset="{{ imagesrc }}.webp?width={{ width }}&height={{ height }}&quality=60" type="image/webp">
-        <img class="{{ class }}" src="{{ imagesrc }}?width={{ width }}&height={{ height }}&quality=50" fetchpriority="{{ fetch }}" loading="{{ loading }}" alt="">
+        <source srcset="{{ imagesrc }}.avif?width={{ width }}&height={{ height }}&quality=60" type="image/avif" width="{{ width }}" height="{{ height }}">
+        <source srcset="{{ imagesrc }}.webp?width={{ width }}&height={{ height }}&quality=60" type="image/webp" width="{{ width }}" height="{{ height }}">
+        <img class="{{ class }}" 
+            src="{{ imagesrc }}?width={{ width }}&height={{ height }}&quality=50" 
+            width="{{ width }}" 
+            height="{{ height }}" 
+            fetchpriority="{{ fetch | default: 'auto' }}" 
+            loading="{{ loading | default: 'eager' }}" 
+            alt="{{ alt_text | default: '' }}">
     </picture>
 
 {% elsif format == "svg" %}
 
-    <picture>
-        <source srcset="{{ imagesrc }}">
-        <source srcset="{{ imagesrc }}">
-        <img class="{{ class }}" src="{{ imagesrc }}" fetchpriority="{{ fetch }}" loading="{{ loading }}" alt="">
-    </picture>
+    <img class="{{ class }}" 
+        src="{{ imagesrc }}" 
+        width="{{ width }}" 
+        height="{{ height }}" 
+        fetchpriority="{{ fetch | default: 'auto' }}" 
+        loading="{{ loading | default: 'eager' }}" 
+        alt="{{ alt_text | default: '' }}">
 
 {% else %}
 
     <picture>
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=avif&quality=70" type="image/avif">
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=webp&quality=70" type="image/webp">
-        <img class="{{ class }}" src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=60" fetchpriority="{{ fetch | default: 'auto' }}" loading="{{ loading | default: 'lazy' }}" alt="Hoofdfoto van {{ alt_text | strip }}">
-    </picture>
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&format=avif&quality=70" 
+            type="image/avif"
+            width="{{ width }}" 
+            height="{{ height }}">
+                
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&format=webp&quality=70" 
+            type="image/webp"
+            width="{{ width }}" 
+            height="{{ height }}">
+                
+        <img class="{{ class }}" 
+            src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&quality=60" 
+            width="{{ width }}" 
+            height="{{ height }}" 
+            fetchpriority="{{ fetch | default: 'auto' }}" 
+            loading="{{ loading | default: 'eager' }}" 
+            alt="Hoofdfoto van {{ alt_text | strip }}">
+</picture>
 
 {% endif %}

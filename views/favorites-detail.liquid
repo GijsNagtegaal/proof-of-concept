@@ -1,0 +1,72 @@
+
+{% layout "layouts/main-layout.liquid" %}
+
+{% block content %}
+
+<section class="list-detail-header">
+    <a href="/favorieten" class="btn-back">Terug naar alle lijstjes</a>
+    
+    <article class="list-card-main">
+    <form action="/favorieten/{{ list.id }}?_method=PATCH" method="POST" class="edit-list-form">
+        <section class="card-view-mode">
+        <h2>
+            {% if list.icon %}
+            <span class="icon">{{ list.icon }}</span>
+            {% endif %}
+            <span class="title-text">{{ list.title }}</span>
+        </h2>
+        <p class="desc-text">{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
+        <button type="button" class="btn-edit" onclick="this.closest('.list-card-main').classList.add('editing')">Lijstje aanpassen</button>
+        </section>
+
+        <section class="card-edit-mode">
+            <input type="text" name="title" value="{{ list.title }}" required>
+            <textarea name="description">{{ list.description }}</textarea>
+            <input type="text" name="icon" value="{{ list.icon }}" placeholder="icoon code">
+            <button type="submit" class="btn-save">Opslaan</button>
+            <button type="button" class="btn-cancel" onclick="this.closest('.list-card-main').classList.remove('editing')">Annuleren</button>
+        </section>
+    </form>
+    </article>
+</section>
+
+<h3>Huizen in dit lijstje ({{ houses.size }})</h3>
+
+<section class="house-grid">
+    {% for house in houses %}
+    <article class="house-card">
+        <section class="house-image-wrapper">
+    {% if house.poster_image %}
+    <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="{{ house.street }} {{ house.house_nr }}" class="house-img">
+    {% else %}
+    {% endif %}
+</section>
+
+<section class="house-info">
+    <h4 class="house-address">{{ house.street }} {{ house.house_nr }}{{ house.nr_addition }}</h4>
+    <p class="house-location">{{ house.postal_code }} {{ house.city }}</p>
+
+    <p class="house-price">
+        {% if house.price %}
+        &euro; {{ house.price }} k.k.
+        {% else %}
+        Prijs op aanvraag
+        {% endif %}
+    </p>
+
+    <div class="house-specs">
+        <span><strong>{{ house.m2 | default: 0 }}</strong> m&sup2;</span>
+        <span>&bull;</span>
+        <span><strong>{{ house.rooms | default: 0 }}</strong> kamers</span>
+    </div>
+
+    <a href="/huizen/{{ house.city_clean }}/{{ house.street_clean }}/{{ house.slug }}" class="btn-detail">
+        Bekijk woning
+    </a>
+        </section>
+        </article>
+    {% else %}
+    <p class="no-results">Er zijn nog geen huizen aan dit lijstje toegevoegd.</p>
+    {% endfor %}
+</section>
+{% endblock %}

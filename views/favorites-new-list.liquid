@@ -1,0 +1,26 @@
+{% layout "layouts/main-layout.liquid" %}
+
+{% block content %}
+  <!-- POST actie aangepast naar de nieuwe /favorieten/nieuw route -->
+  <form action="/favorieten/nieuw" method="POST">
+    <fieldset class="form-group">
+      <label for="title">Titel van het lijstje *</label>
+      <input type="text" id="title" name="title" required placeholder="Bijv. Mooie appartementen">
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="description">Beschrijving</label>
+      <textarea id="description" name="description" placeholder="Bijv. Locaties in het centrum..."></textarea>
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="icon">Kies een icoon code (optioneel)</label>
+      <input type="text" id="icon" name="icon" placeholder="Bijv. house, favorite, star">
+    </fieldset>
+
+    <fieldset class="form-actions">
+      <button type="submit">Lijst opslaan</button>
+      <a href="/favorieten">Annuleren</a>
+    </fieldset>
+  </form>
+{% endblock %}

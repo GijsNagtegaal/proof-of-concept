@@ -1,0 +1,27 @@
+{% layout "layouts/main-layout.liquid" %}
+
+{% block content %}
+  <header class="lists-header">
+    <h2>Mijn Lijstjes</h2>
+    <a href="/favorieten/nieuw" class="btn-add-list">+ Nieuw lijstje</a>
+  </header>
+
+  <section class="lists-container">
+    {% for list in lists %}
+      <article class="list-card">
+        <h3>
+          {% if list.icon %}
+            <span class="icon">{{ list.icon }}</span>
+          {% endif %}
+          {{ list.title }}
+        </h3>
+        <p>{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
+        <span class="count">{{ list.houses.size }} huizen opgeslagen</span>
+        
+        <a href="/favorieten/{{ list.slug }}" class="btn-view-list">Bekijk lijstje</a>
+      </article>
+    {% else %}
+      <p>Je hebt nog geen lijstjes aangemaakt.</p>
+    {% endfor %}
+  </section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% layout "layouts/main-layout.liquid" %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    <section class="house-grid">
+        {% for house in houses %}
+            <article class="house-card">
+                <h3>{{ house.street }} {{ house.house_nr }}</h3>
+                <p>Locatie: {{ house.city }}</p>
+                
+                <a href="/huizen/{{ house.city_clean }}/{{ house.street_clean }}/{{ house.slug }}">
+                    Bekijk details
+                </a>
+            </article>
+        {% endfor %}
+    </section>
+{% endblock %}
