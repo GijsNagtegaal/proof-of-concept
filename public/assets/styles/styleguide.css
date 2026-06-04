@@ -31,7 +31,7 @@ body {
     /* font sizes */
 
     --heading-large: clamp(1.7rem, 2.5vw, 1.6rem);
-    --heading-medium: clamp(1.3rem, 2vw, 1.3rem);
+    --heading-medium: clamp(1.3rem, 2vw, 1.9rem);
     --paragraph: 1rem;
 
     /* colors */
@@ -42,9 +42,10 @@ body {
     --accent: hsl(354, 61%, 66%);
     --main-background: hsl(0, 0%, 100%);
     --surface: hsl(33, 40%, 94%);
-    --dark-text: hsl(0, 0%, 20%);
+    --dark-text: rgb(51, 51, 51);
     --light-text: hsl(0, 0%, 100%);
     --active-link: rgba(0, 113, 179, 1);
+    --btn-hover: rgb(211, 239, 255);
     --inactive: hsl(0, 0%, 56%);
     --seperator: hsl(0, 0%, 77%);
 
@@ -60,14 +61,14 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: proxsemi;
     font-size: var(--heading-large);
-    color: var(--color-text);
+    color: var(--dark-text);
     line-height: 1.1;
 }
 
-p, a, button {
+p, a, button, ul, li, dl, dd {
     font-family: proxreg;
     font-size: var(--paragraph);
-    color: var(--color-text);
+    color: var(--dark-text);
     line-height: 1.5;   
     text-decoration: none;
 }
@@ -139,12 +140,18 @@ svg {
     width: 100%;
     height: 1px;
     background-color: var(--seperator);
-    width: 100vw;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    grid-column: 1 / span 2;
+
+    &.fullwidth {
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+    }
+
+
 }
 
 .badge {
@@ -158,5 +165,9 @@ svg {
 }
 
 .breathingspace {
-    margin-block: .5rem;
+    margin-block: clamp(.5rem, 1dvh, 1rem);
+}
+
+.breatingspace-section {
+    margin-block: clamp(.7rem, 2dvh, 1.2rem);
 }
