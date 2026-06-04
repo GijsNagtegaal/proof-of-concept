@@ -303,12 +303,25 @@ article.important-info {
 
 article.description {
     grid-column: 1 / span 2;
+       
     h2 {
         font-size: 1.3rem;
 
         @media (min-width: 768px) {
             font-size: 1.7rem;
         }
+    }
+
+    .excerpt-text {
+        display: none;
+    }
+
+    .full-text {
+        display: block;
+    }
+
+    .description-toggle-btn .js-enebled {
+        display: inline-block;
     }
 
     button {
