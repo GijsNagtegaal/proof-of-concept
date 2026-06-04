@@ -188,14 +188,15 @@ button.warning {
 }
 
 section.popover {
+    position: relative;
+    position: fixed;
     width: 100vw;
-    height: fit-content;
+    height: 80%;
     top: auto; 
     bottom: 0;
     left: 0px;
     margin: 0;
     border: none;
-    padding: 1rem;
     border-radius: var(--image-radius);
 
     @media (min-width: 768px) {
@@ -215,6 +216,13 @@ section.popover {
     header {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        position: sticky;
+        bottom: auto;
+        background-color: var(--main-background);
+        height: 10%;
+        top: 0;
 
         button {
             display: flex;
@@ -223,5 +231,81 @@ section.popover {
             background-color: transparent;
             border: none;
         }
+    }
+
+    footer {
+        display: flex;
+        position: sticky;
+        top: auto;
+        height: 10%;
+        padding: 1rem;
+        bottom: 0;
+        background-color: var(--main-background)
+    }
+}
+
+article.list-options {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    max-height: 60%;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    
+    
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.6rem;
+        border: 1px solid var(--seperator);
+        border-radius: var(--small-radius);
+        transition: all .3s ease;
+
+        &:has(input[type="radio"]:checked) {
+            background-color: var(--primary);
+
+            span {
+                color: var(--light-text);
+            }
+        }
+
+        &:hover {
+            background-color: var(--primary);
+        }
+
+        span {
+            color: var(--text);
+        }
+
+        &:has(input[type="radio"]:checked) {
+            background-color: var(--primary);
+            border-color: var(--primary);
+
+            span {
+                color: var(--light-text);
+            }
+        }
+    }
+}
+
+.btn-submit-save {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    border: 1px solid var(--seperator);
+    border-radius: var(--small-radius);
+    cursor: pointer;
+    transition: all .3s ease;
+    background-color: var(--seperator);
+
+    form:has(input[type="radio"]:checked) & {
+        background-color: var(--primary);
+        color: var(--light-text);
+        border-color: var(--primary);
     }
 }

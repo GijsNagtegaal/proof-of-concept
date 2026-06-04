@@ -1,9 +1,16 @@
+html:has(section.popover:popover-open),
+body:has(section.popover:popover-open) {
+    overflow: hidden;
+    height: 100vh; 
+}
+
 main {
     display: flex;
     flex-direction: column;
     width: 100vw;
     min-height: 100dvh;
     margin-bottom: 5rem;
+    position: relative;
     
     @media(min-width: 768px) {
         padding-inline: 1rem;
@@ -40,18 +47,23 @@ section.gallery {
     a.gallery-item {
         display: flex;
         overflow: hidden;
+        border-radius: var(--border-image);
 
         picture {
             display: flex;
+            border-radius: var(--border-image);
         }
 
         img {
             transition: all .4s ease;
             object-fit: cover;
+            border-radius: var(--border-image);
+            aspect-ratio: 5/3;
 
             &:hover {
                 opacity: .9;
-                transform: scale(1.05) ; 
+                transform: scale(1.05); 
+                border-radius: var(--border-image);
             }
         }
 
@@ -120,7 +132,7 @@ section.gallery {
         top: 1rem;
         right: 1rem;
 
-        button {
+        button, a {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -276,9 +288,14 @@ div.main-aside-wrapper {
 
 section.details {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr 15%;
     width: 100%;
     margin-top: 1.5rem;
+
+    @media(min-width: 768px) {
+        padding-inline: 0rem;
+        grid-template-columns: 1fr 10%;
+    }
 
     article.house-details {
         
@@ -415,7 +432,7 @@ div.all-info {
         border: 1px solid var(--seperator);
         border-radius: var(--small-radius);
         padding: 1rem;
-        padding-bottom: 0;;
+        padding-bottom: 0;
 
         header.group-head {
             display: flex;
@@ -443,8 +460,14 @@ div.all-info {
             }
 
             dd {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
                 text-align: left;
-                width: 60%;
+
+                @media (min-width: 768px) {
+                    width: 60%;
+                }
             }
 
             &:last-of-type {
