@@ -1,13 +1,6 @@
 {
   "name": "proof-of-concept",
   "version": "1.0.0",
-  "dependencies": {
-    "ngrok": "^5.0.0" 
-  },
-  "overrides": {
-    "uuid": "^11.1.1",
-    "ngrok": "^5.0.0"
-  },
   "description": "Ontwerp en maak een data driven online concept voor een opdrachtgever.",
   "main": "server.js",
   "type": "module",
@@ -34,18 +27,13 @@
   "homepage": "https://github.com/fdnd-task/proof-of-concept#readme",
   "dependencies": {
     "axios": "^1.16.1",
-    "compression": "^1.8.1",
     "express": "^5.2.1",
     "liquid": "^5.1.1",
     "liquidjs": "^10.27.0",
     "method-override": "^3.0.0",
+    "ngrok": "^4.3.3",
     "node": "^24.16.0",
     "node-html-parser": "^7.1.0",
     "nodemon": "^3.1.14"
-  },
-  "devDependencies": {
-    "ngrok": "^4.3.3"
   }
 }
-
-
