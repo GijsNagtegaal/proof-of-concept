@@ -1,3 +1,4 @@
+// show phone number when clicking
 const phoneLink = document.getElementById('phone-reveal-link');
 
 if (phoneLink) {
@@ -18,6 +19,7 @@ if (phoneLink) {
     });
 }
 
+// description show more button
 const toggleBtn = document.querySelector('.description-toggle-btn');
 const excerptContent = document.querySelector('.excerpt-text');
 const fullContent = document.querySelector('.full-text');
@@ -54,3 +56,22 @@ if (toggleBtn && excerptContent && fullContent) {
         }
     });
 }
+
+// Skeleton loading state
+const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
+
+skeletonImages.forEach((img) => {
+
+    if (img.complete && img.naturalWidth > 0) {
+        img.parentElement.setAttribute("data-loading", "false");
+    } else {
+
+        img.addEventListener("load", () => {
+            img.parentElement.setAttribute("data-loading", "false");
+        });
+        
+        img.addEventListener("error", () => {
+            img.parentElement.setAttribute("data-loading", "false");
+        });
+    }
+});
