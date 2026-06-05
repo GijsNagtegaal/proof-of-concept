@@ -3,8 +3,8 @@
 {% block content %}
 
         {% capture warning_markup %}
-        <p>De vraagprijs per m² wordt berekend door de vraagprijs van de woning € ({{ house.price | divided_by: 1000 }}.000) te delen door de gebruiksoppervlakte wonen ({{ house.m2 }}m²).</p>
-        <p>Door de grote perceeloppervlakte is de vraagprijs per m² in deze situatie minder geschikt...</p>
+            <p>De vraagprijs per m² wordt berekend door de vraagprijs van de woning € ({{ house.price | divided_by: 1000 }}.000) te delen door de gebruiksoppervlakte wonen ({{ house.m2 }}m²).</p>
+            <p>Door de grote perceeloppervlakte is de vraagprijs per m² in deze situatie minder geschikt...</p>
         {% endcapture %}
 
         {% render 'partials/popover.liquid', 
@@ -14,7 +14,9 @@
             content: warning_markup
         %}
 
+        <section class="message-notification" id="status-message-zone" hidden></section>
         {% capture save_form_markup %}
+
         <form action="/favorieten/opslaan" method="POST">
             <input type="hidden" name="house_id" value="{{ house.id }}">
             
@@ -32,8 +34,6 @@
                 {% endif %}
             </footer>
         </form>
-
-
         {% endcapture %}
 
         {% render 'partials/popover.liquid', 
@@ -59,8 +59,8 @@
                     imagesrc: house.poster_image.id,
                     fetch: "high",
                     class: "poster",
-                    width: "460",
-                    height: "340"
+                    width: "860",
+                    height: "540"
                 %}
             {% endif %}
         </a>
@@ -73,8 +73,8 @@
                             imagesrc: item.directus_files_id,
                             fetch: "high",
                             class: "poster",
-                            width: "320",
-                            height: "200",
+                            width: "520",
+                            height: "400",
                         %}
                     </a>
                 {% endif %}
@@ -617,4 +617,5 @@
                 <a href="/huis/{{ house.slug }}/afspraak"></a>
             </section>
         </aside>
+    </div>
 {% endblock %}

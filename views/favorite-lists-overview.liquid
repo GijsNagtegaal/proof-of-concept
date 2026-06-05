@@ -1,27 +1,50 @@
+
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-  <header class="lists-header">
-    <h2>Mijn Lijstjes</h2>
-    <a href="/favorieten/nieuw" class="btn-add-list">+ Nieuw lijstje</a>
-  </header>
 
-  <section class="lists-container">
+<section class="lists-container">
     {% for list in lists %}
-      <article class="list-card">
+    <article class="list-card">
         <h3>
-          {% if list.icon %}
+        {% if list.icon %}
             <span class="icon">{{ list.icon }}</span>
-          {% endif %}
-          {{ list.title }}
+        {% endif %}
+        {{ list.title }}
         </h3>
         <p>{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
         <span class="count">{{ list.houses.size }} huizen opgeslagen</span>
         
+        <div class="list-images-preview">
+            {% for house in list.enriched_houses limit: 4 %}
+                
+                {% if house.poster_image %}
+                    {% render 'partials/picture.liquid',
+                        imagesrc: house.poster_image,
+                        fetch: "auto",
+                        class: "poster-preview",
+                        width: "150",
+                        height: "110"
+                    %}
+                
+                {% elsif house.gallery.size > 0 %}
+                    {% assign first_gallery_id = house.gallery | first %}
+                    {% render 'partials/picture.liquid',
+                        imagesrc: first_gallery_id,
+                        fetch: "auto",
+                        class: "gallery-preview",
+                        width: "150",
+                        height: "110"
+                    %}
+                {% endif %}
+
+            {% endfor %}
+        </div>
+
         <a href="/favorieten/{{ list.slug }}" class="btn-view-list">Bekijk lijstje</a>
-      </article>
+    </article>
     {% else %}
-      <p>Je hebt nog geen lijstjes aangemaakt.</p>
+        <p>Je hebt nog geen lijstjes aangemaakt.</p>
     {% endfor %}
-  </section>
+</section>
 {% endblock %}

@@ -137,20 +137,59 @@ app.get('/', async (req, res) => {
 
 app.get('/favorieten', async (req, res) => {
     try {
-        const response = await fetch(`${api}f_list`);
-        if (!response.ok) throw new Error('API fetch failed');
+        
+        const listResponse = await fetch(`${api}f_list?fields=*.*`);
+        if (!listResponse.ok) throw new Error('Lists API fetch failed');
+        const listJson = await listResponse.json();
+        const lists = listJson.data || [];
 
-        const json = await response.json();
-        const lists = json.data || [];
+        const houseIds = new Set();
+        lists.forEach(list => {
+            if (list.houses) {
+                list.houses.forEach(item => {
+                    if (item.f_houses_id) {
+                        houseIds.add(item.f_houses_id);
+                    }
+                });
+            }
+        });
 
-        const formattedLists = lists.map(list => ({
-            ...list,
-            slug: slugify(list.title)
-        }));
+        let housesMap = {};
+        if (houseIds.size > 0) {
+
+            const idFilter = Array.from(houseIds).join(',');
+            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${idFilter}&fields=id,poster_image,gallery&limit=-1`);
+            
+            if (housesResponse.ok) {
+                const housesJson = await housesResponse.json();
+                const housesData = housesJson.data || [];
+
+                housesData.forEach(house => {
+                    housesMap[house.id] = house;
+                });
+            }
+        }
+
+        const formattedLists = lists.map(list => {
+            const enrichedHouses = (list.houses || []).map(item => {
+                const realHouseData = housesMap[item.f_houses_id];
+                return {
+                    id: item.f_houses_id,
+                    poster_image: realHouseData ? realHouseData.poster_image : null,
+                    gallery: realHouseData ? realHouseData.gallery : []
+                };
+            });
+
+            return {
+                ...list,
+                slug: slugify(list.title),
+                enriched_houses: enrichedHouses
+            };
+        });
 
         res.render('favorite-lists-overview.liquid', { lists: formattedLists });
     } catch (error) {
-        console.error("Error loading lists overview:", error);
+        console.error("Error loading enriched lists overview:", error);
         res.status(500).send('Server Error');
     }
 });

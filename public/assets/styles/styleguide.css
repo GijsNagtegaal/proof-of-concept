@@ -314,3 +314,48 @@ article.list-options {
         border-color: var(--primary);
     }
 }
+
+/* Core button state adjustments during load */
+.btn-submit-save.btn-loading {
+    position: relative;
+    cursor: not-allowed;
+    background-color: #005f9e !important; /* Slightly darker shift to show execution */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: btnPulse 1.5s infinite ease-in-out;
+}
+
+/* btn loading state */
+
+@keyframes btnPulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.btn-loading-text {
+    animation: textFade 0.5s ease forward;
+}
+
+@keyframes textFade {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 0.8; transform: translateY(0); }
+}
+
+.btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: spinRotation 0.6s linear infinite;
+}
+
+@keyframes spinRotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
