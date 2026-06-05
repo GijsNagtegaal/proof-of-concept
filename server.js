@@ -4,6 +4,10 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import methodOverride from 'method-override';
 
+const express = require('express');
+const compression = require('compression');
+const app = express();
+
 const api = "https://fdnd-agency.directus.app/items/";
 
 const app = express();
@@ -14,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(compression());
 
 const engine = new Liquid();
 app.engine('liquid', engine.express());

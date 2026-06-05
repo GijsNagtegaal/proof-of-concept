@@ -1,51 +1,51 @@
 {% comment %}
-This is a partial to load all images in better sizes and better quality
+    Optimized partial to load images with explicit dimensions, preventing layout shifts (CLS).
 {% endcomment %}
 
-{% if imagesrc contains '/assets/images' and format != "svg" %}
+{%- assign default_width = width | default: "320" -%}
+{%- assign default_height = height | default: "200" -%}
 
+{% if imagesrc contains '/assets/images' and format != "svg" %}
+    
     <picture>
-        <source srcset="{{ imagesrc }}.avif?width={{ width }}&height={{ height }}&quality=60" type="image/avif" width="{{ width }}" height="{{ height }}">
-        <source srcset="{{ imagesrc }}.webp?width={{ width }}&height={{ height }}&quality=60" type="image/webp" width="{{ width }}" height="{{ height }}">
+        <source srcset="{{ imagesrc }}.avif?width={{ default_width }}&height={{ default_height }}&quality=60" type="image/avif" width="{{ default_width }}" height="{{ default_height }}">
+        <source srcset="{{ imagesrc }}.webp?width={{ default_width }}&height={{ default_height }}&quality=60" type="image/webp" width="{{ default_width }}" height="{{ default_height }}">
         <img class="{{ class }}" 
-            src="{{ imagesrc }}?width={{ width }}&height={{ height }}&quality=50" 
-            width="{{ width }}" 
-            height="{{ height }}" 
+            src="{{ imagesrc }}?width={{ default_width }}&height={{ default_height }}&quality=50" 
+            width="{{ default_width }}" 
+            height="{{ default_height }}" 
             fetchpriority="{{ fetch | default: 'auto' }}" 
             loading="{{ loading | default: 'eager' }}" 
-            alt="{{ alt_text | default: '' }}">
+            alt="{{ alt_text | default: 'Afbeelding' }}">
     </picture>
 
 {% elsif format == "svg" %}
-
     <img class="{{ class }}" 
         src="{{ imagesrc }}" 
-        width="{{ width }}" 
-        height="{{ height }}" 
+        width="{{ default_width }}" 
+        height="{{ default_height }}" 
         fetchpriority="{{ fetch | default: 'auto' }}" 
         loading="{{ loading | default: 'eager' }}" 
-        alt="{{ alt_text | default: '' }}">
-
+        alt="{{ alt_text | default: 'Icon of logo' }}">
 {% else %}
 
     <picture>
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&format=avif&quality=70" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=avif&quality=60&width={{ default_width }}&height={{ default_height }}&fit=cover" 
             type="image/avif"
-            width="{{ width }}" 
-            height="{{ height }}">
+            width="{{ default_width }}" 
+            height="{{ default_height }}">
                 
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&format=webp&quality=70" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=webp&quality=60&width={{ default_width }}&height={{ default_height }}&fit=cover" 
             type="image/webp"
-            width="{{ width }}" 
-            height="{{ height }}">
+            width="{{ default_width }}" 
+            height="{{ default_height }}">
                 
         <img class="{{ class }}" 
-            src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}&quality=60" 
-            width="{{ width }}" 
-            height="{{ height }}" 
+            src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=60&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+            width="{{ default_width }}" 
+            height="{{ default_height }}" 
             fetchpriority="{{ fetch | default: 'auto' }}" 
             loading="{{ loading | default: 'eager' }}" 
-            alt="Hoofdfoto van {{ alt_text | strip }}">
-</picture>
-
+            alt="Hoofdfoto van {{ alt_text | default: 'woning' | strip }}">
+    </picture>
 {% endif %}
