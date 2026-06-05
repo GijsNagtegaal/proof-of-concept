@@ -252,11 +252,11 @@ article.list-options {
     max-height: 60%;
     overflow-y: auto;
     scroll-behavior: smooth;
-    
-    
 
     label {
         display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
         align-items: center;
         gap: 1rem;
         padding: 0.6rem;
@@ -270,6 +270,10 @@ article.list-options {
             span {
                 color: var(--light-text);
             }
+        }
+
+        &:focus {
+            background-color: var(--primary);
         }
 
         &:hover {

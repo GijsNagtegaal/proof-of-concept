@@ -56,22 +56,48 @@ if (toggleBtn && excerptContent && fullContent) {
         }
     });
 }
+(() => {
+    try {
+        const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
+        if (!skeletonImages || skeletonImages.length === 0) return;
 
-// Skeleton loading state
-const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
+        const hideSkeleton = (img) => {
+            if (img && img.parentElement) {
+                img.parentElement.setAttribute("data-loading", "false");
+            }
+        };
 
-skeletonImages.forEach((img) => {
+        skeletonImages.forEach((img) => {
+            if (!img) return;
 
-    if (img.complete && img.naturalWidth > 0) {
-        img.parentElement.setAttribute("data-loading", "false");
-    } else {
+            // 1. If it's already fully loaded from cache, do nothing!
+            // (It stays on the default, clean, non-skeleton state)
+            if (img.complete && img.naturalWidth > 0) {
+                return; 
+            }
 
-        img.addEventListener("load", () => {
-            img.parentElement.setAttribute("data-loading", "false");
+            // 2. If it is NOT loaded yet, JS ACTIVATES the skeleton state safely
+            if (img.parentElement) {
+                img.parentElement.setAttribute("data-loading", "true");
+            }
+
+            // 3. Listen for completion to turn it back off
+            const options = { once: true };
+            const handleLoad = () => hideSkeleton(img);
+            const handleError = () => hideSkeleton(img);
+
+            img.addEventListener("load", handleLoad, options);
+            img.addEventListener("error", handleError, options);
+
+            // Safety timeout fallback
+            setTimeout(() => {
+                img.removeEventListener("load", handleLoad);
+                img.removeEventListener("error", handleError);
+                hideSkeleton(img);
+            }, 5000); 
         });
-        
-        img.addEventListener("error", () => {
-            img.parentElement.setAttribute("data-loading", "false");
-        });
+
+    } catch (error) {
+        console.error("Skeleton tracker failed safely:", error);
     }
-});
+})();

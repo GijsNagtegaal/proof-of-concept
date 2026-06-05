@@ -21,7 +21,7 @@
             <article class="list-options">
                 {% for list in lists %}
                     <label class="option-row">
-                        <input class="vs-hidden" type="radio" name="list_id" value="{{ list.id }}" required>
+                        <input type="radio" name="list_id" value="{{ list.id }}" required>
                         <span>{{ list.title }} ({{ list.houses.size }})</span>
                     </label>
                 {% endfor %}

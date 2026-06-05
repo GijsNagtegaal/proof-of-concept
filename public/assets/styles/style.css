@@ -712,24 +712,22 @@ nav.breadcrumb {
     width: 100%;
     height: auto;
     overflow: hidden;
-    background-color: #f3f5f7;
-    background-image: linear-gradient(
-        90deg, 
-        #f3f5f7 0%, 
-        #f3f5f7 35%, 
-        #eef1f3 50%, 
-        #f3f5f7 65%, 
-        #f3f5f7 100%
-    );
-    background-size: 400% 100%;
-    animation: funda-shimmer 1.8s infinite linear, funda-pulse 2s infinite ease-in-out;
-    will-change: background-position, opacity;
-    
+    background-color: #ffffff;
+    will-change: auto;
 
-    &[data-loading="false"] {
-        animation: none;
-        background: #ffffff;
-        will-change: auto;
+    &[data-loading="true"] {
+        background-color: #f3f5f7;
+        background-image: linear-gradient(
+            90deg, 
+            #f3f5f7 0%, 
+            #f3f5f7 35%, 
+            #eef1f3 50%, 
+            #f3f5f7 65%, 
+            #f3f5f7 100%
+        );
+        background-size: 400% 100%;
+        animation: funda-shimmer 1.8s infinite linear, funda-pulse 2s infinite ease-in-out;
+        will-change: background-position, opacity;
     }
 
     &::before {
@@ -741,12 +739,16 @@ nav.breadcrumb {
         min-width: 24px;
         max-width: 48px;
         aspect-ratio: 1/1;
-        opacity: 0.18;
+        opacity: 0; 
         background-repeat: no-repeat;
         background-position: center;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230071B3'><path d='M19 9.3V4h-3v2.6L12 3 2 12h3v8h5v-6h4v6h5v-8h3l-3-2.7z'/></svg>");
         z-index: 1;
         transition: opacity 0.3s ease;
+    }
+
+    &[data-loading="true"]::before {
+        opacity: 0.18;
     }
 
     & img {
@@ -755,20 +757,11 @@ nav.breadcrumb {
         height: 100%;
         object-fit: cover;
         position: relative;
-        opacity: 0;
+        opacity: 1; 
         transition: opacity 0.4s ease-out;
     }
 
-    &[data-loading="false"] {
-        animation: none;
-        background: #ffffff;
-    }
-
-    &[data-loading="false"]::before {
+    &[data-loading="true"] img {
         opacity: 0;
-    }
-
-    &[data-loading="false"] img {
-        opacity: 1;
     }
 }
