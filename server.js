@@ -1,16 +1,13 @@
 import express from 'express';
-import { Liquid } from 'liquidjs';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import compression from 'compression'; 
 import methodOverride from 'method-override';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Liquid } from 'liquidjs';
 
-const express = require('express');
-const compression = require('compression');
 const app = express();
 
 const api = "https://fdnd-agency.directus.app/items/";
-
-const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
