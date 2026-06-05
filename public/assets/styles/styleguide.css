@@ -196,14 +196,15 @@ section.popover {
     bottom: 0;
     left: 0px;
     margin: 0;
+    padding: 0rem 1rem;
     border: none;
-    border-radius: var(--image-radius);
+    border-radius: var(--small-radius) var(--small-radius) 0 0 ;
 
     @media (min-width: 768px) {
         width: 40vw;
         margin: auto auto;
-        padding: 1rem 3rem;
-        border-radius: var(--image-radius);
+        padding: 0rem 3rem;
+        border-radius: var(--small-radius);
         top: 50%; 
         bottom: 50%;
     }
@@ -217,7 +218,7 @@ section.popover {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem;
+        padding: 1rem 0rem;
         position: sticky;
         bottom: auto;
         background-color: var(--main-background);
@@ -238,7 +239,7 @@ section.popover {
         position: sticky;
         top: auto;
         height: 10%;
-        padding: 1rem;
+        padding: 1rem 0rem;
         bottom: 0;
         background-color: var(--main-background)
     }

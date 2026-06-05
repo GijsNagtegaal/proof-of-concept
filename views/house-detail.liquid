@@ -17,7 +17,6 @@
         {% capture save_form_markup %}
         <form action="/favorieten/opslaan" method="POST">
             <input type="hidden" name="house_id" value="{{ house.id }}">
-            <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.slug }}">
             
             <article class="list-options">
                 {% for list in lists %}
@@ -618,33 +617,3 @@
             </section>
         </aside>
 {% endblock %}
-
- {% comment %} <div class="save-container">
-  <button type="button" class="btn-save-trigger" onclick="document.getElementById('save-popover').classList.toggle('active')">
-    &star; Bewaren
-  </button>
-
-  <div id="save-popover" class="save-popover-box">
-    <h4>Kies een lijstje</h4>
-    <form action="/favorieten/opslaan" method="POST">
-      <input type="hidden" name="house_id" value="{{ house.id }}">
-      
-      <div class="list-options">
-        {% for list in lists %}
-          <label class="option-row">
-            <input type="radio" name="list_id" value="{{ list.id }}" required>
-            <span>{{ list.title }} ({{ list.houses.size }})</span>
-          </label>
-        {% else %}
-          <p>Je hebt nog geen lijstjes aangemaakt.</p>
-        {% endfor %}
-      </div>
-
-      {% if lists.size > 0 %}
-        <button type="submit" class="btn-submit-save">In lijst opslaan</button>
-      {% endif %}
-      <button type="button" class="btn-close-popover" onclick="document.getElementById('save-popover').classList.remove('active')">Sluiten</button>
-    </form>
-  </div>
-</div>
-    </div> {% endcomment %}
