@@ -123,7 +123,6 @@ a {
     font-family: proxreg;
 }
 
-
 svg {
     width: 1.5rem;
     height: 1.5rem;
@@ -245,7 +244,7 @@ section.popover {
     }
 }
 
-article.list-options {
+section.list-options {
     display: flex;
     flex-direction: column;
     gap: .5rem;
@@ -315,11 +314,10 @@ article.list-options {
     }
 }
 
-/* Core button state adjustments during load */
 .btn-submit-save.btn-loading {
     position: relative;
     cursor: not-allowed;
-    background-color: #005f9e !important; /* Slightly darker shift to show execution */
+    background-color: var(--seconary); 
     display: inline-flex;
     align-items: center;
     justify-content: center;

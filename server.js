@@ -11,17 +11,20 @@ const api = "https://fdnd-agency.directus.app/items/";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(compression());
 
+// View engine setup
 const engine = new Liquid();
 app.engine('liquid', engine.express());
 app.set('views', './views');
 app.set('view engine', 'liquid');
 
+// Helper functions
 function slugify(text) {
     if (!text) return '';
     return text.toString().toLowerCase().trim()
@@ -60,6 +63,19 @@ async function getHouseBySlug(city, slug) {
     };
 }
 
+// Herbruikbare middleware voor het ophalen van favorietenlijsten
+async function loadListsMiddleware(req, res, next) {
+    try {
+        const listsResponse = await fetch(`${api}f_list?fields=*.*`);
+        res.locals.lists = listsResponse.ok ? (await listsResponse.json()).data || [] : [];
+        next();
+    } catch (error) {
+        console.error("Error fetching lists middleware:", error);
+        res.locals.lists = [];
+        next();
+    }
+}
+
 async function loadHouseMiddleware(req, res, next) {
     try {
         const { city, house_slug } = req.params;
@@ -83,42 +99,25 @@ async function loadHouseMiddleware(req, res, next) {
         const hasGarage = foundHouse.description ? foundHouse.description.toLowerCase().includes('garage') : false;
         const hasParking = foundHouse.description ? (foundHouse.description.toLowerCase().includes('parkeer') || hasGarage) : false;
 
-        const energyLabels = ["A", "B", "C", "D", "E", "F"];
-        const houseTypes = ["Villa, vrijstaande woning", "Middenwoning", "Hoekwoning", "Twee-onder-één-kap", "Appartement"];
-        const availabilities = ["Beschikbaar", "Verkocht onder voorbehoud", "In optie"];
-        const agreements = ["In overleg", "Per direct", "In overleg (langere termijn)"];
-        const cadastralSections = ["H", "G", "K", "A", "B", "F"];
-        const ownershipPool = ["Volle eigendom", "Eigendom belast met erfpacht", "Zie akte"];
-
-        const randomEnergyLabel = energyLabels[Math.floor(Math.random() * energyLabels.length)];
-        const randomHouseType = houseTypes[Math.floor(Math.random() * houseTypes.length)];
-        const randomAvailability = availabilities[Math.floor(Math.random() * availabilities.length)];
-        const randomAgreement = agreements[Math.floor(Math.random() * agreements.length)];
-        
-        const dbCity = foundHouse.city ? foundHouse.city.trim().toUpperCase() : "ONBEKEND";
-        const randomCadaster = `${dbCity} ${cadastralSections[Math.floor(Math.random() * cadastralSections.length)]} ${Math.floor(Math.random() * 8000) + 1000}`;
-        const randomOwnership = ownershipPool[Math.floor(Math.random() * ownershipPool.length)];
-
-        const randomBuildYear = Math.floor(Math.random() * (2022 - 1920 + 1)) + 1920; 
+        // Statische fallbacks (voorkomt veranderende data bij elke refresh)
         const totalRooms = Number(foundHouse.rooms) || 3;
-        const randomBedrooms = totalRooms > 1 ? totalRooms - 1 : 1; 
+        const bedrooms = totalRooms > 1 ? totalRooms - 1 : 1; 
 
         req.house = {
             ...foundHouse,
             current_house: currentHouse,
             total_m2: totalM2,
             price_m2: priceM2,
-            availability: randomAvailability,
-            agreement: randomAgreement,
-            energy_label: randomEnergyLabel,
-            construction_year: randomBuildYear,
-            house_type: randomHouseType,
-            rooms_detail: `${totalRooms} kamers (${randomBedrooms} slaangkamers)`,
+            availability: "Beschikbaar",
+            agreement: "In overleg",
+            energy_label: "A",
+            construction_year: 2020,
+            house_type: "Middenwoning",
+            rooms_detail: `${totalRooms} kamers (${bedrooms} slaapkamers)`,
             bathrooms_detail: "2 badkamers en 1 apart toilet",
-            bathroom_features: "2 douches, dubbele wastafel, ligbad, 2 toiletten, vloerverwarming, en wastafel",
-            cadastral_id: randomCadaster,
-            ownership: randomOwnership,
-            
+            bathroom_features: "2 douches, dubbele wastafel, ligbad, vliering",
+            cadastral_id: `${(foundHouse.city || 'UNKN').toUpperCase()} H 1234`,
+            ownership: "Volle eigendom",
             has_garden: hasGarden,
             has_garage: hasGarage,
             has_parking: hasParking
@@ -131,13 +130,13 @@ async function loadHouseMiddleware(req, res, next) {
     }
 }
 
+// Routes
 app.get('/', async (req, res) => {
     res.render('index.liquid', { testje: "Funda" });
 });
 
 app.get('/favorieten', async (req, res) => {
     try {
-        
         const listResponse = await fetch(`${api}f_list?fields=*.*`);
         if (!listResponse.ok) throw new Error('Lists API fetch failed');
         const listJson = await listResponse.json();
@@ -147,24 +146,19 @@ app.get('/favorieten', async (req, res) => {
         lists.forEach(list => {
             if (list.houses) {
                 list.houses.forEach(item => {
-                    if (item.f_houses_id) {
-                        houseIds.add(item.f_houses_id);
-                    }
+                    if (item.f_houses_id) houseIds.add(item.f_houses_id);
                 });
             }
         });
 
         let housesMap = {};
         if (houseIds.size > 0) {
-
             const idFilter = Array.from(houseIds).join(',');
             const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${idFilter}&fields=id,poster_image,gallery&limit=-1`);
             
             if (housesResponse.ok) {
                 const housesJson = await housesResponse.json();
-                const housesData = housesJson.data || [];
-
-                housesData.forEach(house => {
+                (housesJson.data || []).forEach(house => {
                     housesMap[house.id] = house;
                 });
             }
@@ -201,15 +195,12 @@ app.get('/favorieten/nieuw', async (req, res) => {
 app.post('/favorieten/nieuw', async (req, res) => {
     try {
         const { title, description, icon } = req.body;
-
         const response = await fetch(`${api}f_list`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: title,
-                description: description,
+                title,
+                description,
                 icon: icon || 'house',
                 houses: [],
                 users: []
@@ -217,7 +208,6 @@ app.post('/favorieten/nieuw', async (req, res) => {
         });
 
         if (!response.ok) throw new Error('API post failed');
-
         res.redirect('/favorieten');
     } catch (error) {
         console.error("Error creating new list:", error);
@@ -228,39 +218,34 @@ app.post('/favorieten/nieuw', async (req, res) => {
 app.get('/favorieten/:list_slug', async (req, res) => {
     try {
         const { list_slug } = req.params;
-
-        const [listsResponse, housesResponse] = await Promise.all([
-            fetch(`${api}f_list?fields=*.*`),
-            fetch(`${api}f_houses?fields=*.*&limit=-1`)
-        ]);
-
-        if (!listsResponse.ok || !housesResponse.ok) throw new Error('API fetch failed');
+        const listsResponse = await fetch(`${api}f_list?fields=*.*`);
+        if (!listsResponse.ok) throw new Error('API fetch failed');
 
         const listsJson = await listsResponse.json();
-        const housesJson = await housesResponse.json();
+        const list = (listsJson.data || []).find(l => slugify(l.title) === list_slug);
 
-        const allLists = listsJson.data || [];
-        const allHouses = housesJson.data || [];
+        if (!list) return res.status(404).render('404.liquid');
 
-        const list = allLists.find(l => slugify(l.title) === list_slug);
-
-        if (!list) {
-            return res.status(404).render('404.liquid');
+        const savedHouseIds = (list.houses || []).map(item => item.f_houses_id);
+        
+        let filteredHouses = [];
+        if (savedHouseIds.length > 0) {
+            // OPTIMALISATIE: Alleen benodigde huizen ophalen via Directus filter
+            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${savedHouseIds.join(',')}&fields=*.*&limit=-1`);
+            if (housesResponse.ok) {
+                const housesJson = await housesResponse.json();
+                filteredHouses = (housesJson.data || []).map(house => {
+                    const cleanStreet = house.street ? house.street.toLowerCase().replace(/\s+/g, '') : '';
+                    const cleanNr = house.house_nr ? house.house_nr.toString().toLowerCase().replace(/\s+/g, '') : '';
+                    return {
+                        ...house,
+                        city_clean: house.city ? house.city.toLowerCase().trim() : 'onbekend',
+                        street_clean: house.street ? house.street.toLowerCase().trim() : '',
+                        slug: `${cleanStreet}${cleanNr}`
+                    };
+                });
+            }
         }
-
-        const savedHousesData = list.houses || [];
-        const savedHouseIds = savedHousesData.map(item => item.f_houses_id);
-
-        const filteredHouses = allHouses.filter(house => savedHouseIds.includes(house.id)).map(house => {
-            const cleanStreet = house.street ? house.street.toLowerCase().replace(/\s+/g, '') : '';
-            const cleanNr = house.house_nr ? house.house_nr.toString().toLowerCase().replace(/\s+/g, '') : '';
-            return {
-                ...house,
-                city_clean: house.city ? house.city.toLowerCase().trim() : 'onbekend',
-                street_clean: house.street ? house.street.toLowerCase().trim() : '',
-                slug: `${cleanStreet}${cleanNr}`
-            };
-        });
 
         res.render('favorites-detail.liquid', { 
             list: { ...list, slug: list_slug }, 
@@ -272,69 +257,61 @@ app.get('/favorieten/:list_slug', async (req, res) => {
     }
 });
 
-app.get('/huizen/:city/:street/:house_slug/huis-toevoegen', async (req, res, next) => {
-    try {
-
-        const listsResponse = await fetch(`${api}f_list?fields=*.*`);
-        if (listsResponse.ok) {
-            const listsJson = await listsResponse.json();
-            res.locals.lists = listsJson.data || [];
-        } else {
-            res.locals.lists = [];
-        }
-        next();
-    } catch (error) {
-        console.error("Error fetching lists for standalone fallback:", error);
-        res.locals.lists = []; 
-        next();
-    }
-}, loadHouseMiddleware, (req, res) => {
-
-
-    res.render('house-add-fallback.liquid', { house: req.house, lists: res.locals.lists });
+app.get('/huizen/:city/:street/:house_slug/huis-toevoegen', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
+    res.render('house-add.liquid', { house: req.house, lists: res.locals.lists });
 });
 
-app.post('/favorieten/opslaan', async (req, res) => {
+app.post('/favorieten/huis-toevoegen', async (req, res) => {
     try {
         const { house_id, list_id, redirect_back } = req.body;
         if (!house_id || !list_id) throw new Error('Missing house_id or list_id');
 
-        const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`);
+        const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*`);
         if (!listResponse.ok) throw new Error('Failed to fetch list details');
 
         const listJson = await listResponse.json();
         const list = listJson.data;
 
-        let currentHouses = list.houses || [];
         const targetHouseId = Number(house_id);
+        const targetListId = Number(list_id);
+
+        let currentHouses = (list.houses || []).map(item => ({
+            f_list_id: targetListId,
+            f_houses_id: Number(item.f_houses_id)
+        }));
 
         const alreadyExists = currentHouses.some(item => item.f_houses_id === targetHouseId);
 
         if (!alreadyExists) {
             currentHouses.push({
-                f_list_id: Number(list_id),
+                f_list_id: targetListId,
                 f_houses_id: targetHouseId
             });
         }
-
         const updateResponse = await fetch(`${api}f_list/${list_id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ houses: currentHouses })
+            body: JSON.stringify({ 
+                houses: currentHouses 
+            })
         });
 
-        if (!updateResponse.ok) throw new Error('Failed to save house to list');
+        if (!updateResponse.ok) {
+            const errorData = await updateResponse.text();
+            console.error("Directus API Error Details:", errorData);
+            throw new Error('Failed to save house to list');
+        }
 
         if (redirect_back) {
             res.redirect(redirect_back);
         } else {
-            res.redirect(`/favorieten/${slugify(list.title)}`);
+            res.redirect(`/favorieten/${slugify(list.title || 'lijst')}`);
         }
     } catch (error) {
         console.error("Error saving house to list:", error);
-        res.status(500).send('Server Error');
+        res.status(500).send('Server Error: ' + error.message);
     }
 });
 
@@ -345,18 +322,11 @@ app.patch('/favorieten/:id', async (req, res) => {
 
         const response = await fetch(`${api}f_list/${id}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: title,
-                description: description,
-                icon: icon
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description, icon })
         });
 
         if (!response.ok) throw new Error('API update failed');
-
         res.redirect(`/favorieten/${slugify(title)}`);
     } catch (error) {
         console.error("Error updating list:", error);
@@ -368,22 +338,7 @@ app.get('/huizen/:city/:street/:house_slug/media/fotos', loadHouseMiddleware, (r
     res.render('house-media.liquid', { house: req.house });
 });
 
-app.get('/huizen/:city/:street/:house_slug', async (req, res, next) => {
-    try {
-        const listsResponse = await fetch(`${api}f_list?fields=*.*`);
-        if (listsResponse.ok) {
-            const listsJson = await listsResponse.json();
-            res.locals.lists = listsJson.data || [];
-        } else {
-            res.locals.lists = [];
-        }
-        next();
-    } catch (error) {
-        console.error("Error fetching lists for detail page view context:", error);
-        res.locals.lists = [];
-        next();
-    }
-}, loadHouseMiddleware, (req, res) => {
+app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
     res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
 });
 
@@ -423,11 +378,7 @@ app.get(['/huizen', '/huizen/:city', '/huizen/:city/:street'], async (req, res) 
             pageTitle = `Huizen in ${req.params.city}`;
         }
 
-        res.render('overview.liquid', { 
-            houses: formattedHouses, 
-            title: pageTitle 
-        });
-
+        res.render('overview.liquid', { houses: formattedHouses, title: pageTitle });
     } catch (error) {
         console.error("Error loading hackable list:", error);
         res.status(500).send('Server Error');

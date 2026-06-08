@@ -94,21 +94,27 @@ if (toggleBtn && excerptContent && fullContent) {
     }
 })();
 
-const form = document.querySelector('form[action="/favorieten/opslaan"]');
+const form = document.querySelector('form[action="/favorieten/huis-toevoegen"]');
 const submitBtn = form ? form.querySelector('.btn-submit-save') : null;
 const messageZone = document.querySelector('.message-notification'); 
 
-if (form && submitBtn && messageZone) {
+let notificationTimer; 
+
+console.log(form);
+console.log(submitBtn);
+console.log(messageZone);
+
+if (form && submitBtn) {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-
+        
         const selectedRadio = form.querySelector('input[name="list_id"]:checked');
         if (!selectedRadio) return;
 
         const listTitle = selectedRadio.closest('.option-row')
-            .querySelector('span')
+            .querySelector('strong')
             .textContent.replace(/\s*\(\d+\)$/, '');
-
+            
         clearTimeout(notificationTimer);
         messageZone.setAttribute('hidden', '');
         messageZone.innerHTML = '';
@@ -125,6 +131,7 @@ if (form && submitBtn && messageZone) {
         const formData = new FormData(form);
         const searchParams = new URLSearchParams(formData);
 
+        // 1. Start the Fetch Promise
         fetch(form.action, {
             method: 'POST',
             body: searchParams,
@@ -133,10 +140,13 @@ if (form && submitBtn && messageZone) {
             }
         })
         .then(response => {
+            console.log("ik werk nog"); // Moved safely inside the first .then block
             if (!response.ok) throw new Error('Server error');
             return response.text();
         })
         .then(() => {
+            console.log("ik werk nog 2"); // Kept inside the second .then block
+
             function slugifyText(text) {
                 return text.toString().toLowerCase().trim()
                     .replace(/\s+/g, '-')
@@ -151,7 +161,6 @@ if (form && submitBtn && messageZone) {
                 Dit huis is toegevoegd aan het lijstje <strong>${listTitle}</strong>. 
                 <a href="${generatedListUrl}">Bekijk lijst</a>
             `;
-            
             messageZone.removeAttribute('hidden');
 
             notificationTimer = setTimeout(() => {
@@ -159,11 +168,12 @@ if (form && submitBtn && messageZone) {
                 messageZone.innerHTML = '';
             }, 5000);
 
-            if (typeof form.closest('[popover]').hidePopover === 'function') {
+            if (form.closest('[popover]') && typeof form.closest('[popover]').hidePopover === 'function') {
                 form.closest('[popover]').hidePopover();
             }
         })
-        .catch(() => {
+        .catch((error) => {
+            console.log("ik werk nog 3", error);
             messageZone.innerHTML = `Er ging iets mis bij het opslaan.`;
             messageZone.removeAttribute('hidden');
             

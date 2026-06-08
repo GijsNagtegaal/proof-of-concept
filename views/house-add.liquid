@@ -1,17 +1,21 @@
 {% layout "layouts/main-layout.liquid" %}
 
-{% block content %}    
-    <h2>Woning bewaren: {{ house.current_house }}</h2>
+{% block content %}
+    <section class="sticky-wrapper">
+        <h2>Woning bewaren: {{ house.current_house }}</h2>
+    </section>
     
-    <form action="/favorieten/opslaan" method="POST">
+    <form action="/favorieten/huis-toevoegen" method="POST">
     <input type="hidden" name="house_id" value="{{ house.id }}">
     <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.street | downcase }}/{{ house.slug }}">
     
-    <section>
+    <section class="message-notification" id="status-message-zone" hidden></section>
+    
+    <section class="list-options">
         {% for list in lists %}
-        <label style="display: block; margin-bottom: 0.5rem;">
+        <label class="option-row">
             <input type="radio" name="list_id" value="{{ list.id }}" required>
-            <strong>{{ list.title }}</strong> ({{ list.houses.size }})
+            <strong>{{ list.title }}</strong>
         </label>
         {% else %}
         <p>Je hebt nog geen lijstjes aangemaakt.</p>
