@@ -36,8 +36,11 @@
     {% for house in houses %}
     <article class="house-card">
         <section class="house-image-wrapper">
+    {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
     {% if house.poster_image %}
-    <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="{{ house.street }} {{ house.house_nr }}" class="house-img">
+    <a class="vt-image-link" href="{{ house_href }}" style="view-transition-name: house-{{ house.slug }}">
+        <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="{{ house.street }} {{ house.house_nr }}" class="house-img">
+    </a>
     {% else %}
     {% endif %}
 </section>

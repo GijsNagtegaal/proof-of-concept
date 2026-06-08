@@ -571,7 +571,7 @@ section.agent {
 /* favorites lists overview */
 
 section.lists-container {
-    margin-top: 5rem;
+    margin-top: 1rem;
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -607,9 +607,17 @@ section.lists-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
         column-wrap: wrap;
-        gap: .5rem;
+        gap: .3rem;
 
         a {
+            display: block;
+            overflow: hidden;
+
+            picture,
+            img {
+                aspect-ratio: 1;
+                object-fit: cover;
+            }
 
             &:nth-of-type(1) {
 

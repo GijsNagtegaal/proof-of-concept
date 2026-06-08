@@ -2,6 +2,10 @@
 
 {% layout "layouts/main-layout.liquid", mainclass: mainclass %}
 
+{% block head_extra %}
+    <link rel="expect" href="#vt-image-target" blocking="render">
+{% endblock %}
+
 {% block content %}
 
         {% capture warning_markup %}
@@ -26,12 +30,12 @@
         Section displaying a gallery, mobile first uses the poster image and the gallery
     {% endcomment %}
     <section class="gallery">
-        <a class="gallery-item poster" href="/huis/{{ house.slug }}/media/fotos">
+        <a class="gallery-item poster" {% render 'partials/vt-target.liquid', slug: house.slug %} href="/huis/{{ house.slug }}/media/fotos">
             {% if house.poster_image.id %}
                 {% render 'partials/picture.liquid',
                     imagesrc: house.poster_image.id,
                     fetch: "high",
-                    class: "poster",
+                    custom_class: "poster",
                     width: "860",
                     height: "540"
                 %}

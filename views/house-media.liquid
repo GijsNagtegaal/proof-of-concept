@@ -1,9 +1,13 @@
 {% layout "layouts/no-header-layout.liquid" %}
 
+{% block head_extra %}
+    <link rel="expect" href="#vt-image-target" blocking="render">
+{% endblock %}
+
 {% block content %}
     {% render 'partials/breadcrumbs.liquid' house: house, %}
         <section class="gallery">
-            <a class="gallery-item poster" href="/huis/{{ house.slug }}/media/fotos">
+            <a class="gallery-item poster" {% render 'partials/vt-target.liquid', slug: house.slug %} href="/huis/{{ house.slug }}/media/fotos">
                 {% if house.poster_image.id %}
                     {% render 'partials/picture.liquid',
                         imagesrc: house.poster_image.id,

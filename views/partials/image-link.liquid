@@ -1,0 +1,13 @@
+<a href="{{ href }}" class="vt-image-link"{% if vt_name and vt_name != '' %} style="view-transition-name: house-{{ vt_name }}"{% endif %}>
+    {% render 'partials/picture.liquid',
+        imagesrc: imagesrc,
+        fetch: fetch,
+        width: width,
+        height: height,
+        custom_class: custom_class,
+        class: class,
+        loading: loading,
+        alt_text: alt_text,
+        format: format
+    %}
+</a>

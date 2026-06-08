@@ -4,45 +4,46 @@
 {% block content %}
 
 <section class="lists-container max-width">
-    <a href="/favorieten">/favorieten</a>
+    {% assign seen_vt_slugs = "" %}
     {% for list in lists %}
     <article>
+        <h3>{{ list.title }}</h3>
+        <span class="">{{ list.houses.size }} huizen in dit lijstje</span>
         <section class="images">
             {% for house in list.enriched_houses limit: 4 %}
                 {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
+                {% assign slug_key = house.slug | prepend: "|" | append: "|" %}
+                {% assign vt_name = "" %}
+                {% unless seen_vt_slugs contains slug_key %}
+                    {% assign vt_name = house.slug %}
+                    {% assign seen_vt_slugs = seen_vt_slugs | append: slug_key %}
+                {% endunless %}
                 
                 {% if house.poster_image %}
-                    <a href="{{ house_href }}">
-                        {% render 'partials/picture.liquid',
-                            imagesrc: house.poster_image,
-                            fetch: "auto",
-                            class: "poster-preview",
-                            width: "200",
-                            height: "200"
-                        %}
-                    </a>
+                    {% render 'partials/image-link.liquid',
+                        href: house_href,
+                        imagesrc: house.poster_image,
+                        vt_name: vt_name,
+                        fetch: "auto",
+                        width: "200",
+                        height: "200"
+                    %}
                 
                 {% elsif house.gallery.size > 0 %}
-                    <a href="{{ house_href }}">
-                        {% assign first_gallery_id = house.gallery | first %}
-                        {% render 'partials/picture.liquid',
-                            imagesrc: first_gallery_id,
-                            fetch: "auto",
-                            class: "gallery-preview",
-                            width: "200",
-                            height: "200"
-                        %}
-                    </a>
+                    {% assign first_gallery_id = house.gallery | first %}
+                    {% render 'partials/image-link.liquid',
+                        href: house_href,
+                        imagesrc: first_gallery_id,
+                        vt_name: vt_name,
+                        fetch: "auto",
+                        width: "200",
+                        height: "200"
+                    %}
                 {% endif %}
 
             {% endfor %}
         </section>
-        <h3>
-            {{ list.title }}
-        </h3>
-        <span>{{ list.houses.size }} huizen in dit lijstje</span>
         {% assign dynamic_href = "/favorieten/" | append: list.slug %}
-
         {% render 'partials/link.liquid',
             href: dynamic_href,
             content: "Bekijk lijstje",

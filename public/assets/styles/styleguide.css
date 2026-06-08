@@ -26,6 +26,28 @@ img, video {
     height: auto;
 }
 
+@view-transition {
+    navigation: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html::view-transition-group(root) {
+        animation: none;
+    }
+
+    ::view-transition-group(*) {
+        animation-duration: 0.45s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        height: 100%;
+        object-fit: cover;
+        overflow: clip;
+    }
+}
+
 body {
 
     /* font sizes */
