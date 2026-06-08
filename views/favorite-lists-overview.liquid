@@ -4,29 +4,35 @@
 {% block content %}
 
 <section class="lists-container max-width">
+    <a href="/favorieten">/favorieten</a>
     {% for list in lists %}
     <article>
         <section class="images">
             {% for house in list.enriched_houses limit: 4 %}
+                {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
                 
                 {% if house.poster_image %}
-                    {% render 'partials/picture.liquid',
-                        imagesrc: house.poster_image,
-                        fetch: "auto",
-                        class: "poster-preview",
-                        width: "200",
-                        height: "200"
-                    %}
+                    <a href="{{ house_href }}">
+                        {% render 'partials/picture.liquid',
+                            imagesrc: house.poster_image,
+                            fetch: "auto",
+                            class: "poster-preview",
+                            width: "200",
+                            height: "200"
+                        %}
+                    </a>
                 
                 {% elsif house.gallery.size > 0 %}
-                    {% assign first_gallery_id = house.gallery | first %}
-                    {% render 'partials/picture.liquid',
-                        imagesrc: first_gallery_id,
-                        fetch: "auto",
-                        class: "gallery-preview",
-                        width: "200",
-                        height: "200"
-                    %}
+                    <a href="{{ house_href }}">
+                        {% assign first_gallery_id = house.gallery | first %}
+                        {% render 'partials/picture.liquid',
+                            imagesrc: first_gallery_id,
+                            fetch: "auto",
+                            class: "gallery-preview",
+                            width: "200",
+                            height: "200"
+                        %}
+                    </a>
                 {% endif %}
 
             {% endfor %}
@@ -35,9 +41,13 @@
             {{ list.title }}
         </h3>
         <span>{{ list.houses.size }} huizen in dit lijstje</span>
-        
+        {% assign dynamic_href = "/favorieten/" | append: list.slug %}
 
-        <a href="/favorieten/{{ list.slug }}" class="btn-view-list">Bekijk lijstje</a>
+        {% render 'partials/link.liquid',
+            href: dynamic_href,
+            content: "Bekijk lijstje",
+            custom_class: "link primary",
+        %}
     </article>
     {% else %}
         <p>Je hebt nog geen lijstjes aangemaakt.</p>

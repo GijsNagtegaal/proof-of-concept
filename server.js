@@ -154,7 +154,8 @@ app.get('/favorieten', async (req, res) => {
         let housesMap = {};
         if (houseIds.size > 0) {
             const idFilter = Array.from(houseIds).join(',');
-            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${idFilter}&fields=id,poster_image,gallery&limit=-1`);
+            // FIX: Added city, street, and house_nr to fields selection
+            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${idFilter}&fields=id,poster_image,gallery,city,street,house_nr&limit=-1`);
             
             if (housesResponse.ok) {
                 const housesJson = await housesResponse.json();
@@ -167,10 +168,27 @@ app.get('/favorieten', async (req, res) => {
         const formattedLists = lists.map(list => {
             const enrichedHouses = (list.houses || []).map(item => {
                 const realHouseData = housesMap[item.f_houses_id];
+                
+                // 1. Get raw values safely or default to a placeholder string
+                const rawCity = realHouseData && realHouseData.city ? realHouseData.city : 'onbekend';
+                const rawStreet = realHouseData && realHouseData.street ? realHouseData.street : 'onbekend';
+                const rawNr = realHouseData && realHouseData.house_nr ? realHouseData.house_nr.toString() : '';
+
+                // 2. Clean values for URL generation matching your routing slug requirements
+                const cityClean = rawCity.toLowerCase().trim().replace(/\s+/g, '-');
+                const streetClean = rawStreet.toLowerCase().trim().replace(/\s+/g, '-');
+                
+                const cleanStreetNoSpaces = rawStreet.toLowerCase().replace(/\s+/g, '');
+                const cleanNrNoSpaces = rawNr.toLowerCase().replace(/\s+/g, '');
+                const houseSlug = `${cleanStreetNoSpaces}${cleanNrNoSpaces}` || 'onbekend';
+
                 return {
                     id: item.f_houses_id,
                     poster_image: realHouseData ? realHouseData.poster_image : null,
-                    gallery: realHouseData ? realHouseData.gallery : []
+                    gallery: realHouseData ? realHouseData.gallery : [],
+                    city_clean: cityClean,
+                    street_clean: streetClean,
+                    slug: houseSlug
                 };
             });
 

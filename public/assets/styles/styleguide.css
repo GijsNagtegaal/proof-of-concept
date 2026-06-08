@@ -156,6 +156,29 @@ svg {
     }
 }
 
+a.link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    border-radius: var(--small-radius);
+    cursor: pointer;
+    transition: all .3s ease;
+    
+    &:hover {
+        opacity: 1;
+        transform: scale(1.05); 
+    }
+
+    &.primary {
+        background-color: var(--primary);
+        color: var(--light-text);
+        border-color: var(--primary);
+    }
+}
+
 .badge {
     display: flex;
     width: fit-content;
