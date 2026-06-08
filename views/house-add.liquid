@@ -8,9 +8,7 @@
     <form action="/favorieten/huis-toevoegen" method="POST">
     <input type="hidden" name="house_id" value="{{ house.id }}">
     <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.street | downcase }}/{{ house.slug }}">
-    
-    <section class="message-notification" id="status-message-zone" hidden></section>
-    
+
     <section class="list-options">
         {% for list in lists %}
         <label class="option-row">

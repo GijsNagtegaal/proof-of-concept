@@ -1,14 +1,9 @@
-let notificationTimer = null;
-
 const phoneLink = document.getElementById('phone-reveal-link');
-
 if (phoneLink) {
     phoneLink.classList.add('js-enabled');
     phoneLink.setAttribute('data-revealed', 'false');
-
     phoneLink.addEventListener('click', function(event) {
         const isRevealed = this.getAttribute('data-revealed') === 'true';
-
         if (!isRevealed) {
             event.preventDefault(); 
             this.classList.remove('js-enabled');
@@ -24,17 +19,14 @@ const fullContent = document.querySelector('.full-text');
 if (toggleBtn && excerptContent && fullContent) {
     excerptContent.style.display = 'block';
     fullContent.style.display = 'none';
-
     toggleBtn.removeAttribute('hidden');
     toggleBtn.classList.add('js-enabled');
 
     toggleBtn.addEventListener('click', function () {
         const isCollapsed = fullContent.style.display === 'none';
-        
         if (isCollapsed) {
             excerptContent.style.display = 'none';
             fullContent.style.display = 'block';
-
             const btnText = toggleBtn.querySelector('.btn-text');
             const iconPlus = toggleBtn.querySelector('.icon-plus');
             if (btnText) btnText.textContent = 'Minder weergeven';
@@ -42,17 +34,14 @@ if (toggleBtn && excerptContent && fullContent) {
         } else {
             fullContent.style.display = 'none';
             excerptContent.style.display = 'block';
-            
             const btnText = toggleBtn.querySelector('.btn-text');
             const iconPlus = toggleBtn.querySelector('.icon-plus');
             if (btnText) btnText.textContent = 'Lees de volledige omschrijving';
             if (iconPlus) iconPlus.style.transform = 'rotate(0deg)';
-
             excerptContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     });
 }
-
 
 (() => {
     try {
@@ -67,14 +56,8 @@ if (toggleBtn && excerptContent && fullContent) {
 
         skeletonImages.forEach((img) => {
             if (!img) return;
-
-            if (img.complete && img.naturalWidth > 0) {
-                return; 
-            }
-
-            if (img.parentElement) {
-                img.parentElement.setAttribute("data-loading", "true");
-            }
+            if (img.complete && img.naturalWidth > 0) return; 
+            if (img.parentElement) img.parentElement.setAttribute("data-loading", "true");
 
             const options = { once: true };
             const handleLoad = () => hideSkeleton(img);
@@ -95,97 +78,40 @@ if (toggleBtn && excerptContent && fullContent) {
 })();
 
 const form = document.querySelector('form[action="/favorieten/huis-toevoegen"]');
-const submitBtn = form ? form.querySelector('.btn-submit-save') : null;
-const messageZone = document.querySelector('.message-notification'); 
-
-let notificationTimer; 
-
-console.log(form);
-console.log(submitBtn);
-console.log(messageZone);
+const submitBtn = document.querySelector('.btn-submit-save');
 
 if (form && submitBtn) {
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const selectedRadio = form.querySelector('input[name="list_id"]:checked');
-        if (!selectedRadio) return;
-
-        const listTitle = selectedRadio.closest('.option-row')
-            .querySelector('strong')
-            .textContent.replace(/\s*\(\d+\)$/, '');
-            
-        clearTimeout(notificationTimer);
-        messageZone.setAttribute('hidden', '');
-        messageZone.innerHTML = '';
+    form.addEventListener('submit', function() {
 
         submitBtn.disabled = true;
         submitBtn.classList.add('btn-loading');
-        
-        const originalText = submitBtn.innerText;
         submitBtn.innerHTML = `
             <span class="btn-loading-text">Laden</span>
             <span class="btn-spinner"></span>
         `;
-
-        const formData = new FormData(form);
-        const searchParams = new URLSearchParams(formData);
-
-        // 1. Start the Fetch Promise
-        fetch(form.action, {
-            method: 'POST',
-            body: searchParams,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        })
-        .then(response => {
-            console.log("ik werk nog"); // Moved safely inside the first .then block
-            if (!response.ok) throw new Error('Server error');
-            return response.text();
-        })
-        .then(() => {
-            console.log("ik werk nog 2"); // Kept inside the second .then block
-
-            function slugifyText(text) {
-                return text.toString().toLowerCase().trim()
-                    .replace(/\s+/g, '-')
-                    .replace(/[^\w\-]+/g, '')
-                    .replace(/\-\-+/g, '-');
-            }
-
-            const computedSlug = slugifyText(listTitle);
-            const generatedListUrl = `/favorieten/${computedSlug}`;
-
-            messageZone.innerHTML = `
-                Dit huis is toegevoegd aan het lijstje <strong>${listTitle}</strong>. 
-                <a href="${generatedListUrl}">Bekijk lijst</a>
-            `;
-            messageZone.removeAttribute('hidden');
-
-            notificationTimer = setTimeout(() => {
-                messageZone.setAttribute('hidden', '');
-                messageZone.innerHTML = '';
-            }, 5000);
-
-            if (form.closest('[popover]') && typeof form.closest('[popover]').hidePopover === 'function') {
-                form.closest('[popover]').hidePopover();
-            }
-        })
-        .catch((error) => {
-            console.log("ik werk nog 3", error);
-            messageZone.innerHTML = `Er ging iets mis bij het opslaan.`;
-            messageZone.removeAttribute('hidden');
-            
-            notificationTimer = setTimeout(() => {
-                messageZone.setAttribute('hidden', '');
-                messageZone.innerHTML = '';
-            }, 5000);
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('btn-loading');
-            submitBtn.innerText = originalText;
-        });
     });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const messageZone = document.querySelector('.message-notification');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isSuccess = urlParams.get('success') === 'true';
+    const listTitle = urlParams.get('title');
+    const listSlug = urlParams.get('slug');
+
+    if (isSuccess && messageZone) {
+
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+
+        const listUrl = listSlug ? `/favorieten/${listSlug}` : '/favorieten';
+
+        messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${decodeURIComponent(listTitle)}</strong></a>.`;
+        messageZone.removeAttribute('hidden');
+
+        setTimeout(() => {
+            messageZone.setAttribute('hidden', '');
+            messageZone.innerHTML = '';
+        }, 5000);
+    }
+});

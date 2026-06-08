@@ -266,7 +266,7 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
         const { house_id, list_id, redirect_back } = req.body;
         if (!house_id || !list_id) throw new Error('Missing house_id or list_id');
 
-        const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*`);
+        const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*,title`); 
         if (!listResponse.ok) throw new Error('Failed to fetch list details');
 
         const listJson = await listResponse.json();
@@ -304,11 +304,30 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
             throw new Error('Failed to save house to list');
         }
 
-        if (redirect_back) {
-            res.redirect(redirect_back);
-        } else {
-            res.redirect(`/favorieten/${slugify(list.title || 'lijst')}`);
-        }
+        // --- Handle Dynamic Redirection & Notification Parameters ---
+        const listTitle = list.title || 'Favorieten';
+        const listSlug = slugify(listTitle);
+
+        // Safety Net: Use redirect_back if it exists, otherwise read the exact page URL the user came from.
+        // If both somehow fail, fallback to the root favorites index.
+        const fallbackUrl = req.headers.referer || '/favorieten';
+        const finalRedirectDestination = redirect_back || fallbackUrl;
+
+        // Safely parse the path using a dummy base domain so searchParams don't break
+        const targetUrl = new URL(finalRedirectDestination, 'http://localhost:8000'); 
+        
+        targetUrl.searchParams.set('success', 'true');
+        targetUrl.searchParams.set('title', listTitle);
+        targetUrl.searchParams.set('slug', listSlug);
+
+        // If the parsed target has an origin match (like localhost), we just want pathname + search queries
+        // This ensures relative paths (like /huizen/...) retain their query extensions perfectly.
+        const redirectPath = targetUrl.origin === 'http://localhost:8000' 
+            ? targetUrl.pathname + targetUrl.search 
+            : targetUrl.href;
+
+        res.redirect(redirectPath);
+
     } catch (error) {
         console.error("Error saving house to list:", error);
         res.status(500).send('Server Error: ' + error.message);
