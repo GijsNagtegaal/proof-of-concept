@@ -3,19 +3,10 @@
 
 {% block content %}
 
-<section class="lists-container">
+<section class="lists-container max-width">
     {% for list in lists %}
-    <article class="list-card">
-        <h3>
-        {% if list.icon %}
-            <span class="icon">{{ list.icon }}</span>
-        {% endif %}
-        {{ list.title }}
-        </h3>
-        <p>{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
-        <span class="count">{{ list.houses.size }} huizen opgeslagen</span>
-        
-        <div class="list-images-preview">
+    <article>
+        <section class="images">
             {% for house in list.enriched_houses limit: 4 %}
                 
                 {% if house.poster_image %}
@@ -23,8 +14,8 @@
                         imagesrc: house.poster_image,
                         fetch: "auto",
                         class: "poster-preview",
-                        width: "150",
-                        height: "110"
+                        width: "200",
+                        height: "200"
                     %}
                 
                 {% elsif house.gallery.size > 0 %}
@@ -33,13 +24,18 @@
                         imagesrc: first_gallery_id,
                         fetch: "auto",
                         class: "gallery-preview",
-                        width: "150",
-                        height: "110"
+                        width: "200",
+                        height: "200"
                     %}
                 {% endif %}
 
             {% endfor %}
-        </div>
+        </section>
+        <h3>
+            {{ list.title }}
+        </h3>
+        <span>{{ list.houses.size }} huizen in dit lijstje</span>
+        
 
         <a href="/favorieten/{{ list.slug }}" class="btn-view-list">Bekijk lijstje</a>
     </article>

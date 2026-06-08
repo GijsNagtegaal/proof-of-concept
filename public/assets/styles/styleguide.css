@@ -40,7 +40,7 @@ body {
     --hover-primary: #f58700;
     --secondary: hsl(205, 68%, 51%);
     --accent: hsl(354, 61%, 66%);
-    --main-background: hsl(0, 0%, 100%);
+    --main-background: #FAFAFA;
     --surface: hsl(33, 40%, 94%);
     --dark-text: rgb(51, 51, 51);
     --light-text: hsl(0, 0%, 100%);
