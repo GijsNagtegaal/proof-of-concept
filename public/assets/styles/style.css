@@ -659,6 +659,17 @@ section.lists-container {
     }
 }
 
+/* house add page styling */
+
+section.image-container {
+    img {
+        aspect-ratio: 4 / 2;
+        object-fit: cover;
+        border-radius: var(--small-radius);
+        margin-top: 1rem;
+    }
+}
+
 /* partials styling */
 
 header.page-header {

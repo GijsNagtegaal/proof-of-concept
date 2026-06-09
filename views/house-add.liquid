@@ -1,14 +1,14 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-    <section class="sticky-wrapper" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+    <section class="sticky-wrapper">
         {% if house.poster_image.id %}
-            <section class="vt-image-container" style="view-transition-name: house-{{ house.slug }}; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+            <section class="image-container" style="view-transition-name: house-{{ house.slug }}";>
                 {% render 'partials/picture.liquid',
                     imagesrc: house.poster_image.id,
                     fetch: "high",
-                    width: "120",
-                    height: "120",
+                    width: "820",
+                    height: "820",
                     alt_text: house.current_house
                 %}
             </section>
