@@ -34,7 +34,7 @@ img, video {
     html::view-transition-group(root) {
         animation: none;
     }
-    
+
     ::view-transition-group(*) {
         animation-duration: 0.45s;
         animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -201,6 +201,15 @@ a.link {
         color: var(--light-text);
         border-color: var(--primary);
     }
+}
+
+.orangeline {
+    display: block;
+    min-width: 4rem;
+    width: 5vw;
+    max-width: 8rem;
+    height: 4px;
+    background-color: var(--primary);
 }
 
 .badge {

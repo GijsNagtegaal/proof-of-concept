@@ -570,6 +570,21 @@ section.agent {
 
 /* favorites lists overview */
 
+section.list-content {
+
+    h1 {
+        font-size: var(--heading-large);
+    }
+
+    p {
+        width: 100%;
+
+        @media (min-width: 768px) {
+            width: 60%;
+        }
+    }
+}
+
 section.lists-container {
     margin-top: 1rem;
     display: grid;
@@ -657,6 +672,40 @@ section.lists-container {
             }
         }
     }
+}
+
+/* favorites list detail */
+
+section.house-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 600px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    @media (min-width: 1440) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+section.house-image-wrapper {
+    
+
+}
+
+/* add house to list styling */
+
+section.house-to-add {
+    
 }
 
 /* house add page styling */
