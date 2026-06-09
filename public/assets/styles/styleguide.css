@@ -34,14 +34,16 @@ img, video {
     html::view-transition-group(root) {
         animation: none;
     }
-
+    
     ::view-transition-group(*) {
         animation-duration: 0.45s;
         animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    ::view-transition-old(*),
-    ::view-transition-new(*) {
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-old(house-*),
+    ::view-transition-new(house-*) {
+        width: 100%;
         height: 100%;
         object-fit: cover;
         overflow: clip;

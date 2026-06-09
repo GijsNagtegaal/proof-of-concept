@@ -1,7 +1,19 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-    <section class="sticky-wrapper">
+    <section class="sticky-wrapper" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        {% if house.poster_image.id %}
+            <section class="vt-image-container" style="view-transition-name: house-{{ house.slug }}; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+                {% render 'partials/picture.liquid',
+                    imagesrc: house.poster_image.id,
+                    fetch: "high",
+                    width: "120",
+                    height: "120",
+                    alt_text: house.current_house
+                %}
+            </section>
+        {% endif %}
+        
         <h2>Woning bewaren: {{ house.current_house }}</h2>
     </section>
     
