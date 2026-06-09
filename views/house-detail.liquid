@@ -30,7 +30,7 @@
         Section displaying a gallery, mobile first uses the poster image and the gallery
     {% endcomment %}
     <section class="gallery">
-        <a class="gallery-item poster" {% render 'partials/vt-target.liquid', slug: house.slug %} href="/huis/{{ house.slug }}/media/fotos">
+        <a title="ga naar alle foto's van dit huis" class="gallery-item poster" {% render 'partials/vt-target.liquid', slug: house.slug %} href="/huis/{{ house.slug }}/media/fotos">
             {% if house.poster_image.id %}
                 {% render 'partials/picture.liquid',
                     imagesrc: house.poster_image.id,
@@ -324,7 +324,7 @@
                                 {% else %}
                                     N.v.t.
                                 {% endif %}
-                                <button class="warning" popovertarget="popover-warning">
+                                <button title="waarschuwing over de berekening" class="warning" popovertarget="popover-warning">
                                     <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M22.4089 18.8301C22.4089 18.0017 23.0804 17.3301 23.9089 17.3301C24.7373 17.3301 25.4089 18.0017 25.4089 18.8301V30.8301C25.4089 31.6585 24.7373 32.3301 23.9089 32.3301C23.0804 32.3301 22.4089 31.6585 22.4089 30.8301V18.8301Z" fill="black"/>
                                         <path d="M23.9089 34.3301C23.0804 34.3301 22.4089 35.0017 22.4089 35.8301C22.4089 36.6585 23.0804 37.3301 23.9089 37.3301C24.7373 37.3301 25.4089 36.6585 25.4089 35.8301C25.4089 35.0017 24.7373 34.3301 23.9089 34.3301Z" fill="black"/>

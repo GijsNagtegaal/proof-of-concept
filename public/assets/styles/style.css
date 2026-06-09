@@ -661,14 +661,34 @@ section.lists-container {
 
 /* house add page styling */
 
-section.image-container {
-    img {
-        aspect-ratio: 4 / 2;
-        object-fit: cover;
-        border-radius: var(--small-radius);
-        margin-top: 1rem;
+section.sticky-wrapper {
+    
+    display: flex;
+    flex-direction: column;
+    
+
+    @media (min-width: 500px) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    section.image-container {
+
+        img {
+            aspect-ratio: 4 / 2;
+            object-fit: cover;
+            border-radius: var(--small-radius);
+            margin-top: 1rem;
+
+            @media (min-width: 500px) {
+                width: 80%;
+            }
+        }
     }
 }
+
+
 
 /* partials styling */
 

@@ -1,9 +1,9 @@
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-    <section class="sticky-wrapper">
+    <section class="sticky-wrapper breathingspace max-width">
         {% if house.poster_image.id %}
-            <section class="image-container" style="view-transition-name: house-{{ house.slug }}";>
+            <section class="image-container breathingspace" style="view-transition-name: house-{{ house.slug }}";>
                 {% render 'partials/picture.liquid',
                     imagesrc: house.poster_image.id,
                     fetch: "high",
@@ -14,14 +14,14 @@
             </section>
         {% endif %}
         
-        <h2>Woning bewaren: {{ house.current_house }}</h2>
+        <h1 class="breathingspace">In welk lijstje ga je deze parel opslaan?</h1>
     </section>
     
-    <form action="/favorieten/huis-toevoegen" method="POST">
+    <form class="breathingspace" action="/favorieten/huis-toevoegen" method="POST">
     <input type="hidden" name="house_id" value="{{ house.id }}">
     <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.street | downcase }}/{{ house.slug }}">
 
-    <section class="list-options">
+    <section class="list-options max-width">
         {% for list in lists %}
         <label class="option-row">
             <input type="radio" name="list_id" value="{{ list.id }}" required>
@@ -31,7 +31,8 @@
         <p>Je hebt nog geen lijstjes aangemaakt.</p>
         {% endfor %}
     </section>
-
-    <button type="submit" class="btn-submit-save">In lijst opslaan</button>
+    <footer class="max-width">
+        <button type="submit" class="btn-submit-save">In lijst opslaan</button>
+    </footer>
     </form>
 {% endblock %}
