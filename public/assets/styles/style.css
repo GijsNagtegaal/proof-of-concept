@@ -67,6 +67,10 @@ section.gallery {
 
         &:not(.poster) {
             display: none;
+
+            @media(min-width:768px) {
+                display: block;
+            }
         }
     }
     
@@ -78,7 +82,6 @@ section.gallery {
         right: 1rem;
 
         button, a {
-            display: flex;
             align-items: center;
             justify-content: center;
             gap: .3rem;

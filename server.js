@@ -226,11 +226,72 @@ app.post('/favorieten/nieuw', async (req, res) => {
     }
 });
 
+app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
+
+    const houseId = req.house.id;
+    const lists = res.locals.lists || [];
+    let isSaved = false;
+    let savedListId = null;
+
+    for (const list of lists) {
+        const housesInList = list.houses || [];
+        const found = housesInList.some(item => 
+            item === houseId || 
+            item.f_houses_id === houseId || 
+            (item.f_houses_id && item.f_houses_id.id === houseId)
+        );
+
+        if (found) {
+            isSaved = true;
+            savedListId = list.id;
+            break; 
+        }
+    }
+
+    req.house.savestate = isSaved ? 'saved' : 'unsaved';
+    req.house.saved_list_id = savedListId; 
+
+    res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
+});
+
+app.post('/favorieten/verwijderen', async (req, res) => {
+    try {
+        const { house_id, list_id } = req.body;
+        if (!house_id || !list_id) return res.status(400).json({ success: false, message: 'Missing data' });
+
+        const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*`); 
+        if (!listResponse.ok) throw new Error('Failed to fetch list');
+        
+        const list = (await listResponse.json()).data;
+        const junctionRow = (list.houses || []).find(item => {
+            const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
+            return Number(hId) === Number(house_id);
+        });
+
+        if (!junctionRow) return res.json({ success: true });
+
+        const updateResponse = await fetch(`${api}f_list/${list_id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                houses: { delete: [junctionRow.id] }
+            })
+        });
+
+        if (!updateResponse.ok) throw new Error('Failed to update Directus');
+        res.json({ success: true });
+        
+    } catch (error) {
+        console.error("Delete API error:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.get('/favorieten/:list_slug', async (req, res) => {
     try {
         const { list_slug } = req.params;
         
-        // DEEP FETCH: Also fetching everything nested directly for the detail page.
+
         const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
         const listsResponse = await fetch(url);
         if (!listsResponse.ok) throw new Error('API fetch failed');
@@ -328,6 +389,29 @@ app.get('/huizen/:city/:street/:house_slug/media/fotos', loadHouseMiddleware, (r
 });
 
 app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
+    const houseId = req.house.id;
+    const lists = res.locals.lists || [];
+    let isSaved = false;
+    let savedListId = null;
+
+    for (const list of lists) {
+        const housesInList = list.houses || [];
+        const found = housesInList.some(item => 
+            item === houseId || 
+            item.f_houses_id === houseId || 
+            (item.f_houses_id && item.f_houses_id.id === houseId)
+        );
+
+        if (found) {
+            isSaved = true;
+            savedListId = list.id;
+            break; 
+        }
+    }
+
+    req.house.savestate = isSaved ? 'saved' : 'unsaved';
+    req.house.saved_list_id = savedListId; // Pass it to Liquid
+
     res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
 });
 
