@@ -27,11 +27,11 @@
 <picture class="funda-skeleton-wrapper {{ class }}">
     <source type="image/avif"
     srcset="{{ base }}?format=avif&width={{ width }}&quality=80&fit=cover {{ width }}w,
-            {{ base }}?format=avif&width={{ width | times: 2 }}&quality=75&fit=cover {{ width | times: 2 }}w"
+            {{ base }}?format=avif&width={{ width }}&quality=75&fit=cover {{ width }}w"
     sizes="{{ sizes | default: '100vw' }}">
     <source type="image/webp"
     srcset="{{ base }}?format=webp&width={{ width }}&quality=80&fit=cover {{ width }}w,
-            {{ base }}?format=webp&width={{ width | times: 2 }}&quality=75&fit=cover {{ width | times: 2 }}w"
+            {{ base }}?format=webp&width={{ width }}&quality=75&fit=cover {{ width }}w"
     sizes="{{ sizes | default: '100vw' }}">
     <img src="{{ base }}?format=jpeg&width={{ width }}&height={{ height }}&quality=60&fit=cover"
     width="{{ width }}"
