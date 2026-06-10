@@ -59,50 +59,57 @@ if (urlParams.get('success') === 'true' && messageZone) {
     setTimeout(() => { messageZone.setAttribute('hidden', ''); messageZone.innerHTML = ''; }, 5000);
 }
 
-// 5. Remove/Add Favorite Buttons
+// 5. Remove/Add Favorite Form
+const favoriteForm = document.querySelector('.js-remove-favorite-form');
 const removeBtn = document.querySelector('.js-remove-favorite');
 const addLink = document.querySelector('.js-add-favorite-link');
 const statusZone = document.getElementById('status-message-zone');
 
-if (removeBtn) {
-    removeBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const textSpan = removeBtn.querySelector('.btn-text');
-        const originalText = textSpan.textContent;
-        
-        removeBtn.style.opacity = '0.5';
-        removeBtn.style.pointerEvents = 'none';
-        textSpan.textContent = 'Verwijderen...';
-        
-        try {
-            const res = await fetch('/favorieten/verwijderen', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ house_id: removeBtn.dataset.houseId, list_id: removeBtn.dataset.listId })
-            });
+function getSaveKey(houseId) {
+    return `house_saved_${houseId}`;
+}
 
-            if (res.ok) {
-                // FORCE HIDE using display none
-                removeBtn.style.display = 'none';
-                removeBtn.setAttribute('hidden', '');
-                
-                // FORCE SHOW by clearing display style and removing hidden attribute
-                if (addLink) {
-                    addLink.style.display = ''; 
-                    addLink.removeAttribute('hidden');
-                }
-                
-                if (statusZone) {
-                    statusZone.textContent = 'Huis is verwijderd uit je lijst.';
-                    statusZone.style.display = 'block';
-                    setTimeout(() => statusZone.style.display = 'none', 4000);
-                }
-            }
-        } catch (err) { console.error(err); }
-        
-        removeBtn.style.opacity = '1';
-        removeBtn.style.pointerEvents = 'auto';
-        textSpan.textContent = originalText;
+function initFavoriteState() {
+    if (!favoriteForm || !removeBtn || !addLink) return;
+    const houseId = favoriteForm.querySelector('[name="house_id"]')?.value;
+    if (!houseId) return;
+    const saveKey = getSaveKey(houseId);
+    const storedState = localStorage.getItem(saveKey);
+    let isSaved;
+    
+    if (storedState !== null) {
+        isSaved = storedState === 'true';
+    } else {
+        const initialState = favoriteForm.getAttribute('data-initial-saved');
+        isSaved = initialState === 'saved';
+    }
+    
+    if (isSaved) {
+        favoriteForm.style.display = '';
+        addLink.style.display = 'none';
+    } else {
+        favoriteForm.style.display = 'none';
+        addLink.style.display = '';
+    }
+}
+
+if (favoriteForm && removeBtn) {
+    // Form now uses GET to navigate to remove page, so just ensure UI shows correctly on load
+    initFavoriteState();
+}
+
+if (addLink) {
+    const originalHref = addLink.href;
+    addLink.addEventListener('click', function(e) {
+        const houseId = favoriteForm?.querySelector('[name="house_id"]')?.value;
+        if (houseId) {
+            const saveKey = getSaveKey(houseId);
+            localStorage.setItem(saveKey, 'true');
+            setTimeout(() => {
+                favoriteForm.style.display = '';
+                addLink.style.display = 'none';
+            }, 100);
+        }
     });
 }
 
@@ -126,3 +133,67 @@ document.addEventListener('click', function(e) {
         else if (command === '--cancel') target.classList.remove('editing');
     }
 });
+
+// 8. House Remove Form (Multiple Lists)
+const removeMultiForm = document.querySelector('form[action="/favorieten/verwijderen"]');
+if (removeMultiForm) {
+    removeMultiForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const houseId = removeMultiForm.querySelector('[name="house_id"]')?.value;
+        const checkboxes = removeMultiForm.querySelectorAll('[name="list_ids"]');
+        const selectedCheckboxes = removeMultiForm.querySelectorAll('[name="list_ids"]:checked');
+        const listIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+        
+        if (!listIds.length) {
+            alert('Selecteer minstens één lijst');
+            return;
+        }
+        
+        const submitBtn = removeMultiForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        const originalHtml = submitBtn.innerHTML;
+        
+        // Set loading state
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-loading');
+        submitBtn.innerHTML = `<span class="btn-loading-text">Verwijderen...</span><span class="btn-spinner"></span>`;
+        
+        // Disable all checkboxes
+        checkboxes.forEach(cb => cb.disabled = true);
+        
+        try {
+            const res = await fetch('/favorieten/verwijderen', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ house_id: houseId, list_ids: listIds })
+            });
+            
+            if (res.ok) {
+                // Clear localStorage for the house
+                const saveKey = `house_saved_${houseId}`;
+                localStorage.removeItem(saveKey);
+                
+                // Redirect back to house detail page
+                const urlParts = window.location.pathname.split('/');
+                const city = urlParts[2];
+                const street = urlParts[3];
+                const slug = urlParts[4];
+                window.location.href = `/huizen/${city}/${street}/${slug}`;
+            } else {
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.innerHTML = originalHtml;
+                submitBtn.disabled = false;
+                checkboxes.forEach(cb => cb.disabled = false);
+                alert('Fout bij verwijderen. Probeer opnieuw.');
+            }
+        } catch (err) {
+            console.error('Delete error:', err);
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.innerHTML = originalHtml;
+            submitBtn.disabled = false;
+            checkboxes.forEach(cb => cb.disabled = false);
+            alert('Fout bij verwijderen. Probeer opnieuw.');
+        }
+    });
+}

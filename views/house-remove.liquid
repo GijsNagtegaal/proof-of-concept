@@ -1,0 +1,40 @@
+{% layout "layouts/main-layout.liquid" %}
+
+{% block content %}
+
+<article class="house-card max-width">
+    <section class="house-card-img-wrapper">
+        {% render 'partials/picture.liquid' %}
+    </section>
+
+    <section class="house-card-content">
+        <h1>{{ house.title }}</h1>
+        <p class="house-address">{{ house.street }}, {{ house.city }}</p>
+        
+        <p>Selecteer de lijstjes waarvan je dit huis wilt verwijderen:</p>
+
+        <form action="/favorieten/verwijderen" method="POST">
+            <input type="hidden" name="house_id" value="{{ house.id }}">
+            
+            <fieldset>
+                <legend hidden>Selecteer lijsten</legend>
+                {% for list in lists_with_house %}
+                    <section style="margin-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="list_ids" value="{{ list.id }}" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>{{ list.title }}</span>
+                        </label>
+                    </section>
+                {% endfor %}
+            </fieldset>
+
+            <section style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn-submit-save">Verwijderen uit geselecteerde lijsten</button>
+                <a href="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}" class="btn-cancel" style="padding: 12px 24px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333;">Annuleren</a>
+            </section>
+        </form>
+    </section>
+</article>
+
+{% endblock %}
+

@@ -254,35 +254,84 @@ app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddl
     res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
 });
 
+app.get('/huizen/:city/:street/:house_slug/verwijderen', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
+    const houseId = req.house.id;
+    const lists = res.locals.lists || [];
+    
+    // Filter to only lists containing this house
+    const listsWithHouse = lists.filter(list => {
+        const housesInList = list.houses || [];
+        return housesInList.some(item => 
+            item === houseId || 
+            item.f_houses_id === houseId || 
+            (item.f_houses_id && item.f_houses_id.id === houseId)
+        );
+    });
+    
+    res.render('house-remove.liquid', { house: req.house, lists_with_house: listsWithHouse });
+});
+
 app.post('/favorieten/verwijderen', async (req, res) => {
     try {
-        const { house_id, list_id } = req.body;
-        if (!house_id || !list_id) return res.status(400).json({ success: false, message: 'Missing data' });
-
-        const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*`); 
-        if (!listResponse.ok) throw new Error('Failed to fetch list');
+        const { house_id, list_ids } = req.body;
+        console.log('\n=== DELETE REQUEST START ===');
+        console.log('House ID to delete:', house_id);
+        console.log('List IDs:', list_ids);
         
-        const list = (await listResponse.json()).data;
-        const junctionRow = (list.houses || []).find(item => {
-            const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
-            return Number(hId) === Number(house_id);
-        });
+        if (!house_id || !list_ids || list_ids.length === 0) {
+            return res.status(400).json({ success: false, message: 'Missing house_id or list_ids' });
+        }
 
-        if (!junctionRow) return res.json({ success: true });
+        // Handle both array and single value
+        const listIdsArray = Array.isArray(list_ids) ? list_ids : [list_ids];
 
-        const updateResponse = await fetch(`${api}f_list/${list_id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                houses: { delete: [junctionRow.id] }
-            })
-        });
+        // Delete from each list
+        for (const list_id of listIdsArray) {
+            const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`); 
+            if (!listResponse.ok) throw new Error(`Failed to fetch list ${list_id}`);
+            
+            const list = (await listResponse.json()).data;
+            const currentHouses = list.houses || [];
+            console.log(`List ${list_id} - Current houses array:`, JSON.stringify(currentHouses, null, 2));
+            
+            // Filter out the junction record where f_houses_id matches the house to delete
+            const updatedHouses = currentHouses.filter(item => {
+                const matches = Number(item.f_houses_id) === Number(house_id);
+                console.log('Checking:', item.id, 'f_houses_id:', item.f_houses_id, 'match:', matches);
+                return !matches;
+            });
+            
+            console.log('Updated houses array (full objects):', JSON.stringify(updatedHouses, null, 2));
+            
+            // Extract just the junction IDs
+            const houseIds = updatedHouses.map(item => item.id);
+            console.log('House IDs for PATCH:', houseIds);
+            
+            const patchPayload = { houses: houseIds };
+            console.log('Sending PATCH with payload:', JSON.stringify(patchPayload, null, 2));
+            
+            const updateResponse = await fetch(`${api}f_list/${list_id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(patchPayload)
+            });
 
-        if (!updateResponse.ok) throw new Error('Failed to update Directus');
+            console.log('Update response status:', updateResponse.status);
+            const updateResponseBody = await updateResponse.text();
+            console.log('Update response body:', updateResponseBody);
+            
+            if (!updateResponse.ok) {
+                console.error('Update failed!');
+                throw new Error(`Failed to update list ${list_id}`);
+            }
+        }
+        
+        console.log('=== DELETE REQUEST SUCCESS ===\n');
         res.json({ success: true });
         
     } catch (error) {
         console.error("Delete API error:", error);
+        console.log('=== DELETE REQUEST FAILED ===\n');
         res.status(500).json({ success: false, error: error.message });
     }
 });
