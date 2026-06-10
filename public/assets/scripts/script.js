@@ -5,7 +5,7 @@ if (phoneLink) {
     phoneLink.addEventListener('click', function(event) {
         const isRevealed = this.getAttribute('data-revealed') === 'true';
         if (!isRevealed) {
-            event.preventDefault(); 
+            event.preventDefault();
             this.classList.remove('js-enabled');
             this.setAttribute('data-revealed', 'true');
         }
@@ -43,6 +43,7 @@ if (toggleBtn && excerptContent && fullContent) {
     });
 }
 
+// fuction thtat runs when page is loaded
 (() => {
     try {
         const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
@@ -56,7 +57,7 @@ if (toggleBtn && excerptContent && fullContent) {
 
         skeletonImages.forEach((img) => {
             if (!img) return;
-            if (img.complete && img.naturalWidth > 0) return; 
+            if (img.complete && img.naturalWidth > 0) return;
             if (img.parentElement) img.parentElement.setAttribute("data-loading", "true");
 
             const options = { once: true };
@@ -70,7 +71,7 @@ if (toggleBtn && excerptContent && fullContent) {
                 img.removeEventListener("load", handleLoad);
                 img.removeEventListener("error", handleError);
                 hideSkeleton(img);
-            }, 5000); 
+            }, 5000);
         });
     } catch (error) {
         console.error("Skeleton tracker failed safely:", error);
@@ -82,7 +83,6 @@ const submitBtn = document.querySelector('.btn-submit-save');
 
 if (form && submitBtn) {
     form.addEventListener('submit', function() {
-
         submitBtn.disabled = true;
         submitBtn.classList.add('btn-loading');
         submitBtn.innerHTML = `
@@ -92,26 +92,23 @@ if (form && submitBtn) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const messageZone = document.querySelector('.message-notification');
-    const urlParams = new URLSearchParams(window.location.search);
-    const isSuccess = urlParams.get('success') === 'true';
-    const listTitle = urlParams.get('title');
-    const listSlug = urlParams.get('slug');
+const messageZone = document.querySelector('.message-notification');
+const urlParams = new URLSearchParams(window.location.search);
+const isSuccess = urlParams.get('success') === 'true';
+const listTitle = urlParams.get('title');
+const listSlug = urlParams.get('slug');
 
-    if (isSuccess && messageZone) {
+if (isSuccess && messageZone) {
+    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
 
-        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+    const listUrl = listSlug ? `/favorieten/${listSlug}` : '/favorieten';
 
-        const listUrl = listSlug ? `/favorieten/${listSlug}` : '/favorieten';
+    messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${decodeURIComponent(listTitle)}</strong></a>.`;
+    messageZone.removeAttribute('hidden');
 
-        messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${decodeURIComponent(listTitle)}</strong></a>.`;
-        messageZone.removeAttribute('hidden');
-
-        setTimeout(() => {
-            messageZone.setAttribute('hidden', '');
-            messageZone.innerHTML = '';
-        }, 5000);
-    }
-});
+    setTimeout(() => {
+        messageZone.setAttribute('hidden', '');
+        messageZone.innerHTML = '';
+    }, 5000);
+}

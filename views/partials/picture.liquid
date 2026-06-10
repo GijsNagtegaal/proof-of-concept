@@ -6,8 +6,8 @@
 {% if final_image_src contains '/assets/images' and format != "svg" %}
 
     <picture class="funda-skeleton-wrapper {{ class }}" >
-        <source srcset="{{ final_image_src }}.avif?width={{ default_width }}&height={{ default_height }}&quality=80" type="image/avif" width="{{ default_width }}" height="{{ default_height }}">
-        <source srcset="{{ final_image_src }}.webp?width={{ default_width }}&height={{ default_height }}&quality=80" type="image/webp" width="{{ default_width }}" height="{{ default_height }}">
+        <source srcset="{{ final_image_src }}.avif&quality=80" type="image/avif" width="{{ default_width }}" height="{{ default_height }}">
+        <source srcset="{{ final_image_src }}.webp&quality=80" type="image/webp" width="{{ default_width }}" height="{{ default_height }}">
         <img src="{{ final_image_src }}?width={{ default_width }}&height={{ default_height }}&quality=50" 
             width="{{ default_width }}" 
             height="{{ default_height }}" 
@@ -30,12 +30,12 @@
 {% else %}
 
     <picture class="funda-skeleton-wrapper {{ custom_class }}" >
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ final_image_src }}?format=avif&quality=80&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ final_image_src }}?format=avif&quality=80&fit=cover" 
             type="image/avif"
             width="{{ default_width }}" 
             height="{{ default_height }}">
                 
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ final_image_src }}?format=webp&quality=80&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ final_image_src }}?format=webp&quality=80&fit=cover" 
             type="image/webp"
             width="{{ default_width }}" 
             height="{{ default_height }}">

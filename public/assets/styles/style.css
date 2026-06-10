@@ -765,7 +765,7 @@ header.page-header {
         }
     }
 
-    nav.parent-nav {
+    section.parent-nav {
         display: flex;
         justify-content: space-between;
         width: 100%;
@@ -863,10 +863,6 @@ header.page-header {
             }
         }
     }
-}
-
-section.breadcrumb-wrapper {
-    width: 100%;
 }
 
 nav.breadcrumb {
