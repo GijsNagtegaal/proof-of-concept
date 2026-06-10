@@ -3,28 +3,34 @@
 {% block content %}
 <section class="list-detail-header">
     <a href="/favorieten" class="btn-back">Terug naar alle lijstjes</a>
-    
-    <article class="list-card-main">
-    <form action="/favorieten/{{ list.id }}?_method=PATCH" method="POST" class="edit-list-form">
-        <section class="card-view-mode">
-        <h2>
-            {% if list.icon %}
-            <span class="icon">{{ list.icon }}</span>
-            {% endif %}
-            <span class="title-text">{{ list.title }}</span>
-        </h2>
-        <p class="desc-text">{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
-        <button type="button" class="btn-edit" onclick="this.closest('.list-card-main').classList.add('editing')">Lijstje aanpassen</button>
-        </section>
 
-        <section class="card-edit-mode">
-            <input type="text" name="title" value="{{ list.title }}" required>
-            <textarea name="description">{{ list.description }}</textarea>
-            <input type="text" name="icon" value="{{ list.icon }}" placeholder="icoon code">
-            <button type="submit" class="btn-save">Opslaan</button>
-            <button type="button" class="btn-cancel" onclick="this.closest('.list-card-main').classList.remove('editing')">Annuleren</button>
-        </section>
-    </form>
+    <article class="list-card-main" id="list-card-{{ list.id }}">
+        <form action="/favorieten/{{ list.id }}?_method=PATCH" method="POST" class="edit-list-form">
+            <section class="card-view-mode">
+                <h2>
+                    {% if list.icon %}
+                    <span class="icon">{{ list.icon }}</span>
+                    {% endif %}
+                    <span class="title-text">{{ list.title }}</span>
+                </h2>
+                <p class="desc-text">{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
+                
+                <button type="button" class="btn-edit" commandfor="list-card-{{ list.id }}" command="--edit">Lijstje aanpassen</button>
+            </section>
+
+            <section class="card-edit-mode">
+                <input type="text" name="title" value="{{ list.title }}" required>
+                <textarea name="description">{{ list.description }}</textarea>
+                <input type="text" name="icon" value="{{ list.icon }}" placeholder="icoon code">
+                <button type="submit" class="btn-save">Opslaan</button>
+                
+                {% comment %}
+                    Something new: invoker commands
+                    https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API
+                {% endcomment %}
+                <button type="button" class="btn-cancel" commandfor="list-card-{{ list.id }}" command="--cancel">Annuleren</button>
+            </section>
+        </form>
     </article>
 </section>
 

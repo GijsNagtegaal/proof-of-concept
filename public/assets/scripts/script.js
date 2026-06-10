@@ -112,3 +112,13 @@ if (isSuccess && messageZone) {
         messageZone.innerHTML = '';
     }, 5000);
 }
+
+if (event.target.classList.contains('list-card-main')) {
+        
+        if (event.command === '--edit') {
+            event.target.classList.add('editing');
+        } else if (event.command === '--cancel') {
+            event.target.classList.remove('editing');
+        }
+        
+    }
