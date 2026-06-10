@@ -1,8 +1,6 @@
-
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-
 <section class="list-detail-header">
     <a href="/favorieten" class="btn-back">Terug naar alle lijstjes</a>
     
@@ -34,42 +32,10 @@
 
 <section class="house-grid">
     {% for house in houses %}
-    <article class="house-card">
-        <section class="house-image-wrapper">
-    {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
-    {% if house.poster_image %}
-    <a class="vt-image-link" href="{{ house_href }}" style="view-transition-name: house-{{ house.slug }}">
-        <img src="https://fdnd-agency.directus.app/assets/{{ house.poster_image.id }}" alt="{{ house.street }} {{ house.house_nr }}" class="house-img">
-    </a>
+        {% render 'partials/house-card.liquid', house: house %}
     {% else %}
-    {% endif %}
-</section>
-
-<section class="house-info">
-    <h4 class="house-address">{{ house.street }} {{ house.house_nr }}{{ house.nr_addition }}</h4>
-    <p class="house-location">{{ house.postal_code }} {{ house.city }}</p>
-
-    <p class="house-price">
-        {% if house.price %}
-        &euro; {{ house.price }} k.k.
-        {% else %}
-        Prijs op aanvraag
-        {% endif %}
-    </p>
-
-    <div class="house-specs">
-        <span><strong>{{ house.m2 | default: 0 }}</strong> m&sup2;</span>
-        <span>&bull;</span>
-        <span><strong>{{ house.rooms | default: 0 }}</strong> kamers</span>
-    </div>
-
-    <a href="/huizen/{{ house.city_clean }}/{{ house.street_clean }}/{{ house.slug }}" class="btn-detail">
-        Bekijk woning
-    </a>
-        </section>
-        </article>
-    {% else %}
-    <p class="no-results">Er zijn nog geen huizen aan dit lijstje toegevoegd.</p>
+        <p class="no-results">Er zijn nog geen huizen aan dit lijstje toegevoegd.</p>
     {% endfor %}
 </section>
+
 {% endblock %}

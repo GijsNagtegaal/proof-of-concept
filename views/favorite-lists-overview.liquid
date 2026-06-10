@@ -1,24 +1,23 @@
-
 {% layout "layouts/main-layout.liquid" %}
 
 {% block content %}
-<section class="max-width breathingspace list-content">
+<article class="heading max-width">
     <h1 class="breathingspace">Favorieten</h1>
     <p class="favorite-paragraph breathingspace">In dit overzicht vind je al je favoriete huizen terug. Maak het jezelf makkelijker door huizen te bewaren en notities toe te voegen over het huis, de buurt en andere belangrijke details voor je zoektocht.</p>
     <span class="orangeline breathingspace"></span>
-</section>
-
-<section class="lists-container max-width">
+</article>
+<section class="max-width breathingspace list-content lists-container max-width">
     {% assign seen_vt_slugs = "" %}
     {% for list in lists %}
     <article>
-        <h3>{{ list.title }}</h3>
-        <span class="">{{ list.houses.size }} huizen in dit lijstje</span>
+        <h3>{{ list.title | truncate: 20 }}</h3>
+        <span class="breathingspace">{{ list.enriched_houses.size }} huizen in dit lijstje</span>
         <section class="images">
             {% for house in list.enriched_houses limit: 4 %}
                 {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
                 {% assign slug_key = house.slug | prepend: "|" | append: "|" %}
                 {% assign vt_name = "" %}
+                
                 {% unless seen_vt_slugs contains slug_key %}
                     {% assign vt_name = house.slug %}
                     {% assign seen_vt_slugs = seen_vt_slugs | append: slug_key %}
@@ -30,8 +29,8 @@
                         imagesrc: house.poster_image,
                         vt_name: vt_name,
                         fetch: "auto",
-                        width: "200",
-                        height: "200"
+                        width: "400",
+                        height: "400"
                     %}
                 
                 {% elsif house.gallery.size > 0 %}
@@ -41,13 +40,16 @@
                         imagesrc: first_gallery_id,
                         vt_name: vt_name,
                         fetch: "auto",
-                        width: "200",
-                        height: "200"
+                        width: "400",
+                        height: "400"
                     %}
+                {% else %}
+                    <a href="{{ house_href }}" class="image-placeholder" style="background: #e0e0e0; aspect-ratio: 1; border-radius: 4px; display: block;"></a>
                 {% endif %}
 
             {% endfor %}
         </section>
+        
         {% assign dynamic_href = "/favorieten/" | append: list.slug %}
         {% render 'partials/link.liquid',
             href: dynamic_href,
