@@ -1,52 +1,44 @@
-{%- assign default_width = width | default: "320" -%}
-{%- assign default_height = height | default: "200" -%}
-{%- assign final_image_src = imagesrc.id | default: imagesrc -%}
+{%- assign src = imagesrc.id | default: imagesrc -%}
 
-{% if final_image_src contains '/assets/images' and format != "svg" %}
-<picture class="funda-skeleton-wrapper {{ class }}">
-    <source srcset="{{ final_image_src }}?format=avif&quality=80" type="image/avif">
-    <source srcset="{{ final_image_src }}?format=webp&quality=80" type="image/webp">
-    <img src="{{ final_image_src }}?width={{ default_width }}&height={{ default_height }}&quality=50"
-        width="{{ default_width }}"
-        height="{{ default_height }}"
-        fetchpriority="{{ fetch | default: 'auto' }}"
-        loading="{{ loading | default: 'eager' }}"
-        decoding="async"
-        alt="{{ alt_text | default: 'Afbeelding' }}">
-</picture>
-
-{% elsif format == "svg" %}
-<img src="{{ final_image_src }}"
-    width="{{ default_width }}"
-    height="{{ default_height }}"
+{% if format == "svg" %}
+<img src="{{ src }}"
+    width="{{ width }}"
+    height="{{ height }}"
     fetchpriority="{{ fetch | default: 'auto' }}"
     loading="{{ loading | default: 'lazy' }}"
     decoding="async"
     alt="{{ alt_text | default: 'Icon of logo' }}">
 
-{% else %}
-{%- assign base = "https://fdnd-agency.directus.app/assets/" | append: final_image_src -%}
-{%- assign width = default_width | times: 2 -%}
-{%- assign height = default_height | times: 2 -%}
-{%- assign default_sizes = sizes | default: "(max-width: 768px) 100vw, " | append: default_width | append: "px" -%}
+{% elsif src contains '/assets/images' %}
 <picture class="funda-skeleton-wrapper {{ class }}">
-    <source
-        type="image/avif"
-        srcset="{{ base }}?format=avif&quality=80&fit=cover {{ default_width }}w,
-                {{ base }}?format=avif&width={{ width }}&height={{ height }}&quality=75&fit=cover {{ width }}w"
-        sizes="{{ default_sizes }}">
-    <source
-        type="image/webp"
-        srcset="{{ base }}?format=webp&quality=80&fit=cover {{ default_width }}w,
-                {{ base }}?format=webp&width={{ width }}&height={{ height }}&quality=75&fit=cover {{ width }}w"
-        sizes="{{ default_sizes }}">
-    <img
-        src="{{ base }}?format=jpeg&width={{ default_width }}&height={{ default_height }}&quality=60&fit=cover"
-        width="{{ default_width }}"
-        height="{{ default_height }}"
-        fetchpriority="{{ fetch | default: 'auto' }}"
-        loading="{{ loading | default: 'lazy' }}"
-        decoding="async"
-        alt="{{ alt_text | default: 'Afbeelding' }}">
+    <source srcset="{{ src }}?format=avif&quality=80" type="image/avif">
+    <source srcset="{{ src }}?format=webp&quality=80" type="image/webp">
+    <img src="{{ src }}?width={{ width }}&height={{ height }}&quality=50"
+    width="{{ width }}"
+    height="{{ height }}"
+    fetchpriority="{{ fetch | default: 'auto' }}"
+    loading="{{ loading | default: 'eager' }}"
+    decoding="async"
+    alt="{{ alt_text | default: 'Afbeelding' }}">
+</picture>
+
+{% else %}
+{%- assign base = "https://fdnd-agency.directus.app/assets/" | append: src -%}
+<picture class="funda-skeleton-wrapper {{ class }}">
+    <source type="image/avif"
+    srcset="{{ base }}?format=avif&width={{ width }}&quality=80&fit=cover {{ width }}w,
+            {{ base }}?format=avif&width={{ width | times: 2 }}&quality=75&fit=cover {{ width | times: 2 }}w"
+    sizes="{{ sizes | default: '100vw' }}">
+    <source type="image/webp"
+    srcset="{{ base }}?format=webp&width={{ width }}&quality=80&fit=cover {{ width }}w,
+            {{ base }}?format=webp&width={{ width | times: 2 }}&quality=75&fit=cover {{ width | times: 2 }}w"
+    sizes="{{ sizes | default: '100vw' }}">
+    <img src="{{ base }}?format=jpeg&width={{ width }}&height={{ height }}&quality=60&fit=cover"
+    width="{{ width }}"
+    height="{{ height }}"
+    fetchpriority="{{ fetch | default: 'auto' }}"
+    loading="{{ loading | default: 'lazy' }}"
+    decoding="async"
+    alt="{{ alt_text | default: 'Afbeelding' }}">
 </picture>
 {% endif %}
