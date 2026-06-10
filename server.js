@@ -33,7 +33,7 @@ function slugify(text) {
         .replace(/\-\-+/g, '-');
 }
 
-// Centrale reken- en opmaakfunctie voor huizen
+// Central calculation and formatting function for houses
 function enrichHouseData(house) {
     if (!house) return null;
 
@@ -44,26 +44,60 @@ function enrichHouseData(house) {
     const cleanStreetNoSpaces = rawStreet.toLowerCase().replace(/\s+/g, '');
     const cleanNrNoSpaces = rawNr.toLowerCase().replace(/\s+/g, '');
     
-    // Bereken M2 en prijzen
     const m2Wonen = Number(house.m2) || 0;
     const m2Garden = Number(house.m2_garden) || 0;
     const totalM2 = m2Wonen + m2Garden;
     const price = Number(house.price) || 0;
     const priceM2 = totalM2 > 0 ? Math.ceil(price / totalM2) : 0;
 
-    // Statische data fallbacks en berekeningen
     const hasGarden = m2Garden > 0;
     const hasGarage = house.description ? house.description.toLowerCase().includes('garage') : false;
     const hasParking = house.description ? (house.description.toLowerCase().includes('parkeer') || hasGarage) : false;
     const totalRooms = Number(house.rooms) || 3;
     const bedrooms = totalRooms > 1 ? totalRooms - 1 : 1; 
 
-    // Energielabel randomizer (A t/m G)
     const labels = ["A", "B", "C", "D", "E", "F", "G"];
     const randomLabel = labels[Math.floor(Math.random() * labels.length)];
 
+    // --- THE HYBRID OBJECT FIX ---
+    // Extract the raw string ID
+    let posterId = null;
+    if (house.poster_image && typeof house.poster_image === 'object' && house.poster_image.id) {
+        posterId = house.poster_image.id;
+    } else if (typeof house.poster_image === 'string') {
+        posterId = house.poster_image;
+    }
+
+    // Create a hybrid object. 
+    // It has an 'id' for the detail page, but outputs a string for the card page!
+    const hybridPoster = posterId ? {
+        id: posterId,
+        toString: function() { return this.id; } 
+    } : null;
+
+    // Apply the same hybrid trick to the gallery
+    let hybridGallery = [];
+    if (Array.isArray(house.gallery)) {
+        hybridGallery = house.gallery.map(img => {
+            let gId = null;
+            if (img && typeof img === 'object' && img.directus_files_id) {
+                gId = img.directus_files_id;
+            } else if (typeof img === 'string') {
+                gId = img;
+            }
+            if (!gId) return null;
+            
+            return {
+                directus_files_id: gId,
+                toString: function() { return this.directus_files_id; }
+            };
+        }).filter(Boolean);
+    }
+
     return {
         ...house,
+        poster_image: hybridPoster, 
+        gallery: hybridGallery,    
         city_clean: rawCity.toLowerCase().trim().replace(/\s+/g, '-'),
         street_clean: rawStreet.toLowerCase().trim().replace(/\s+/g, '-'),
         slug: `${cleanStreetNoSpaces}${cleanNrNoSpaces}`,
@@ -97,17 +131,13 @@ async function getHouseBySlug(city, slug) {
     const targetCity = city.toLowerCase().replace(/\s+/g, '');
     const targetSlug = slug.toLowerCase().replace(/\s+/g, '');
 
-    const foundHouse = houses.find(house => {
+    return houses.find(house => {
         if (!house.street || !house.city) return false;
-        
         const cityClean = house.city.toLowerCase().replace(/\s+/g, '');
         const streetClean = house.street.toLowerCase().replace(/\s+/g, '');
         const nrClean = house.house_nr.toString().toLowerCase().replace(/\s+/g, '');
-        
         return cityClean === targetCity && (streetClean + nrClean) === targetSlug;
-    });
-
-    return foundHouse ? foundHouse : null;
+    }) || null;
 }
 
 // --- CUSTOM ROUTE MIDDLEWARE ---
@@ -147,57 +177,17 @@ app.get('/', async (req, res) => {
 
 app.get('/favorieten', async (req, res) => {
     try {
-        const listResponse = await fetch(`${api}f_list?fields=*.*`);
+        // DEEP FETCH: Retrieves the list, junction table, houses, and images all in one go!
+        const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
+        const listResponse = await fetch(url);
         if (!listResponse.ok) throw new Error('Lists API fetch failed');
-        const listJson = await listResponse.json();
-        const lists = listJson.data || [];
-
-        const houseIds = new Set();
-        lists.forEach(list => {
-            if (list.houses) {
-                list.houses.forEach(item => {
-                    if (item.f_houses_id) houseIds.add(item.f_houses_id);
-                });
-            }
-        });
-
-        let housesMap = {};
-        if (houseIds.size > 0) {
-            const idFilter = Array.from(houseIds).join(',');
-            // Zorg ervoor dat we de relaties (zoals poster_image id) goed ophalen
-            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${idFilter}&fields=*.*&limit=-1`);
-            
-            if (housesResponse.ok) {
-                const housesJson = await housesResponse.json();
-                (housesJson.data || []).forEach(house => {
-                    housesMap[house.id] = house;
-                });
-            }
-        }
+        const lists = (await listResponse.json()).data || [];
 
         const formattedLists = lists.map(list => {
-            const enrichedHouses = (list.houses || []).map(item => {
-                const realHouseData = housesMap[item.f_houses_id];
-                if (!realHouseData) return null;
-
-                // Haal de data door de enricher
-                const enriched = enrichHouseData(realHouseData);
-
-                // FIX VOOR AFBEELDINGEN: Soms geeft Directus relaties terug als { id: "..." } in plaats van een simpele string.
-                // Dit zorgt ervoor dat Liquid altijd gewoon een string (het ID) krijgt voor de image partials.
-                if (enriched.poster_image && typeof enriched.poster_image === 'object' && enriched.poster_image.id) {
-                    enriched.poster_image = enriched.poster_image.id;
-                }
-                
-                // Zelfde veiligheidscheck voor de gallery array
-                if (enriched.gallery && Array.isArray(enriched.gallery)) {
-                    enriched.gallery = enriched.gallery.map(img => 
-                        (img && typeof img === 'object' && img.directus_files_id) ? img.directus_files_id : img
-                    );
-                }
-
-                return enriched;
-            }).filter(Boolean);
+            const enrichedHouses = (list.houses || [])
+                .map(item => item.f_houses_id) // This is now a complete and nested house object
+                .filter(Boolean)
+                .map(house => enrichHouseData(house));
 
             return {
                 ...list,
@@ -224,11 +214,7 @@ app.post('/favorieten/nieuw', async (req, res) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title,
-                description,
-                icon: icon || 'house',
-                houses: [],
-                users: []
+                title, description, icon: icon || 'house', houses: [], users: []
             })
         });
 
@@ -243,24 +229,21 @@ app.post('/favorieten/nieuw', async (req, res) => {
 app.get('/favorieten/:list_slug', async (req, res) => {
     try {
         const { list_slug } = req.params;
-        const listsResponse = await fetch(`${api}f_list?fields=*.*`);
+        
+        // DEEP FETCH: Also fetching everything nested directly for the detail page.
+        const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
+        const listsResponse = await fetch(url);
         if (!listsResponse.ok) throw new Error('API fetch failed');
 
-        const listsJson = await listsResponse.json();
-        const list = (listsJson.data || []).find(l => slugify(l.title) === list_slug);
+        const lists = (await listsResponse.json()).data || [];
+        const list = lists.find(l => slugify(l.title) === list_slug);
 
         if (!list) return res.status(404).render('404.liquid');
 
-        const savedHouseIds = (list.houses || []).map(item => item.f_houses_id);
-        
-        let filteredHouses = [];
-        if (savedHouseIds.length > 0) {
-            const housesResponse = await fetch(`${api}f_houses?filter[id][_in]=${savedHouseIds.join(',')}&fields=*.*&limit=-1`);
-            if (housesResponse.ok) {
-                const housesJson = await housesResponse.json();
-                filteredHouses = (housesJson.data || []).map(enrichHouseData);
-            }
-        }
+        const filteredHouses = (list.houses || [])
+            .map(item => item.f_houses_id)
+            .filter(Boolean)
+            .map(house => enrichHouseData(house));
 
         res.render('favorites-detail.liquid', { 
             list: { ...list, slug: list_slug }, 
@@ -284,53 +267,38 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
         const listResponse = await fetch(`${api}f_list/${list_id}?fields=houses.*,title`); 
         if (!listResponse.ok) throw new Error('Failed to fetch list details');
 
-        const listJson = await listResponse.json();
-        const list = listJson.data;
-
+        const list = (await listResponse.json()).data;
         const targetHouseId = Number(house_id);
         const targetListId = Number(list_id);
 
-        let currentHouses = (list.houses || []).map(item => ({
-            f_list_id: targetListId,
-            f_houses_id: Number(item.f_houses_id)
-        }));
-
-        const alreadyExists = currentHouses.some(item => item.f_houses_id === targetHouseId);
-
-        if (!alreadyExists) {
-            currentHouses.push({
+        let currentHouses = (list.houses || []).map(item => {
+            // Safety check for when we update an object in Directus
+            const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
+            return {
                 f_list_id: targetListId,
-                f_houses_id: targetHouseId
-            });
+                f_houses_id: Number(hId)
+            };
+        });
+
+        if (!currentHouses.some(item => item.f_houses_id === targetHouseId)) {
+            currentHouses.push({ f_list_id: targetListId, f_houses_id: targetHouseId });
         }
         
         const updateResponse = await fetch(`${api}f_list/${list_id}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ houses: currentHouses })
         });
 
-        if (!updateResponse.ok) {
-            throw new Error('Failed to save house to list');
-        }
+        if (!updateResponse.ok) throw new Error('Failed to save house to list');
 
         const listTitle = list.title || 'Favorieten';
-        const listSlug = slugify(listTitle);
-        const fallbackUrl = req.headers.referer || '/favorieten';
-        const finalRedirectDestination = redirect_back || fallbackUrl;
-        const targetUrl = new URL(finalRedirectDestination, 'http://localhost:8000'); 
-        
+        const targetUrl = new URL(redirect_back || req.headers.referer || '/favorieten', 'http://localhost:8000'); 
         targetUrl.searchParams.set('success', 'true');
         targetUrl.searchParams.set('title', listTitle);
-        targetUrl.searchParams.set('slug', listSlug);
+        targetUrl.searchParams.set('slug', slugify(listTitle));
 
-        const redirectPath = targetUrl.origin === 'http://localhost:8000' 
-            ? targetUrl.pathname + targetUrl.search 
-            : targetUrl.href;
-
-        res.redirect(redirectPath);
+        res.redirect(targetUrl.origin === 'http://localhost:8000' ? targetUrl.pathname + targetUrl.search : targetUrl.href);
 
     } catch (error) {
         console.error("Error saving house to list:", error);
@@ -341,9 +309,7 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
 app.patch('/favorieten/:id', async (req, res) => {
     try {
         const { title, description, icon } = req.body;
-        const { id } = req.params;
-
-        const response = await fetch(`${api}f_list/${id}`, {
+        const response = await fetch(`${api}f_list/${req.params.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, description, icon })
@@ -370,8 +336,7 @@ app.get(['/huizen', '/huizen/:city', '/huizen/:city/:street'], async (req, res) 
         const response = await fetch(`${api}f_houses?fields=*.*&limit=-1`);
         if (!response.ok) throw new Error('API fetch failed');
         
-        const json = await response.json();
-        let houses = json.data || [];
+        let houses = (await response.json()).data || [];
 
         if (req.params.city) {
             const targetCity = req.params.city.toLowerCase().trim();
