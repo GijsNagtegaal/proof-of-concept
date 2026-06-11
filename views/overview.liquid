@@ -4,26 +4,8 @@
     <h2>{{ title }}</h2>
     <section class="house-grid">
         {% for house in houses %}
-            {% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
-            <article class="house-card">
-                {% if house.poster_image %}
-                    {% assign poster_id = house.poster_image.id | default: house.poster_image %}
-                    {% render 'partials/image-link.liquid',
-                        href: house_href,
-                        imagesrc: poster_id,
-                        vt_name: house.slug,
-                        fetch: "auto",
-                        width: "320",
-                        height: "200"
-                    %}
-                {% endif %}
-                <h3>{{ house.street }} {{ house.house_nr }}</h3>
-                <p>Locatie: {{ house.city }}</p>
-                
-                <a href="{{ house_href }}">
-                    Bekijk details
-                </a>
-            </article>
+                {% render 'partials/house-card.liquid', house: house %}
+            {% else %}
         {% endfor %}
     </section>
 {% endblock %}
