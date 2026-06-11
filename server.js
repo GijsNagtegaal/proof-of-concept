@@ -60,7 +60,6 @@ function enrichHouseData(house) {
     const randomLabel = labels[Math.floor(Math.random() * labels.length)];
 
     // --- THE HYBRID OBJECT FIX ---
-    // Extract the raw string ID
     let posterId = null;
     if (house.poster_image && typeof house.poster_image === 'object' && house.poster_image.id) {
         posterId = house.poster_image.id;
@@ -68,14 +67,11 @@ function enrichHouseData(house) {
         posterId = house.poster_image;
     }
 
-    // Create a hybrid object. 
-    // It has an 'id' for the detail page, but outputs a string for the card page!
     const hybridPoster = posterId ? {
         id: posterId,
         toString: function() { return this.id; } 
     } : null;
 
-    // Apply the same hybrid trick to the gallery
     let hybridGallery = [];
     if (Array.isArray(house.gallery)) {
         hybridGallery = house.gallery.map(img => {
@@ -166,7 +162,7 @@ async function loadHouseMiddleware(req, res, next) {
         next();
     } catch (error) {
         console.error("Error fetching house:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 }
 
@@ -177,15 +173,18 @@ app.get('/', async (req, res) => {
 
 app.get('/favorieten', async (req, res) => {
     try {
-        // DEEP FETCH: Retrieves the list, junction table, houses, and images all in one go!
         const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
         const listResponse = await fetch(url);
-        if (!listResponse.ok) throw new Error('Lists API fetch failed');
+        if (!listResponse.ok) {
+            const errorDetails = await listResponse.text();
+            console.error(`Directus API Error (${listResponse.status}):`, errorDetails);
+            throw new Error(`Lists API fetch failed with status ${listResponse.status}`);
+        }
         const lists = (await listResponse.json()).data || [];
 
         const formattedLists = lists.map(list => {
             const enrichedHouses = (list.houses || [])
-                .map(item => item.f_houses_id) // This is now a complete and nested house object
+                .map(item => item.f_houses_id)
                 .filter(Boolean)
                 .map(house => enrichHouseData(house));
 
@@ -199,7 +198,7 @@ app.get('/favorieten', async (req, res) => {
         res.render('favorite-lists-overview.liquid', { lists: formattedLists });
     } catch (error) {
         console.error("Error loading enriched lists overview:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 });
 
@@ -222,116 +221,96 @@ app.post('/favorieten/nieuw', async (req, res) => {
         res.redirect('/favorieten');
     } catch (error) {
         console.error("Error creating new list:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 });
 
-app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
-
-    const houseId = req.house.id;
-    const lists = res.locals.lists || [];
-    let isSaved = false;
-    let savedListId = null;
-
-    for (const list of lists) {
-        const housesInList = list.houses || [];
-        const found = housesInList.some(item => 
-            item === houseId || 
-            item.f_houses_id === houseId || 
-            (item.f_houses_id && item.f_houses_id.id === houseId)
-        );
-
-        if (found) {
-            isSaved = true;
-            savedListId = list.id;
-            break; 
-        }
-    }
-
-    req.house.savestate = isSaved ? 'saved' : 'unsaved';
-    req.house.saved_list_id = savedListId; 
-
-    res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
-});
-
-app.get('/huizen/:city/:street/:house_slug/verwijderen', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
+// --- GET: Manage Lists View ---
+app.get('/huizen/:city/:street/:house_slug/lijsten-beheren', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
     const houseId = req.house.id;
     const lists = res.locals.lists || [];
     
-    // Filter to only lists containing this house
-    const listsWithHouse = lists.filter(list => {
+    // Map all lists and add a boolean flag if the house is already in it
+    const allListsWithStatus = lists.map(list => {
         const housesInList = list.houses || [];
-        return housesInList.some(item => 
+        const isIncluded = housesInList.some(item => 
             item === houseId || 
             item.f_houses_id === houseId || 
             (item.f_houses_id && item.f_houses_id.id === houseId)
         );
+        
+        return { ...list, is_included: isIncluded };
     });
     
-    res.render('house-remove.liquid', { house: req.house, lists_with_house: listsWithHouse });
+    // Render a new (or updated) template
+    res.render('house-manage-lists.liquid', { house: req.house, all_lists: allListsWithStatus });
 });
 
-app.post('/favorieten/verwijderen', async (req, res) => {
+// --- POST: Update Lists Status ---
+app.post('/favorieten/lijsten-beheren', async (req, res) => {
     try {
-        const { house_id, list_ids } = req.body;
-        console.log('\n=== DELETE REQUEST START ===');
-        console.log('House ID to delete:', house_id);
-        console.log('List IDs:', list_ids);
+        const { house_id, selected_lists, unselected_lists } = req.body;
         
-        if (!house_id || !list_ids || list_ids.length === 0) {
-            return res.status(400).json({ success: false, message: 'Missing house_id or list_ids' });
+        if (!house_id) {
+            return res.status(400).json({ success: false, message: 'Missing house_id' });
         }
 
-        // Handle both array and single value
-        const listIdsArray = Array.isArray(list_ids) ? list_ids : [list_ids];
+        const targetHouseId = Number(house_id);
+        const listsToAdd = Array.isArray(selected_lists) ? selected_lists : [];
+        const listsToRemove = Array.isArray(unselected_lists) ? unselected_lists : [];
 
-        // Delete from each list
-        for (const list_id of listIdsArray) {
+        // 1. ADD house to selected lists
+        for (const list_id of listsToAdd) {
             const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`); 
-            if (!listResponse.ok) throw new Error(`Failed to fetch list ${list_id}`);
+            if (!listResponse.ok) continue;
+            
+            const list = (await listResponse.json()).data;
+            const targetListId = Number(list_id);
+            let currentHouses = (list.houses || []).map(item => {
+                const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
+                return { f_list_id: targetListId, f_houses_id: Number(hId), id: item.id };
+            });
+
+            // If it's not already in the list, push it and patch
+            if (!currentHouses.some(item => item.f_houses_id === targetHouseId)) {
+                currentHouses.push({ f_list_id: targetListId, f_houses_id: targetHouseId });
+                await fetch(`${api}f_list/${list_id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ houses: currentHouses })
+                });
+            }
+        }
+
+        // 2. REMOVE house from unselected lists
+        for (const list_id of listsToRemove) {
+            const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`); 
+            if (!listResponse.ok) continue;
             
             const list = (await listResponse.json()).data;
             const currentHouses = list.houses || [];
-            console.log(`List ${list_id} - Current houses array:`, JSON.stringify(currentHouses, null, 2));
             
-            // Filter out the junction record where f_houses_id matches the house to delete
+            // Filter out the current house
             const updatedHouses = currentHouses.filter(item => {
-                const matches = Number(item.f_houses_id) === Number(house_id);
-                console.log('Checking:', item.id, 'f_houses_id:', item.f_houses_id, 'match:', matches);
-                return !matches;
+                const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
+                return Number(hId) !== targetHouseId;
             });
             
-            console.log('Updated houses array (full objects):', JSON.stringify(updatedHouses, null, 2));
-            
-            // Extract just the junction IDs
-            const houseIds = updatedHouses.map(item => item.id);
-            console.log('House IDs for PATCH:', houseIds);
-            
-            const patchPayload = { houses: houseIds };
-            console.log('Sending PATCH with payload:', JSON.stringify(patchPayload, null, 2));
-            
-            const updateResponse = await fetch(`${api}f_list/${list_id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(patchPayload)
-            });
-
-            console.log('Update response status:', updateResponse.status);
-            const updateResponseBody = await updateResponse.text();
-            console.log('Update response body:', updateResponseBody);
-            
-            if (!updateResponse.ok) {
-                console.error('Update failed!');
-                throw new Error(`Failed to update list ${list_id}`);
+            // If the array size changed, it means the house was in there and we need to patch
+            if (updatedHouses.length !== currentHouses.length) {
+                const houseIds = updatedHouses.map(item => item.id);
+                await fetch(`${api}f_list/${list_id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ houses: houseIds })
+                });
             }
         }
-        
-        console.log('=== DELETE REQUEST SUCCESS ===\n');
-        res.json({ success: true });
+
+        res.json({ success: true, active_count: listsToAdd.length });
         
     } catch (error) {
-        console.error("Delete API error:", error);
-        console.log('=== DELETE REQUEST FAILED ===\n');
+        console.error("Manage API error:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -339,7 +318,6 @@ app.post('/favorieten/verwijderen', async (req, res) => {
 app.get('/favorieten/:list_slug', async (req, res) => {
     try {
         const { list_slug } = req.params;
-        
 
         const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
         const listsResponse = await fetch(url);
@@ -361,7 +339,7 @@ app.get('/favorieten/:list_slug', async (req, res) => {
         });
     } catch (error) {
         console.error("Error loading specific list details:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 });
 
@@ -382,7 +360,6 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
         const targetListId = Number(list_id);
 
         let currentHouses = (list.houses || []).map(item => {
-            // Safety check for when we update an object in Directus
             const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
             return {
                 f_list_id: targetListId,
@@ -412,7 +389,7 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
 
     } catch (error) {
         console.error("Error saving house to list:", error);
-        res.status(500).send('Server Error: ' + error.message);
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 });
 
@@ -429,7 +406,7 @@ app.patch('/favorieten/:id', async (req, res) => {
         res.redirect(`/favorieten/${slugify(title)}`);
     } catch (error) {
         console.error("Error updating list:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
 });
 
@@ -493,8 +470,21 @@ app.get(['/huizen', '/huizen/:city', '/huizen/:city/:street'], async (req, res) 
         res.render('overview.liquid', { houses: formattedHouses, title: pageTitle });
     } catch (error) {
         console.error("Error loading hackable list:", error);
-        res.status(500).send('Server Error');
+        res.status(500).render('404.liquid'); // <-- UPDATED
     }
+});
+
+// --- GLOBAL 404 & ERROR HANDLERS (NEW) ---
+
+// 1. Catch-all for undefined routes
+app.use((req, res, next) => {
+    res.status(404).render('404.liquid');
+});
+
+// 2. Global error handler for uncaught exceptions thrown down the middleware chain
+app.use((err, req, res, next) => {
+    console.error("Global Server Error:", err.stack);
+    res.status(500).render('404.liquid');
 });
 
 app.listen(8000, () => console.log('Server started: http://localhost:8000'));

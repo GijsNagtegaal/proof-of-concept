@@ -74,7 +74,7 @@
                 Delen
             </button>
 
-            <form class="js-remove-favorite-form" action="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}/verwijderen" method="GET" data-initial-saved="{{ house.savestate }}">
+            <form class="js-remove-favorite-form" action="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}/lijsten-beheren" method="GET" data-initial-saved="{{ house.savestate }}">
                 <input type="hidden" name="house_id" value="{{ house.id }}">
                 <button type="submit" class="btn-save-trigger saved js-remove-favorite">
                     <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">

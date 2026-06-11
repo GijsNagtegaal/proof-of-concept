@@ -46,7 +46,7 @@ if (skeletonImages.length > 0) {
     });
 }
 
-// 4. Success Notifications
+// 4-. Success Notifications
 const urlParams = new URLSearchParams(window.location.search);
 const messageZone = document.querySelector('.message-notification');
 if (urlParams.get('success') === 'true' && messageZone) {
@@ -59,7 +59,7 @@ if (urlParams.get('success') === 'true' && messageZone) {
     setTimeout(() => { messageZone.setAttribute('hidden', ''); messageZone.innerHTML = ''; }, 5000);
 }
 
-// 5. Remove/Add Favorite Form
+// 5-. Remove/Add Favorite Form
 const favoriteForm = document.querySelector('.js-remove-favorite-form');
 const removeBtn = document.querySelector('.js-remove-favorite');
 const addLink = document.querySelector('.js-add-favorite-link');
@@ -124,7 +124,7 @@ if (form && submitBtn) {
     });
 }
 
-// 7. List Card Editing
+// 7-. List Card Editing
 document.addEventListener('click', function(e) {
     const target = e.target.closest('.list-card-main');
     const command = e.target.getAttribute('data-command');
@@ -134,45 +134,49 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// 8. House Remove Form (Multiple Lists)
-const removeMultiForm = document.querySelector('form[action="/favorieten/verwijderen"]');
-if (removeMultiForm) {
-    removeMultiForm.addEventListener('submit', async (e) => {
+// 8-. Manage House Lists (Add/Remove)
+const manageMultiForm = document.querySelector('.js-manage-lists-form');
+if (manageMultiForm) {
+    manageMultiForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const houseId = removeMultiForm.querySelector('[name="house_id"]')?.value;
-        const checkboxes = removeMultiForm.querySelectorAll('[name="list_ids"]');
-        const selectedCheckboxes = removeMultiForm.querySelectorAll('[name="list_ids"]:checked');
-        const listIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+        const houseId = manageMultiForm.querySelector('[name="house_id"]')?.value;
+        const checkboxes = manageMultiForm.querySelectorAll('[name="list_ids"]');
         
-        if (!listIds.length) {
-            alert('Selecteer minstens één lijst');
-            return;
-        }
+        // Grab both checked and unchecked lists
+        const selectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:checked')).map(cb => cb.value);
+        const unselectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:not(:checked)')).map(cb => cb.value);
         
-        const submitBtn = removeMultiForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
+        const submitBtn = manageMultiForm.querySelector('button[type="submit"]');
         const originalHtml = submitBtn.innerHTML;
         
         // Set loading state
         submitBtn.disabled = true;
         submitBtn.classList.add('btn-loading');
-        submitBtn.innerHTML = `<span class="btn-loading-text">Verwijderen...</span><span class="btn-spinner"></span>`;
-        
-        // Disable all checkboxes
+        submitBtn.innerHTML = `<span class="btn-loading-text">Bijwerken...</span><span class="btn-spinner"></span>`;
         checkboxes.forEach(cb => cb.disabled = true);
         
         try {
-            const res = await fetch('/favorieten/verwijderen', {
+            const res = await fetch('/favorieten/lijsten-beheren', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ house_id: houseId, list_ids: listIds })
+                body: JSON.stringify({ 
+                    house_id: houseId, 
+                    selected_lists: selectedLists,
+                    unselected_lists: unselectedLists
+                })
             });
             
-            if (res.ok) {
-                // Clear localStorage for the house
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                // Update LocalStorage based on whether it is saved to ANY list
                 const saveKey = `house_saved_${houseId}`;
-                localStorage.removeItem(saveKey);
+                if (data.active_count === 0) {
+                    localStorage.removeItem(saveKey);
+                } else {
+                    localStorage.setItem(saveKey, 'true');
+                }
                 
                 // Redirect back to house detail page
                 const urlParts = window.location.pathname.split('/');
@@ -181,19 +185,15 @@ if (removeMultiForm) {
                 const slug = urlParts[4];
                 window.location.href = `/huizen/${city}/${street}/${slug}`;
             } else {
-                submitBtn.classList.remove('btn-loading');
-                submitBtn.innerHTML = originalHtml;
-                submitBtn.disabled = false;
-                checkboxes.forEach(cb => cb.disabled = false);
-                alert('Fout bij verwijderen. Probeer opnieuw.');
+                throw new Error('Server returned an error');
             }
         } catch (err) {
-            console.error('Delete error:', err);
+            console.error('Update error:', err);
             submitBtn.classList.remove('btn-loading');
             submitBtn.innerHTML = originalHtml;
             submitBtn.disabled = false;
             checkboxes.forEach(cb => cb.disabled = false);
-            alert('Fout bij verwijderen. Probeer opnieuw.');
+            alert('Fout bij het bijwerken van lijsten. Probeer opnieuw.');
         }
     });
 }

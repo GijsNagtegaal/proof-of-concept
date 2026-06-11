@@ -11,17 +11,17 @@
         <h1>{{ house.title }}</h1>
         <p class="house-address">{{ house.street }}, {{ house.city }}</p>
         
-        <p>Selecteer de lijstjes waarvan je dit huis wilt verwijderen:</p>
+        <p>In welke lijstjes wil je dit huis bewaren?</p>
 
-        <form action="/favorieten/verwijderen" method="POST">
+        <form action="/favorieten/lijsten-beheren" method="POST" class="js-manage-lists-form">
             <input type="hidden" name="house_id" value="{{ house.id }}">
             
             <fieldset>
                 <legend hidden>Selecteer lijsten</legend>
-                {% for list in lists_with_house %}
-                    <section style="margin-bottom: 12px;">
+                {% for list in all_lists %}
+                    <section>
                         <label>
-                            <input type="checkbox" name="list_ids" value="{{ list.id }}" checked>
+                            <input type="checkbox" name="list_ids" value="{{ list.id }}" {% if list.is_included %}checked{% endif %}>
                             <span>{{ list.title }}</span>
                         </label>
                     </section>
@@ -29,7 +29,7 @@
             </fieldset>
 
             <section>
-                <button type="submit" class="btn-submit-save">Verwijderen uit geselecteerde lijsten</button>
+                <button type="submit" class="btn-submit-save">Lijsten bijwerken</button>
                 <a href="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}" class="btn-cancel">Annuleren</a>
             </section>
         </form>
@@ -37,4 +37,3 @@
 </article>
 
 {% endblock %}
-
