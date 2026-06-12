@@ -395,62 +395,12 @@ article.house-card {
         gap: 0.5rem;
         
         p {
-            display: flex;
             align-items: center;
             justify-content: flex-start;
         }
 
         img {
             display: flex;
-        }
-    }
-}
-
-a.gallery-item {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--border-image);
-    width: 100%;
-    aspect-ratio: 660 / 440;
-
-    background: linear-gradient(
-        90deg, 
-        #f0f0f0 25%, 
-        #e0e0e0 50%, 
-        #f0f0f0 75%
-    );
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite linear;
-
-    picture, img {
-        aspect-ratio: 660 / 440;
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: var(--border-image);
-    }
-
-    img {
-        transition: transform .4s ease, opacity .4s ease;    
-        
-        &:hover {
-            opacity: .9;
-            transform: scale(1.03); 
-        }
-    }
-    
-    @media(min-width: 768px) {
-
-        &:has(:not(.poster)) {
-            display: block; 
-        }
-
-        &:nth-of-type(1) {
-            grid-column: 1 / span 2;
-            grid-row: 1 / span 2;
-            border-radius: var(--small-radius);
         }
     }
 }

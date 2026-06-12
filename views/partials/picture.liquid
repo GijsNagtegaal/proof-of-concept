@@ -28,17 +28,17 @@
 {% else %}
 
     <picture class="funda-skeleton-wrapper {{ custom_class }}" >
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=avif&quality=80&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=avif&quality=80&width={{ default_width }}&height={{ default_height }}" 
             type="image/avif"
             width="{{ default_width }}" 
             height="{{ default_height }}">
                 
-        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=webp&quality=80&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+        <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=webp&quality=80&width={{ default_width }}&height={{ default_height }}" 
             type="image/webp"
             width="{{ default_width }}" 
             height="{{ default_height }}">
                 
-        <img src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=60&width={{ default_width }}&height={{ default_height }}&fit=cover" 
+        <img src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=60&width={{ default_width }}&height={{ default_height }}" 
             width="{{ default_width }}" 
             height="{{ default_height }}" 
             fetchpriority="{{ fetch | default: 'auto' }}" 

@@ -168,7 +168,23 @@ async function loadHouseMiddleware(req, res, next) {
 
 // --- ROUTES ---
 app.get('/', async (req, res) => {
-    res.render('index.liquid', { testje: "Funda" });
+    try {
+        const response = await fetch(`${api}f_houses?fields=*.*&limit=-1`);
+        if (!response.ok) throw new Error('API fetch failed');
+        
+        const json = await response.json();
+        const houses = json.data || [];
+        
+        const formattedHouses = houses.map(enrichHouseData);
+
+        res.render('index.liquid', { 
+            testje: "Funda", 
+            houses: formattedHouses 
+        });
+    } catch (error) {
+        console.error("Error loading houses for index:", error);
+        res.status(500).render('404.liquid');
+    }
 });
 
 app.get('/favorieten', async (req, res) => {
@@ -198,7 +214,7 @@ app.get('/favorieten', async (req, res) => {
         res.render('favorite-lists-overview.liquid', { lists: formattedLists });
     } catch (error) {
         console.error("Error loading enriched lists overview:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid');
     }
 });
 
@@ -221,7 +237,7 @@ app.post('/favorieten/nieuw', async (req, res) => {
         res.redirect('/favorieten');
     } catch (error) {
         console.error("Error creating new list:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid');
     }
 });
 
@@ -435,7 +451,7 @@ app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddl
     }
 
     req.house.savestate = isSaved ? 'saved' : 'unsaved';
-    req.house.saved_list_id = savedListId; // Pass it to Liquid
+    req.house.saved_list_id = savedListId;
 
     res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
 });

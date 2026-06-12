@@ -40,27 +40,27 @@
     {% endcomment %}
     <section class="gallery">
         <a title="ga naar alle foto's van dit huis" class="gallery-item poster" {% render 'partials/vt-target.liquid', slug: house.slug %} href="/huis/{{ house.slug }}/media/fotos">
-            {% if house.poster_image.id %}
+            {% if house.poster_image.id  %}
                 {% render 'partials/picture.liquid',
                     imagesrc: house.poster_image.id,
                     fetch: "high",
                     custom_class: "poster",
-                    width: "660",
+                    width: "840",
                     height: "440"
                 %}
             {% endif %}
         </a>
         
         {% if house.gallery and house.gallery.size > 0 %}
-            {% for item in house.gallery %}
+            {% for item in house.gallery limit: 4 %}
                 {% if item.directus_files_id %}
                     <a class="gallery-item" href="/huis/{{ house.slug }}/media/fotos">
                         {% render 'partials/picture.liquid',
                             imagesrc: item.directus_files_id,
                             fetch: "high",
                             class: "poster",
-                            width: "320",
-                            height: "200",
+                            width: "620",
+                            height: "400",
                         %}
                     </a>
                 {% endif %}

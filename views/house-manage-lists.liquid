@@ -4,15 +4,16 @@
 
 <article class="house-card max-width">
     <section class="house-card-img-wrapper">
-        {% render 'partials/picture.liquid',
+        {% render 'partials/image-link.liquid',
             imagesrc: house.poster_image.id,
             fetch: "high",
-            custom_class: "poster",
-            width: "660",
-            height: "440" 
+            custom_class: "poster gallery-item",
+            width: "740",
+            height: "440"
+            
         %}
     </section>
-
+    
     <section class="house-card-content">
         <h1>{{ house.title }}</h1>
         <p class="house-address">{{ house.street }}, {{ house.city }}</p>
