@@ -17,7 +17,7 @@
         <h1 class="breathingspace">In welk lijstje ga je deze parel opslaan?</h1>
     </section>
     
-    <form class="breathingspace" action="/favorieten/huis-toevoegen" method="POST">
+    <form class="breathingspace" action="/favorieten/lijsten-beheren" method="POST">
     <input type="hidden" name="house_id" value="{{ house.id }}">
     <input type="hidden" name="redirect_back" value="/huizen/{{ house.city | downcase }}/{{ house.street | downcase }}/{{ house.slug }}">
 

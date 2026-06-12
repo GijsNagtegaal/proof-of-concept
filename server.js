@@ -241,8 +241,7 @@ app.get('/huizen/:city/:street/:house_slug/lijsten-beheren', loadListsMiddleware
         
         return { ...list, is_included: isIncluded };
     });
-    
-    // Render a new (or updated) template
+
     res.render('house-manage-lists.liquid', { house: req.house, all_lists: allListsWithStatus });
 });
 
@@ -339,7 +338,7 @@ app.get('/favorieten/:list_slug', async (req, res) => {
         });
     } catch (error) {
         console.error("Error loading specific list details:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid');
     }
 });
 

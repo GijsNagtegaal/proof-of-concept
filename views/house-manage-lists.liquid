@@ -4,30 +4,32 @@
 
 <article class="house-card max-width">
     <section class="house-card-img-wrapper">
-        {% render 'partials/picture.liquid' %}
+        {% render 'partials/picture.liquid',
+            imagesrc: house.poster_image.id,
+            fetch: "high",
+            custom_class: "poster",
+            width: "660",
+            height: "440" 
+        %}
     </section>
 
     <section class="house-card-content">
         <h1>{{ house.title }}</h1>
         <p class="house-address">{{ house.street }}, {{ house.city }}</p>
-        
         <p>In welke lijstjes wil je dit huis bewaren?</p>
-
         <form action="/favorieten/lijsten-beheren" method="POST" class="js-manage-lists-form">
             <input type="hidden" name="house_id" value="{{ house.id }}">
-            
-            <fieldset>
-                <legend hidden>Selecteer lijsten</legend>
-                {% for list in all_lists %}
-                    <section>
-                        <label>
+            <section class="list-options">
+                <fieldset>
+                    <legend hidden>Selecteer lijsten</legend>
+                    {% for list in all_lists %}      
+                        <label class="option-row">
                             <input type="checkbox" name="list_ids" value="{{ list.id }}" {% if list.is_included %}checked{% endif %}>
                             <span>{{ list.title }}</span>
                         </label>
-                    </section>
-                {% endfor %}
-            </fieldset>
-
+                    {% endfor %}
+                </fieldset>
+            </section>
             <section>
                 <button type="submit" class="btn-submit-save">Lijsten bijwerken</button>
                 <a href="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}" class="btn-cancel">Annuleren</a>

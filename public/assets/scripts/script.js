@@ -114,7 +114,7 @@ if (addLink) {
 }
 
 // 6. Form Loading
-const form = document.querySelector('form[action="/favorieten/huis-toevoegen"]');
+const form = document.querySelector('form[action="/favorieten/lijsten-beheren"]');
 const submitBtn = document.querySelector('.btn-submit-save');
 if (form && submitBtn) {
     form.addEventListener('submit', function() {
