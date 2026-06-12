@@ -4,7 +4,7 @@ body:has(section.popover:popover-open) {
     height: 100vh; 
 }
 
-main:not(.detail) {
+main:not(.detail, .view-transition) {
     padding: 0 1rem;
 }
 
@@ -649,7 +649,7 @@ section.sticky-wrapper {
             border-radius: var(--small-radius);
             margin-top: 1rem;
 
-            @media (min-width: 500px) {
+            @media (min-width: 768px) {
                 width: 80%;
             }
         }
