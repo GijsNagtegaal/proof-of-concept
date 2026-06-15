@@ -46,9 +46,10 @@ if (skeletonImages.length > 0) {
     });
 }
 
-// 4-. Success Notifications
+// 4. Success Notifications
 const urlParams = new URLSearchParams(window.location.search);
 const messageZone = document.querySelector('.message-notification');
+
 if (urlParams.get('success') === 'true' && messageZone) {
     const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
@@ -56,59 +57,21 @@ if (urlParams.get('success') === 'true' && messageZone) {
     const listUrl = urlParams.get('slug') ? `/favorieten/${urlParams.get('slug')}` : '/favorieten';
     messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${listTitle}</strong></a>.`;
     messageZone.removeAttribute('hidden');
+    
     setTimeout(() => { messageZone.setAttribute('hidden', ''); messageZone.innerHTML = ''; }, 5000);
 }
 
-// 5-. Remove/Add Favorite Form
-const favoriteForm = document.querySelector('.js-remove-favorite-form');
-const removeBtn = document.querySelector('.js-remove-favorite');
-const addLink = document.querySelector('.js-add-favorite-link');
-const statusZone = document.getElementById('status-message-zone');
+// 5. Favorite Link (Optimistic UI)
+const favoriteLink = document.querySelector('.js-favorite-link');
 
-function getSaveKey(houseId) {
-    return `house_saved_${houseId}`;
-}
-
-function initFavoriteState() {
-    if (!favoriteForm || !removeBtn || !addLink) return;
-    const houseId = favoriteForm.querySelector('[name="house_id"]')?.value;
-    if (!houseId) return;
-    const saveKey = getSaveKey(houseId);
-    const storedState = localStorage.getItem(saveKey);
-    let isSaved;
-    
-    if (storedState !== null) {
-        isSaved = storedState === 'true';
-    } else {
-        const initialState = favoriteForm.getAttribute('data-initial-saved');
-        isSaved = initialState === 'saved';
-    }
-    
-    if (isSaved) {
-        favoriteForm.style.display = '';
-        addLink.style.display = 'none';
-    } else {
-        favoriteForm.style.display = 'none';
-        addLink.style.display = '';
-    }
-}
-
-if (favoriteForm && removeBtn) {
-    // Form now uses GET to navigate to remove page, so just ensure UI shows correctly on load
-    initFavoriteState();
-}
-
-if (addLink) {
-    const originalHref = addLink.href;
-    addLink.addEventListener('click', function(e) {
-        const houseId = favoriteForm?.querySelector('[name="house_id"]')?.value;
-        if (houseId) {
-            const saveKey = getSaveKey(houseId);
-            localStorage.setItem(saveKey, 'true');
-            setTimeout(() => {
-                favoriteForm.style.display = '';
-                addLink.style.display = 'none';
-            }, 100);
+if (favoriteLink) {
+    favoriteLink.addEventListener('click', function() {
+        if (this.classList.contains('is-saved')) {
+            this.classList.remove('is-saved');
+            this.classList.add('is-unsaved');
+        } else {
+            this.classList.remove('is-unsaved');
+            this.classList.add('is-saved');
         }
     });
 }
@@ -124,7 +87,7 @@ if (form && submitBtn) {
     });
 }
 
-// 7-. List Card Editing
+// 7. List Card Editing
 document.addEventListener('click', function(e) {
     const target = e.target.closest('.list-card-main');
     const command = e.target.getAttribute('data-command');
@@ -134,7 +97,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// 8-. Manage House Lists (Add/Remove)
+// 8. Manage House Lists (Add/Remove)
 const manageMultiForm = document.querySelector('.js-manage-lists-form');
 if (manageMultiForm) {
     manageMultiForm.addEventListener('submit', async (e) => {
@@ -142,15 +105,13 @@ if (manageMultiForm) {
         
         const houseId = manageMultiForm.querySelector('[name="house_id"]')?.value;
         const checkboxes = manageMultiForm.querySelectorAll('[name="list_ids"]');
-        
-        // Grab both checked and unchecked lists
+
         const selectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:checked')).map(cb => cb.value);
         const unselectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:not(:checked)')).map(cb => cb.value);
         
         const submitBtn = manageMultiForm.querySelector('button[type="submit"]');
         const originalHtml = submitBtn.innerHTML;
-        
-        // Set loading state
+
         submitBtn.disabled = true;
         submitBtn.classList.add('btn-loading');
         submitBtn.innerHTML = `<span class="btn-loading-text">Bijwerken...</span><span class="btn-spinner"></span>`;
@@ -170,20 +131,11 @@ if (manageMultiForm) {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                // Update LocalStorage based on whether it is saved to ANY list
-                const saveKey = `house_saved_${houseId}`;
-                if (data.active_count === 0) {
-                    localStorage.removeItem(saveKey);
-                } else {
-                    localStorage.setItem(saveKey, 'true');
-                }
-                
-                // Redirect back to house detail page
-                const urlParts = window.location.pathname.split('/');
-                const city = urlParts[2];
-                const street = urlParts[3];
-                const slug = urlParts[4];
-                window.location.href = `/huizen/${city}/${street}/${slug}`;
+                // --- UPDATED REDIRECT LOGIC ---
+                const targetUrl = data.redirect_url || window.location.pathname;
+                const cleanUrl = targetUrl.replace('/lijsten-beheren', '') || '/';
+                window.location.href = cleanUrl;
+                // ------------------------------
             } else {
                 throw new Error('Server returned an error');
             }
