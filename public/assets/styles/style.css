@@ -687,7 +687,7 @@ section.house-card {
 
         label.option-row {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Changed from space-between to keep them next to each other, optional! */
             align-items: center;
             cursor: pointer;
             gap: 1rem;
@@ -697,7 +697,7 @@ section.house-card {
             transition: all .3s ease;
 
             &:hover,
-            &:focus {
+            &:focus-within {
                 background-color: var(--primary);
             }
 
@@ -715,37 +715,43 @@ section.house-card {
                 }
             }
 
-            input {
+            input[type="checkbox"] {
+                appearance: none;
 
-                opacity: 0;
+                width: 1.5rem;
+                height: 1.5rem;
+                min-width: 1.5rem;
 
-                &:focus {
-                    opacity: 1;
-                    border: 2px solid black;
+                border: 2px solid var(--dark-text);
+                border-radius: 4px;
+                background-color: transparent;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.3s ease;
+                margin: 0;
 
+                &::after {
+                    content: "";
+                    position: absolute;
+                    box-sizing: content-box;
+                    top: 50%;
+                    left: 50%;
+                    width: 0.35rem;
+                    height: 0.7rem;
+                    border-right: 3px solid var(--dark-text);
+                    border-bottom: 3px solid var(--dark-text);
+                    opacity: 0;
+                    transform: translate(-50%, -55%) rotate(45deg) scale(0.5);
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
-                &:checked ~ svg path {
-                    stroke: var(--dark-text);
-                    stroke-dasharray: 70.5096664428711 9999999;
-                    stroke-dashoffset: -262.2723388671875;
-                }
-            }
-
-            svg {
-                overflow: visible;
-
-                path {
-                    fill: none;
-                    stroke: var(--dark-text);
-                    stroke-width: 6;
-                    stroke-linecap: round;
-                    stroke-linejoin: round;
-                    transition: all 0.5s ease;
-                    stroke-dasharray: 241 9999999;
-                    stroke-dashoffset: 0;
-                    width: 1rem;
-                    height: 1rem;
+                &:checked {
+                    border-color: var(--dark-text);
+                    
+                    &::after {
+                        opacity: 1;
+                        transform: translate(-50%, -55%) rotate(45deg) scale(1);
+                    }
                 }
             }
         }
