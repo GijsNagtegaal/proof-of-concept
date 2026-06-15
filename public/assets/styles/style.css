@@ -716,7 +716,14 @@ section.house-card {
             }
 
             input {
-                display: none;
+
+                opacity: 0;
+
+                &:focus {
+                    opacity: 1;
+                    border: 2px solid black;
+
+                }
 
                 &:checked ~ svg path {
                     stroke: var(--dark-text);
