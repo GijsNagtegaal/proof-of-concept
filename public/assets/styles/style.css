@@ -75,6 +75,21 @@ section.gallery {
         top: 1rem;
         right: 1rem;
 
+        .btn-save-trigger .icon-saved,
+        .btn-save-trigger .text-saved {
+            display: none;
+        }
+
+        .btn-save-trigger.is-saved .icon-unsaved,
+        .btn-save-trigger.is-saved .text-unsaved {
+            display: none;
+        }
+
+        .btn-save-trigger.is-saved .icon-saved,
+        .btn-save-trigger.is-saved .text-saved {
+            display: inline-block; 
+        }
+
         button, a {
             display: flex;
             align-items: center;
@@ -88,7 +103,6 @@ section.gallery {
             transition: transform 0.3s ease;
             cursor: pointer;
             opacity: 1;
-
 
             &:hover {
                 opacity: 1;
@@ -615,10 +629,121 @@ section.house-grid {
 
 /* add house to list styling */
 
-section.house-to-add {
-    
-}
+section.house-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    padding: 1rem;
 
+    section.house-card-img-wrapper {
+        img {
+            border-radius: 0px;
+            width: 40%;
+        }
+    }
+
+    section.house-specs {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        
+        p {
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        img {
+            display: flex;
+        }
+    }
+
+    section.house-card-content {
+        width: 100%;
+    }
+
+    section.list-options {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        max-height: 60%;
+        width: 100%;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+
+        fieldset {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: none;
+
+            @media (min-width: 600px) {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, 15rem);
+            }
+        }
+
+        label.option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            gap: 1rem;
+            padding: 0.6rem;
+            border: 1px solid var(--seperator);
+            border-radius: var(--small-radius);
+            transition: all .3s ease;
+
+            &:hover,
+            &:focus {
+                background-color: var(--primary);
+            }
+
+            span {
+                color: var(--text);
+                transition: color .3s ease;
+            }
+
+            &:has(input[type="checkbox"]:checked) {
+                background-color: var(--primary);
+                border-color: var(--primary);
+
+                span {
+                    color: var(--dark-text);
+                }
+            }
+
+            input {
+                display: none;
+
+                &:checked ~ svg path {
+                    stroke: var(--dark-text);
+                    stroke-dasharray: 70.5096664428711 9999999;
+                    stroke-dashoffset: -262.2723388671875;
+                }
+            }
+
+            svg {
+                overflow: visible;
+
+                path {
+                    fill: none;
+                    stroke: var(--dark-text);
+                    stroke-width: 6;
+                    stroke-linecap: round;
+                    stroke-linejoin: round;
+                    transition: all 0.5s ease;
+                    stroke-dasharray: 241 9999999;
+                    stroke-dashoffset: 0;
+                    width: 1rem;
+                    height: 1rem;
+                }
+            }
+        }
+    }
+}
 /* house add page styling */
 
 section.house-image-wrapper {

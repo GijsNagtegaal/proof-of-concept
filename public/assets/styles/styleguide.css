@@ -331,84 +331,12 @@ section.popover {
     }
 }
 
-section.list-options {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    max-height: 60%;
-    overflow-y: auto;
-    scroll-behavior: smooth;
+a:has(img, picture):not(.svg) {
 
-    label {
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.6rem;
-        border: 1px solid var(--seperator);
-        border-radius: var(--small-radius);
-        transition: all .3s ease;
-
-        &:has(input[type="radio"]:checked) {
-            background-color: var(--primary);
-
-            span {
-                color: var(--light-text);
-            }
-        }
-
-        &:focus {
-            background-color: var(--primary);
-        }
-
-        &:hover {
-            background-color: var(--primary);
-        }
-
-        span {
-            color: var(--text);
-        }
-
-        &:has(input[type="radio"]:checked) {
-            background-color: var(--primary);
-            border-color: var(--primary);
-
-            span {
-                color: var(--light-text);
-            }
-        }
-    }
-}
-
-article.house-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-
-    section.house-specs {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 0.5rem;
-        
-        p {
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        img {
-            display: flex;
-        }
-    }
-}
-
-a:has(img, picture) {
     display: block;
     overflow: hidden;
     border-radius: 8px; 
+
 
     img, picture {
         object-fit: cover;
@@ -462,9 +390,9 @@ a:not(:has(img, picture)) {
     transition: all .3s ease;
     background-color: var(--seperator);
 
-    form:has(input[type="radio"]:checked) & {
+    form:has(input[type="checkbox"]:checked) & {
         background-color: var(--primary);
-        color: var(--light-text);
+        color: var(--dark-text);
         border-color: var(--primary);
     }
 }
@@ -512,5 +440,3 @@ a:not(:has(img, picture)) {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-

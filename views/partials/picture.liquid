@@ -15,17 +15,18 @@
             alt="{{ alt_text | default: 'Afbeelding' }}">
     </picture>
 
-{% elsif format == "svg" %}
+    {% elsif format == "svg" %}
 
-    <img src="{{ imagesrc }}" 
-        width="{{ default_width }}" 
-        height="{{ default_height }}" 
-        fetchpriority="{{ fetch | default: 'auto' }}" 
-        loading="{{ loading | default: 'eager' }}" 
-        decoding="async"
-        alt="{{ alt_text | default: 'Icon of logo' }}">
+        <img src="{{ imagesrc }}" 
+            width="{{ width }}" 
+            height="{{ height }}" 
+            fetchpriority="{{ fetch | default: 'auto' }}" 
+            class="{{ class }}"
+            loading="{{ loading | default: 'eager' }}" 
+            decoding="async"
+            alt="{{ alt_text | default: 'Icon of logo' }}">
 
-{% else %}
+    {% else %}
 
     <picture class="funda-skeleton-wrapper {{ custom_class }}" >
         <source srcset="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?format=avif&quality=80&width={{ default_width }}&height={{ default_height }}" 
@@ -38,7 +39,7 @@
             width="{{ default_width }}" 
             height="{{ default_height }}">
                 
-        <img src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=60&width={{ default_width }}&height={{ default_height }}" 
+        <img src="https://fdnd-agency.directus.app/assets/{{ imagesrc }}?quality=50&width={{ default_width }}&height={{ default_height }}" 
             width="{{ default_width }}" 
             height="{{ default_height }}" 
             fetchpriority="{{ fetch | default: 'auto' }}" 

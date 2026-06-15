@@ -1,4 +1,5 @@
 <a href="{{ href }}" class="{{ custom_class }} vt-image-link"{% if vt_name and vt_name != '' %} style="view-transition-name: house-{{ vt_name }}"{% endif %}>
+    <span class="vs-hidden">Naar de {{ slug }}</span>
     {% render 'partials/picture.liquid',
         imagesrc: imagesrc,
         fetch: fetch,
