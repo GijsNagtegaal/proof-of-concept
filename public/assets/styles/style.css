@@ -636,8 +636,14 @@ section.house-card {
     align-items: flex-start;
     width: 100%;
     padding: 1rem;
+    position: relative;
 
     section.house-card-img-wrapper {
+        height: 10dvh;
+        position: fixed;
+        top: 0;
+        bottom: auto;
+
         img {
             border-radius: 0px;
             width: 40%;
@@ -662,13 +668,15 @@ section.house-card {
 
     section.house-card-content {
         width: 100%;
+        height: 60dvh;
+        margin-block: 10dvh;
     }
 
     section.list-options {
         display: flex;
         flex-direction: column;
         gap: .5rem;
-        max-height: 60%;
+        height: 80dvh;
         width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
@@ -687,7 +695,7 @@ section.house-card {
 
         label.option-row {
             display: flex;
-            justify-content: flex-start; /* Changed from space-between to keep them next to each other, optional! */
+            justify-content: flex-start;
             align-items: center;
             cursor: pointer;
             gap: 1rem;
@@ -746,7 +754,7 @@ section.house-card {
                 }
 
                 &:checked {
-                    border-color: var(--dark-text);
+                    border: none;
                     
                     &::after {
                         opacity: 1;
@@ -755,6 +763,13 @@ section.house-card {
                 }
             }
         }
+    }
+
+    section.button-wrapper {
+        height: 10dvh;
+        position: fixed;
+        bottom: 0;
+        top: auto;
     }
 }
 /* house add page styling */

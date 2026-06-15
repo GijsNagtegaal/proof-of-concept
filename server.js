@@ -6,25 +6,22 @@ import { fileURLToPath } from 'url';
 import { Liquid } from 'liquidjs';
 
 const app = express();
-
 const api = "https://fdnd-agency.directus.app/items/";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- MIDDLEWARE SETUP ---
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(compression());
 
-// --- VIEW ENGINE SETUP ---
 const engine = new Liquid();
 app.engine('liquid', engine.express());
 app.set('views', './views');
 app.set('view engine', 'liquid');
 
-// --- HELPER FUNCTIONS ---
+// Converts text into a URL-friendly slug.
 function slugify(text) {
     if (!text) return '';
     return text.toString().toLowerCase().trim()
@@ -33,7 +30,7 @@ function slugify(text) {
         .replace(/\-\-+/g, '-');
 }
 
-// Central calculation and formatting function for houses
+// Formats and enriches raw house data with calculated fields, clean slugs, and fallback values.
 function enrichHouseData(house) {
     if (!house) return null;
 
@@ -59,7 +56,6 @@ function enrichHouseData(house) {
     const labels = ["A", "B", "C", "D", "E", "F", "G"];
     const randomLabel = labels[Math.floor(Math.random() * labels.length)];
 
-    // --- THE HYBRID OBJECT FIX ---
     let posterId = null;
     if (house.poster_image && typeof house.poster_image === 'object' && house.poster_image.id) {
         posterId = house.poster_image.id;
@@ -116,8 +112,11 @@ function enrichHouseData(house) {
     };
 }
 
+// Fetches houses by city via API filter and strictly matches the combined street/number slug in JS.
 async function getHouseBySlug(city, slug) {
-    const url = `${api}f_houses?fields=*.*&limit=-1`;
+    const filter = { city: { _icontains: city.replace(/-/g, ' ') } };
+    const url = `${api}f_houses?fields=*.*&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+    
     const response = await fetch(url);
     if (!response.ok) throw new Error('API fetch failed');
     
@@ -136,7 +135,7 @@ async function getHouseBySlug(city, slug) {
     }) || null;
 }
 
-// --- CUSTOM ROUTE MIDDLEWARE ---
+// Middleware to fetch all favorite lists and attach them to res.locals.
 async function loadListsMiddleware(req, res, next) {
     try {
         const listsResponse = await fetch(`${api}f_list?fields=*.*`);
@@ -149,6 +148,7 @@ async function loadListsMiddleware(req, res, next) {
     }
 }
 
+// Middleware to fetch and enrich a specific house by city and slug, handling 404s.
 async function loadHouseMiddleware(req, res, next) {
     try {
         const { city, house_slug } = req.params;
@@ -162,11 +162,11 @@ async function loadHouseMiddleware(req, res, next) {
         next();
     } catch (error) {
         console.error("Error fetching house:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid'); 
     }
 }
 
-// --- ROUTES ---
+// Renders the homepage with all available houses.
 app.get('/', async (req, res) => {
     try {
         const response = await fetch(`${api}f_houses?fields=*.*&limit=-1`);
@@ -174,41 +174,30 @@ app.get('/', async (req, res) => {
         
         const json = await response.json();
         const houses = json.data || [];
-        
         const formattedHouses = houses.map(enrichHouseData);
 
-        res.render('index.liquid', { 
-            testje: "Funda", 
-            houses: formattedHouses 
-        });
+        res.render('index.liquid', { testje: "Funda", houses: formattedHouses });
     } catch (error) {
         console.error("Error loading houses for index:", error);
         res.status(500).render('404.liquid');
     }
 });
 
+// Renders an overview of all favorite lists with their associated enriched houses.
 app.get('/favorieten', async (req, res) => {
     try {
         const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
         const listResponse = await fetch(url);
-        if (!listResponse.ok) {
-            const errorDetails = await listResponse.text();
-            console.error(`Directus API Error (${listResponse.status}):`, errorDetails);
-            throw new Error(`Lists API fetch failed with status ${listResponse.status}`);
-        }
+        if (!listResponse.ok) throw new Error(`Lists API fetch failed`);
+        
         const lists = (await listResponse.json()).data || [];
-
         const formattedLists = lists.map(list => {
             const enrichedHouses = (list.houses || [])
                 .map(item => item.f_houses_id)
                 .filter(Boolean)
                 .map(house => enrichHouseData(house));
 
-            return {
-                ...list,
-                slug: slugify(list.title),
-                enriched_houses: enrichedHouses
-            };
+            return { ...list, slug: slugify(list.title), enriched_houses: enrichedHouses };
         });
 
         res.render('favorite-lists-overview.liquid', { lists: formattedLists });
@@ -218,19 +207,19 @@ app.get('/favorieten', async (req, res) => {
     }
 });
 
+// Renders the form to create a new favorite list.
 app.get('/favorieten/nieuw', async (req, res) => {
     res.render('favorites-new-list.liquid');
 });
 
+// Handles the creation of a new favorite list via Directus API.
 app.post('/favorieten/nieuw', async (req, res) => {
     try {
         const { title, description, icon } = req.body;
         const response = await fetch(`${api}f_list`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title, description, icon: icon || 'house', houses: [], users: []
-            })
+            body: JSON.stringify({ title, description, icon: icon || 'house', houses: [], users: [] })
         });
 
         if (!response.ok) throw new Error('API post failed');
@@ -241,40 +230,32 @@ app.post('/favorieten/nieuw', async (req, res) => {
     }
 });
 
-// --- GET: Manage Lists View ---
+// Renders the view to manage which favorite lists a specific house belongs to.
 app.get('/huizen/:city/:street/:house_slug/lijsten-beheren', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
     const houseId = req.house.id;
     const lists = res.locals.lists || [];
     
-    // Map all lists and add a boolean flag if the house is already in it
     const allListsWithStatus = lists.map(list => {
         const housesInList = list.houses || [];
         const isIncluded = housesInList.some(item => 
-            item === houseId || 
-            item.f_houses_id === houseId || 
-            (item.f_houses_id && item.f_houses_id.id === houseId)
+            item === houseId || item.f_houses_id === houseId || (item.f_houses_id && item.f_houses_id.id === houseId)
         );
-        
         return { ...list, is_included: isIncluded };
     });
 
     res.render('house-manage-lists.liquid', { house: req.house, all_lists: allListsWithStatus });
 });
 
-// --- POST: Update Lists Status ---
+// Adds or removes a specific house from multiple favorite lists based on form submission.
 app.post('/favorieten/lijsten-beheren', async (req, res) => {
     try {
         const { house_id, selected_lists, unselected_lists } = req.body;
-        
-        if (!house_id) {
-            return res.status(400).json({ success: false, message: 'Missing house_id' });
-        }
+        if (!house_id) return res.status(400).json({ success: false, message: 'Missing house_id' });
 
         const targetHouseId = Number(house_id);
         const listsToAdd = Array.isArray(selected_lists) ? selected_lists : [];
         const listsToRemove = Array.isArray(unselected_lists) ? unselected_lists : [];
 
-        // 1. ADD house to selected lists
         for (const list_id of listsToAdd) {
             const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`); 
             if (!listResponse.ok) continue;
@@ -286,7 +267,6 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
                 return { f_list_id: targetListId, f_houses_id: Number(hId), id: item.id };
             });
 
-            // If it's not already in the list, push it and patch
             if (!currentHouses.some(item => item.f_houses_id === targetHouseId)) {
                 currentHouses.push({ f_list_id: targetListId, f_houses_id: targetHouseId });
                 await fetch(`${api}f_list/${list_id}`, {
@@ -297,7 +277,6 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
             }
         }
 
-        // 2. REMOVE house from unselected lists
         for (const list_id of listsToRemove) {
             const listResponse = await fetch(`${api}f_list/${list_id}?fields=*.*`); 
             if (!listResponse.ok) continue;
@@ -305,13 +284,11 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
             const list = (await listResponse.json()).data;
             const currentHouses = list.houses || [];
             
-            // Filter out the current house
             const updatedHouses = currentHouses.filter(item => {
                 const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
                 return Number(hId) !== targetHouseId;
             });
             
-            // If the array size changed, it means the house was in there and we need to patch
             if (updatedHouses.length !== currentHouses.length) {
                 const houseIds = updatedHouses.map(item => item.id);
                 await fetch(`${api}f_list/${list_id}`, {
@@ -323,18 +300,18 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
         }
 
         res.json({ success: true, active_count: listsToAdd.length });
-        
     } catch (error) {
         console.error("Manage API error:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
+// Renders the details and houses of a specific favorite list matched by its slug.
 app.get('/favorieten/:list_slug', async (req, res) => {
     try {
         const { list_slug } = req.params;
-
         const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
+        
         const listsResponse = await fetch(url);
         if (!listsResponse.ok) throw new Error('API fetch failed');
 
@@ -348,20 +325,19 @@ app.get('/favorieten/:list_slug', async (req, res) => {
             .filter(Boolean)
             .map(house => enrichHouseData(house));
 
-        res.render('favorites-detail.liquid', { 
-            list: { ...list, slug: list_slug }, 
-            houses: filteredHouses 
-        });
+        res.render('favorites-detail.liquid', { list: { ...list, slug: list_slug }, houses: filteredHouses });
     } catch (error) {
         console.error("Error loading specific list details:", error);
         res.status(500).render('404.liquid');
     }
 });
 
+// Renders the view to add a specific house to a single favorite list.
 app.get('/huizen/:city/:street/:house_slug/huis-toevoegen', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
     res.render('house-add.liquid', { house: req.house, lists: res.locals.lists });
 });
 
+// Adds a specific house to a single favorite list and redirects back.
 app.post('/favorieten/huis-toevoegen', async (req, res) => {
     try {
         const { house_id, list_id, redirect_back } = req.body;
@@ -376,10 +352,7 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
 
         let currentHouses = (list.houses || []).map(item => {
             const hId = typeof item.f_houses_id === 'object' ? item.f_houses_id.id : item.f_houses_id;
-            return {
-                f_list_id: targetListId,
-                f_houses_id: Number(hId)
-            };
+            return { f_list_id: targetListId, f_houses_id: Number(hId) };
         });
 
         if (!currentHouses.some(item => item.f_houses_id === targetHouseId)) {
@@ -401,13 +374,13 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
         targetUrl.searchParams.set('slug', slugify(listTitle));
 
         res.redirect(targetUrl.origin === 'http://localhost:8000' ? targetUrl.pathname + targetUrl.search : targetUrl.href);
-
     } catch (error) {
         console.error("Error saving house to list:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid'); 
     }
 });
 
+// Updates the title, description, or icon of an existing favorite list.
 app.patch('/favorieten/:id', async (req, res) => {
     try {
         const { title, description, icon } = req.body;
@@ -421,14 +394,16 @@ app.patch('/favorieten/:id', async (req, res) => {
         res.redirect(`/favorieten/${slugify(title)}`);
     } catch (error) {
         console.error("Error updating list:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid'); 
     }
 });
 
+// Renders the photo gallery view for a specific house.
 app.get('/huizen/:city/:street/:house_slug/media/fotos', loadHouseMiddleware, (req, res) => {
     res.render('house-media.liquid', { house: req.house });
 });
 
+// Renders the detail page for a specific house and checks its saved status.
 app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddleware, (req, res) => {
     const houseId = req.house.id;
     const lists = res.locals.lists || [];
@@ -438,9 +413,7 @@ app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddl
     for (const list of lists) {
         const housesInList = list.houses || [];
         const found = housesInList.some(item => 
-            item === houseId || 
-            item.f_houses_id === houseId || 
-            (item.f_houses_id && item.f_houses_id.id === houseId)
+            item === houseId || item.f_houses_id === houseId || (item.f_houses_id && item.f_houses_id.id === houseId)
         );
 
         if (found) {
@@ -456,9 +429,23 @@ app.get('/huizen/:city/:street/:house_slug', loadListsMiddleware, loadHouseMiddl
     res.render('house-detail.liquid', { house: req.house, lists: res.locals.lists });
 });
 
+// Renders an overview of houses, dynamically filtered by city and street via API and JS.
 app.get(['/huizen', '/huizen/:city', '/huizen/:city/:street'], async (req, res) => {
     try {
-        const response = await fetch(`${api}f_houses?fields=*.*&limit=-1`);
+        const filterObj = {};
+
+        if (req.params.city) filterObj.city = { _icontains: req.params.city.replace(/-/g, ' ') };
+        if (req.params.street) filterObj.street = { _icontains: req.params.street.replace(/-/g, ' ') };
+
+        let url = `${api}f_houses?fields=*.*`;
+        
+        if (Object.keys(filterObj).length > 0) {
+            url += `&filter=${encodeURIComponent(JSON.stringify(filterObj))}`;
+        } else {
+            url += `&limit=-1`; 
+        }
+
+        const response = await fetch(url);
         if (!response.ok) throw new Error('API fetch failed');
         
         let houses = (await response.json()).data || [];
@@ -476,27 +463,22 @@ app.get(['/huizen', '/huizen/:city', '/huizen/:city/:street'], async (req, res) 
         const formattedHouses = houses.map(enrichHouseData);
 
         let pageTitle = "Alle beschikbare huizen";
-        if (req.params.street) {
-            pageTitle = `Huizen in de ${req.params.street} (${req.params.city})`;
-        } else if (req.params.city) {
-            pageTitle = `Huizen in ${req.params.city}`;
-        }
+        if (req.params.street) pageTitle = `Huizen in de ${req.params.street} (${req.params.city})`;
+        else if (req.params.city) pageTitle = `Huizen in ${req.params.city}`;
 
         res.render('overview.liquid', { houses: formattedHouses, title: pageTitle });
     } catch (error) {
         console.error("Error loading hackable list:", error);
-        res.status(500).render('404.liquid'); // <-- UPDATED
+        res.status(500).render('404.liquid'); 
     }
 });
 
-// --- GLOBAL 404 & ERROR HANDLERS (NEW) ---
-
-// 1. Catch-all for undefined routes
+// Global 404 handler for undefined routes.
 app.use((req, res, next) => {
     res.status(404).render('404.liquid');
 });
 
-// 2. Global error handler for uncaught exceptions thrown down the middleware chain
+// Global error handler for uncaught exceptions.
 app.use((err, req, res, next) => {
     console.error("Global Server Error:", err.stack);
     res.status(500).render('404.liquid');
