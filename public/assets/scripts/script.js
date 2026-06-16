@@ -195,7 +195,14 @@ if (manageMultipleListsForm) {
             if (serverResponse.ok && responseData.success) {
                 const targetUrl = responseData.redirect_url || window.location.pathname;
                 const cleanRedirectUrl = targetUrl.replace('/lijsten-beheren', '') || '/';
-                window.location.href = cleanRedirectUrl;
+                const redirectUrl = new URL(cleanRedirectUrl, window.location.origin);
+
+                redirectUrl.searchParams.set('success', 'true');
+
+                if (responseData.title) redirectUrl.searchParams.set('title', responseData.title);
+                if (responseData.slug) redirectUrl.searchParams.set('slug', responseData.slug);
+                
+                window.location.href = redirectUrl.toString();
             } else {
                 throw new Error('Server returned an error');
             }
