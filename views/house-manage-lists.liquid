@@ -1,8 +1,8 @@
-{% layout "layouts/no-header-layout.liquid" %}
+{% layout "layouts/no-header-layout.liquid", class: "manage" %}
 
 {% block content %}
-
-<section class="house-card max-width">
+{% assign house_href = "/huizen/" | append: house.city_clean | append: "/" | append: house.street_clean | append: "/" | append: house.slug %}
+<section class="house-card">
     <section class="house-card-img-wrapper">
         {% render 'partials/image-link.liquid',
             imagesrc: house.poster_image.id,
@@ -10,14 +10,18 @@
             custom_class: "poster gallery-item",
             width: "180",
             height: "140",
+            href: house_href,
             slug: house.slug,
         %}
+        <section class="content">
+            <h1>{{ house.street }} {{ house.house_nr }}</h1>
+            <p class="house-address">{{ house.street }}, {{ house.city }}</p>
+            <p class="house-price">€ {{ house.price | divided_by: 1000.0 | round }}.000</p>
+        </section>
+        <h2>Dit huis toevoegen aan je lijstjes</h2>
     </section>
     
     <section class="house-card-content">
-        <h1>{{ house.title }}</h1>
-        <p class="house-address">{{ house.street }}, {{ house.city }}</p>
-        <p>In welke lijstjes wil je dit huis bewaren?</p>
         <form action="/favorieten/lijsten-beheren" method="POST" class="js-manage-lists-form">
             <input type="hidden" name="house_id" value="{{ house.id }}">
             <section class="list-options">
@@ -31,10 +35,7 @@
                     {% endfor %}
                 </fieldset>
             </section>
-            <section class="button-wrapper">
-                <button type="submit" class="btn-submit-save">Lijsten bijwerken</button>
-                <a href="/huizen/{{ house.city | slugify }}/{{ house.street | slugify }}/{{ house.slug }}" class="btn-cancel">Annuleren</a>
-            </section>
+            <button type="submit" class="btn-submit-save">Lijsten bijwerken</button>
         </form>
     </section>
 </section>

@@ -12,7 +12,7 @@
 
 html, body {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 * {
@@ -90,6 +90,7 @@ body {
 
     --heading-large: clamp(1.5rem, 3vw, 1.8rem);
     --heading-medium: clamp(1.3rem, 2vw, 1.9rem);
+    --heading-small: clamp(1.1rem, 2vw, 1.3rem);
     --paragraph: 1rem;
 
     /* colors */
@@ -98,8 +99,8 @@ body {
     --hover-primary: #f58700;
     --secondary: hsl(205, 68%, 51%);
     --accent: hsl(354, 61%, 66%);
-    --main-background: #FAFAFA;
-    --surface: hsl(33, 40%, 94%);
+    --main-background: #ffffff;
+    --surface: #f6f0ea;
     --dark-text: rgb(51, 51, 51);
     --light-text: hsl(0, 0%, 100%);
     --active-link: rgba(0, 113, 179, 1);
@@ -116,14 +117,14 @@ body {
 
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, label {
     font-family: proxsemi;
     font-size: var(--heading-large);
     color: var(--dark-text);
     line-height: 1.1;
 }
 
-p, a, button, ul, li, dl, dd {
+p, a, button, ul, li, dl, dd, input, textarea {
     font-family: proxreg;
     font-size: var(--paragraph);
     color: var(--dark-text);
@@ -211,8 +212,9 @@ svg {
     }
 }
 
-a.link {
+a.link, button.link {
     display: flex;
+    border: none;
     align-items: center;
     width: 100%;
     gap: 1rem;
@@ -270,6 +272,12 @@ button.warning {
         path {
             fill: var(--primary);
         }
+    }
+}
+
+a, button {
+    &.primary {
+        background-color: ;
     }
 }
 
@@ -332,6 +340,7 @@ section.popover {
 }
 
 
+
 a:has(img, picture):not(.svg) {
 
     display: block;
@@ -379,9 +388,13 @@ a:not(:has(img, picture)) {
 
 
 .btn-submit-save {
+
     display: flex;
     align-items: center;
     width: 100%;
+    position: sticky; 
+    bottom: 1rem;
+    z-index: 20; 
     gap: 1rem;
     margin-top: 1rem;
     padding: 0.6rem;
@@ -389,14 +402,25 @@ a:not(:has(img, picture)) {
     border-radius: var(--small-radius);
     cursor: pointer;
     transition: all .3s ease;
+    width: 100%;
     background-color: var(--seperator);
-
-    form:has(input[type="checkbox"]:checked) & {
+    
+    &.delete-all {
         background-color: var(--primary);
         color: var(--dark-text);
         border-color: var(--primary);
     }
 }
+
+form:has(input[type="checkbox"]:checked) {
+
+    .btn-submit-save {
+        background-color: var(--primary);
+        color: var(--dark-text);
+        border-color: var(--primary);
+    }
+}
+
 
 .btn-submit-save.btn-loading {
     position: relative;

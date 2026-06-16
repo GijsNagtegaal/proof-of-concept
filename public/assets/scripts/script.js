@@ -1,4 +1,4 @@
-// 1. Phone Reveal
+// 1. Reveal hidden phone numbers on click
 const phoneLink = document.getElementById('phone-reveal-link');
 if (phoneLink) {
     phoneLink.classList.add('js-enabled');
@@ -12,56 +12,81 @@ if (phoneLink) {
     });
 }
 
-// 2. Description Toggle
-const toggleBtn = document.querySelector('.description-toggle-btn');
+// 2. Toggle between short and full description text
+const toggleButton = document.querySelector('.description-toggle-btn');
 const excerptContent = document.querySelector('.excerpt-text');
 const fullContent = document.querySelector('.full-text');
-if (toggleBtn && excerptContent && fullContent) {
+
+if (toggleButton && excerptContent && fullContent) {
     excerptContent.style.display = 'block';
     fullContent.style.display = 'none';
-    toggleBtn.removeAttribute('hidden');
-    toggleBtn.classList.add('js-enabled');
-    toggleBtn.addEventListener('click', function () {
+    toggleButton.removeAttribute('hidden');
+    toggleButton.classList.add('js-enabled');
+    
+    toggleButton.addEventListener('click', function () {
         const isCollapsed = fullContent.style.display === 'none';
         excerptContent.style.display = isCollapsed ? 'none' : 'block';
         fullContent.style.display = isCollapsed ? 'block' : 'none';
-        const btnText = toggleBtn.querySelector('.btn-text');
-        const iconPlus = toggleBtn.querySelector('.icon-plus');
-        if (btnText) btnText.textContent = isCollapsed ? 'Minder weergeven' : 'Lees de volledige omschrijving';
-        if (iconPlus) iconPlus.style.transform = isCollapsed ? 'rotate(45deg)' : 'rotate(0deg)';
-        if (!isCollapsed) excerptContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        const buttonText = toggleButton.querySelector('.btn-text');
+        const iconPlus = toggleButton.querySelector('.icon-plus');
+        
+        if (buttonText) {
+            buttonText.textContent = isCollapsed ? 'Minder weergeven' : 'Lees de volledige omschrijving';
+        }
+        if (iconPlus) {
+            iconPlus.style.transform = isCollapsed ? 'rotate(45deg)' : 'rotate(0deg)';
+        }
+        if (!isCollapsed) {
+            excerptContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     });
 }
 
-// 3. Skeleton Tracker
+// 3. Hide loading skeletons when images finish loading natively
 const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
 if (skeletonImages.length > 0) {
-    skeletonImages.forEach((img) => {
-        if (img.complete && img.naturalWidth > 0) return;
-        if (img.parentElement) img.parentElement.setAttribute("data-loading", "true");
-        const hide = () => img.parentElement && img.parentElement.setAttribute("data-loading", "false");
-        img.addEventListener("load", hide, { once: true });
-        img.addEventListener("error", hide, { once: true });
-        setTimeout(hide, 5000);
+    skeletonImages.forEach(function(image) {
+        if (image.complete && image.naturalWidth > 0) {
+            return;
+        }
+        if (image.parentElement) {
+            image.parentElement.setAttribute("data-loading", "true");
+        }
+        
+        const hideSkeleton = function() {
+            if (image.parentElement) {
+                image.parentElement.setAttribute("data-loading", "false");
+            }
+        };
+        
+        image.addEventListener("load", hideSkeleton, { once: true });
+        image.addEventListener("error", hideSkeleton, { once: true });
+        setTimeout(hideSkeleton, 5000);
     });
 }
 
-// 4. Success Notifications
-const urlParams = new URLSearchParams(window.location.search);
+// 4. Display temporary success message from URL parameters
+const urlParameters = new URLSearchParams(window.location.search);
 const messageZone = document.querySelector('.message-notification');
 
-if (urlParams.get('success') === 'true' && messageZone) {
+if (urlParameters.get('success') === 'true' && messageZone) {
     const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
-    const listTitle = decodeURIComponent(urlParams.get('title') || 'je lijst');
-    const listUrl = urlParams.get('slug') ? `/favorieten/${urlParams.get('slug')}` : '/favorieten';
+    
+    const listTitle = decodeURIComponent(urlParameters.get('title') || 'je lijst');
+    const listUrl = urlParameters.get('slug') ? `/favorieten/${urlParameters.get('slug')}` : '/favorieten';
+    
     messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${listTitle}</strong></a>.`;
     messageZone.removeAttribute('hidden');
     
-    setTimeout(() => { messageZone.setAttribute('hidden', ''); messageZone.innerHTML = ''; }, 5000);
+    setTimeout(function() { 
+        messageZone.setAttribute('hidden', ''); 
+        messageZone.innerHTML = ''; 
+    }, 5000);
 }
 
-// 5. Favorite Link (Optimistic UI)
+// 5. Toggle favorite button styling optimistically
 const favoriteLink = document.querySelector('.js-favorite-link');
 
 if (favoriteLink) {
@@ -76,75 +101,116 @@ if (favoriteLink) {
     });
 }
 
-// 6. Form Loading
-const form = document.querySelector('form[action="/favorieten/lijsten-beheren"]');
-const submitBtn = document.querySelector('.btn-submit-save');
-if (form && submitBtn) {
-    form.addEventListener('submit', function() {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('btn-loading');
-        submitBtn.innerHTML = `<span class="btn-loading-text">Laden</span><span class="btn-spinner"></span>`;
+// 6. Show loading state on form submission
+const formElement = document.querySelector('form[action="/favorieten/lijsten-beheren"]');
+const submitButtonForm = document.querySelector('.btn-submit-save');
+
+if (formElement && submitButtonForm) {
+    formElement.addEventListener('submit', function() {
+        submitButtonForm.disabled = true;
+        submitButtonForm.classList.add('btn-loading');
+        submitButtonForm.innerHTML = `<span class="btn-loading-text">Laden</span><span class="btn-spinner"></span>`;
     });
 }
 
-// 7. List Card Editing
-document.addEventListener('click', function(e) {
-    const target = e.target.closest('.list-card-main');
-    const command = e.target.getAttribute('data-command');
-    if (target && command) {
-        if (command === '--edit') target.classList.add('editing');
-        else if (command === '--cancel') target.classList.remove('editing');
+// 7. Handle edit mode for list cards
+document.addEventListener('command', (event) => {
+    
+    const targetElement = event.target;
+
+    switch (event.command) {
+        case '--edit':
+            targetElement.classList.add('editing');
+            break;
+            
+        case '--cancel':
+            targetElement.classList.remove('editing');
+            break;
     }
 });
 
-// 8. Manage House Lists (Add/Remove)
-const manageMultiForm = document.querySelector('.js-manage-lists-form');
-if (manageMultiForm) {
-    manageMultiForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const houseId = manageMultiForm.querySelector('[name="house_id"]')?.value;
-        const checkboxes = manageMultiForm.querySelectorAll('[name="list_ids"]');
+// 8. Handle adding or removing a house from multiple lists via API
+const manageMultipleListsForm = document.querySelector('.js-manage-lists-form');
 
-        const selectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:checked')).map(cb => cb.value);
-        const unselectedLists = Array.from(manageMultiForm.querySelectorAll('[name="list_ids"]:not(:checked)')).map(cb => cb.value);
-        
-        const submitBtn = manageMultiForm.querySelector('button[type="submit"]');
-        const originalHtml = submitBtn.innerHTML;
+if (manageMultipleListsForm) {
+    const listCheckboxes = manageMultipleListsForm.querySelectorAll('[name="list_ids"]');
+    const submitButton = manageMultipleListsForm.querySelector('button[type="submit"]');
+    const defaultButtonHtmlContent = submitButton.innerHTML;
 
-        submitBtn.disabled = true;
-        submitBtn.classList.add('btn-loading');
-        submitBtn.innerHTML = `<span class="btn-loading-text">Bijwerken...</span><span class="btn-spinner"></span>`;
-        checkboxes.forEach(cb => cb.disabled = true);
+    const updateButtonUserInterface = function() {
+        const selectedCount = manageMultipleListsForm.querySelectorAll('[name="list_ids"]:checked').length;
+        
+        if (selectedCount === 0) {
+            submitButton.classList.add('delete-all');
+            submitButton.innerHTML = `Huis verwijderen van alle lijstjes`;
+        } else {
+            submitButton.classList.remove('delete-all');
+            submitButton.innerHTML = defaultButtonHtmlContent;
+        }
+    };
+
+    listCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateButtonUserInterface);
+    });
+
+    updateButtonUserInterface();
+
+    manageMultipleListsForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const houseIdentifier = manageMultipleListsForm.querySelector('[name="house_id"]')?.value;
+        const selectedListsArray = Array.from(manageMultipleListsForm.querySelectorAll('[name="list_ids"]:checked')).map(function(checkbox) {
+            return checkbox.value;
+        });
+        const unselectedListsArray = Array.from(manageMultipleListsForm.querySelectorAll('[name="list_ids"]:not(:checked)')).map(function(checkbox) {
+            return checkbox.value;
+        });
+        
+        submitButton.disabled = true;
+        submitButton.classList.add('btn-loading');
+        
+        listCheckboxes.forEach(function(checkbox) {
+            checkbox.disabled = true;
+        });
+
+        if (selectedListsArray.length === 0) {
+            submitButton.innerHTML = `<span class="btn-loading-text">Huis verwijderen van alle lijstjes</span><span class="btn-spinner"></span>`;
+        } else {
+            submitButton.innerHTML = `<span class="btn-loading-text">Bijwerken...</span><span class="btn-spinner"></span>`;
+        }
         
         try {
-            const res = await fetch('/favorieten/lijsten-beheren', {
+            const serverResponse = await fetch('/favorieten/lijsten-beheren', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    house_id: houseId, 
-                    selected_lists: selectedLists,
-                    unselected_lists: unselectedLists
+                    house_id: houseIdentifier, 
+                    selected_lists: selectedListsArray,
+                    unselected_lists: unselectedListsArray
                 })
             });
             
-            const data = await res.json();
+            const responseData = await serverResponse.json();
 
-            if (res.ok && data.success) {
-                // --- UPDATED REDIRECT LOGIC ---
-                const targetUrl = data.redirect_url || window.location.pathname;
-                const cleanUrl = targetUrl.replace('/lijsten-beheren', '') || '/';
-                window.location.href = cleanUrl;
-                // ------------------------------
+            if (serverResponse.ok && responseData.success) {
+                const targetUrl = responseData.redirect_url || window.location.pathname;
+                const cleanRedirectUrl = targetUrl.replace('/lijsten-beheren', '') || '/';
+                window.location.href = cleanRedirectUrl;
             } else {
                 throw new Error('Server returned an error');
             }
-        } catch (err) {
-            console.error('Update error:', err);
-            submitBtn.classList.remove('btn-loading');
-            submitBtn.innerHTML = originalHtml;
-            submitBtn.disabled = false;
-            checkboxes.forEach(cb => cb.disabled = false);
+        } catch (error) {
+            console.error('Update error:', error);
+            
+            submitButton.classList.remove('btn-loading');
+            submitButton.disabled = false;
+            
+            listCheckboxes.forEach(function(checkbox) {
+                checkbox.disabled = false;
+            });
+            
+            updateButtonUserInterface(); 
+            
             alert('Fout bij het bijwerken van lijsten. Probeer opnieuw.');
         }
     });

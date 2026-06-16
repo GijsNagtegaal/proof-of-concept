@@ -4,7 +4,7 @@
 {% assign seen_vt_slugs = seen_vt_slugs | append: slug_key %}
 
 <article class="house-card">
-    <section class="house-image-wrapper">
+    <section class="house-image-wrapper breathingspace">
         {% if house.poster_image %}
             {% render 'partials/image-link.liquid',
                 href: house_href,
@@ -20,7 +20,7 @@
 
     <a href="{{ house_href }}">{{ house.street }} {{ house.house_nr }}{{ house.nr_addition }}</a>
     <p>{{ house.postal_code }} {{ house.city }}</p>
-    <p class="house-price">
+    <p class="house-price breathingspace">
         {% if house.price %}
         &euro; {{ house.price }} k.k.
         {% else %}
@@ -54,10 +54,4 @@
             {{ house.energy_label }}
         </p>
     </section>
-
-    <button></button>
-
-    <a href="{{ house_href }}" class="btn-detail">
-        Bekijk woning
-    </a>
 </article>
