@@ -25,6 +25,8 @@ A few things i have kept in mind is:
 - Progressive enhancement
 - Pleasureable UI
 - Make sure it is a clean UX
+- All of the pages are build mobile first and responsive
+- [WCAG](https://github.com/GijsNagtegaal/proof-of-concept/issues/10) and [performance](https://github.com/GijsNagtegaal/proof-of-concept/issues/27) tests
 
 # Pages 
 
@@ -44,16 +46,11 @@ A few things i have kept in mind is:
 
 ## Manage favorites
 
-
-
 https://github.com/user-attachments/assets/812c1161-212b-4f8d-b19a-78ab3c527670
-
-
-
-<img width="1512" height="738" alt="Screenshot 2026-06-17 at 10 52 19" src="https://github.com/user-attachments/assets/4c551cb0-3b58-4f26-ae92-a745aaf229cb" />
+<img width="1071" height="842" alt="Screenshot 2026-06-17 at 12 53 31" src="https://github.com/user-attachments/assets/c907dec5-d411-4156-84a8-96014da2624c" />
 
 ## add new favorite list
-
+<img width="1512" height="435" alt="Screenshot 2026-06-17 at 12 59 01" src="https://github.com/user-attachments/assets/bfef014f-d6a2-4561-b255-d781767d8fea" />
 
 # Components
 
@@ -62,10 +59,7 @@ https://github.com/user-attachments/assets/812c1161-212b-4f8d-b19a-78ab3c527670
 
 Loading state:
 
-
 https://github.com/user-attachments/assets/bd140548-eb0e-40ee-85ff-cb73d7f8400e
-
-
 
 ## Favorite overview
 <img width="1512" height="670" alt="Screenshot 2026-06-17 at 10 38 23" src="https://github.com/user-attachments/assets/a17ee7c5-4113-4128-8dd5-9bd8ceae5249" />
@@ -75,6 +69,7 @@ https://github.com/user-attachments/assets/bd140548-eb0e-40ee-85ff-cb73d7f8400e
 
 ## Header
 <img width="1512" height="64" alt="Screenshot 2026-06-17 at 10 36 48" src="https://github.com/user-attachments/assets/47eab1eb-5138-46d6-aedd-a43d406a215f" />
+
 
 ## Bronnen
 
