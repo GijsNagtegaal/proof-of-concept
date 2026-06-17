@@ -68,24 +68,31 @@ if (skeletonImages.length > 0) {
 
 // 4. Display temporary success message from URL parameters
 const urlParameters = new URLSearchParams(window.location.search);
-const messageZone = document.querySelector('.message-notification');
+const messageZone = document.getElementById('status-message-zone');
+const listLink = document.getElementById('status-list-link');
 
-if (urlParameters.get('success') === 'true' && messageZone) {
+if (urlParameters.get('success') === 'true' && messageZone && listLink) {
+
     const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
-    
-    const listTitle = decodeURIComponent(urlParameters.get('title') || 'je lijst');
+
+    const listTitle = urlParameters.get('title') ? decodeURIComponent(urlParameters.get('title')) : 'je lijst';
     const listUrl = urlParameters.get('slug') ? `/favorieten/${urlParameters.get('slug')}` : '/favorieten';
+
+    listLink.href = listUrl;
     
-    messageZone.innerHTML = `Dit huis is toegevoegd aan het lijstje <a href="${listUrl}"><strong>${listTitle}</strong></a>.`;
+    const strongTag = listLink.querySelector('strong');
+    if (strongTag) {
+        strongTag.textContent = listTitle;
+    }
+    
     messageZone.removeAttribute('hidden');
     
+    // 5. Hide it after 5 seconds
     setTimeout(function() { 
         messageZone.setAttribute('hidden', ''); 
-        messageZone.innerHTML = ''; 
     }, 5000);
 }
-
 // 5. Toggle favorite button styling optimistically
 const favoriteLink = document.querySelector('.js-favorite-link');
 
@@ -201,7 +208,7 @@ if (manageMultipleListsForm) {
 
                 if (responseData.title) redirectUrl.searchParams.set('title', responseData.title);
                 if (responseData.slug) redirectUrl.searchParams.set('slug', responseData.slug);
-                
+
                 window.location.href = redirectUrl.toString();
             } else {
                 throw new Error('Server returned an error');

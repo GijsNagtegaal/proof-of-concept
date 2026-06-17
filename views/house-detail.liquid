@@ -28,7 +28,9 @@
         title: "Let op! Woning met groot perceel",
         content: warning_markup
     %}
-    <section class="message-notification" id="status-message-zone" hidden></section>
+    <section class="message-notification" id="status-message-zone" hidden>
+        Dit huis is toegevoegd aan het lijstje <a href="#" id="status-list-link"><strong></strong></a>.
+    </section>
     {% assign clean_street = house.street | strip %}
     {% assign clean_nr = house.house_nr | strip %}
     {% assign current_house = clean_street | append: " " | append: clean_nr %}
