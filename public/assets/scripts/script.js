@@ -88,7 +88,6 @@ if (urlParameters.get('success') === 'true' && messageZone && listLink) {
     
     messageZone.removeAttribute('hidden');
     
-    // 5. Hide it after 5 seconds
     setTimeout(function() { 
         messageZone.setAttribute('hidden', ''); 
     }, 5000);

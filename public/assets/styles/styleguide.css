@@ -423,13 +423,11 @@ form:has(input[type="checkbox"]:checked) {
 
 
 .btn-submit-save.btn-loading {
-    position: relative;
     cursor: not-allowed;
     background-color: var(--seconary); 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     animation: btnPulse 1.5s infinite ease-in-out;
 }
 

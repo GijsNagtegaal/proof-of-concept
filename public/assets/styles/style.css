@@ -27,7 +27,7 @@ main {
         font-size: var(--heading-medium);
     }
 
-    .message-notification {
+    section.message-notification {
         position: fixed;
         top: 2rem;
         right: 2rem;
@@ -35,11 +35,43 @@ main {
 
         width: calc(100% - 4rem); 
         max-width: 360px;
-        background-color: var(--primary);
+        background-color: var(--main-background);
         padding: 1rem 1.25rem;
         border-radius: var(--badge-radius);
-        
+        color: var(--dark-text);
+
         animation: alert 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        
+    }
+}
+
+main.detail {
+
+    a.gallery-item {
+        &:nth-of-type(1) {
+            img {
+                @media (min-width: 768px) {
+                    border-radius: var(--small-radius) 0 0 var(--small-radius);
+                }
+            }
+        }
+
+        &:nth-of-type(3) {
+            img {
+                border-top-right-radius: var(--small-radius);
+            } 
+        }
+
+        &:nth-of-type(5) {
+            img {
+                border-bottom-right-radius: var(--small-radius);
+            }
+        }
+
+        @media(min-width:768px) {
+            border-top-left-radius: var(--small-radius);
+            border-bottom-left-radius: var(--small-radius);
+        }
     }
 }
 
@@ -595,6 +627,17 @@ section.lists-container {
 
 article.house-card {
 
+    border: 2px solid var(--seperator);
+    border-radius: var(--small-radius); 
+
+    section.content-card {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+
     a {
         font-size: var(--heading-small);
         font-family: proxsemi;
@@ -603,6 +646,10 @@ article.house-card {
     p.house-price {
         font-family: proxsemi; 
         font-size: var(--heading-small);
+    }
+
+    .funda-skeleton-wrapper {
+        border-radius: var(--small-radius) var(--small-radius) 0 0;
     }
 
 }
@@ -660,7 +707,7 @@ section.house-grid {
     display: grid;
     gap: 2vw;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
 }
 
 article.list-card-main {
@@ -777,7 +824,7 @@ section.house-card {
             transition: all .3s ease;
 
             &:hover,
-            &:focus-within {
+            &:focus {
                 border: 3px solid var(--primary);
             }
 
@@ -834,6 +881,10 @@ section.house-card {
                         opacity: 1;
                         transform: translate(-50%, -55%) rotate(45deg) scale(1);
                     }
+                }
+
+                &:focus {
+                    background-color: var(--primary);
                 }
             }
         }
@@ -1016,34 +1067,6 @@ a.gallery-item {
     border-radius: 0;
     width: 100%;
 
-    &:nth-of-type(1) {
-        img {
-            @media (min-width: 768px) {
-                border-radius: var(--small-radius) 0 0 var(--small-radius);
-            }
-        }
-        
-    }
-
-    &:nth-of-type(3) {
-        img {
-            border-top-right-radius: var(--small-radius);
-        }
-        
-    }
-
-    &:nth-of-type(5) {
-        img {
-            border-bottom-right-radius: var(--small-radius);
-        }
-        
-    }
-
-    @media(min-width:768px) {
-        border-top-left-radius: var(--small-radius);
-        border-bottom-left-radius: var(--small-radius);
-    }
-
     &:not(.poster) {
         display: none;
 
@@ -1091,6 +1114,7 @@ a.gallery-item {
     overflow: hidden;
     background-color: #ffffff;
     will-change: auto;
+    border-radius: var(--small-radius);
 
     &[data-loading="true"] {
         background-color: #f3f5f7;

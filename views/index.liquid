@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>{{ title }}</h2>
-    <section class="house-grid">
+    <section class="house-grid ">
         {% for house in houses %}
                 {% render 'partials/house-card.liquid', house: house %}
             {% else %}
