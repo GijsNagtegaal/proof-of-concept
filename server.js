@@ -380,24 +380,6 @@ app.post('/favorieten/huis-toevoegen', async (req, res) => {
     }
 });
 
-// Updates the title, description, or icon of an existing favorite list.
-app.patch('/favorieten/:id', async (req, res) => {
-    try {
-        const { title, description, icon } = req.body;
-        const response = await fetch(`${api}f_list/${req.params.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, description, icon })
-        });
-
-        if (!response.ok) throw new Error('API update failed');
-        res.redirect(`/favorieten/${slugify(title)}`);
-    } catch (error) {
-        console.error("Error updating list:", error);
-        res.status(500).render('404.liquid'); 
-    }
-});
-
 // Renders the photo gallery view for a specific house.
 app.get('/huizen/:city/:street/:house_slug/media/fotos', loadHouseMiddleware, (req, res) => {
     res.render('house-media.liquid', { house: req.house });

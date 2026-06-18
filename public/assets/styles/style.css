@@ -639,13 +639,11 @@ article.house-card {
     }
 
     a {
-        font-size: var(--heading-small);
         font-family: proxsemi;
     }
 
     p.house-price {
         font-family: proxsemi; 
-        font-size: var(--heading-small);
     }
 
     .funda-skeleton-wrapper {
@@ -705,9 +703,8 @@ section.newlist {
 
 section.house-grid {
     display: grid;
-    gap: 2vw;
-    width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, max(300px, calc((100% - 2rem) / 3))), 1fr));
 }
 
 article.list-card-main {
@@ -734,6 +731,9 @@ article.list-card-main {
 
 main.manage {
     min-height: 100dvh;
+    display: flex;
+    justify-content: space-between;
+    padding-block: 1rem;
     position: relative;
     margin-bottom: 0;
 }
@@ -805,10 +805,6 @@ section.house-card {
 
             @media (min-width: 768px) {
                 grid-template-columns: 1fr 1fr 1fr;
-            }
-
-            @media (min-width: 1024px) {
-                grid-template-columns: 1fr 1fr 1fr 1fr;
             }
         }
 

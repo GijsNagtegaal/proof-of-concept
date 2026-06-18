@@ -119,22 +119,6 @@ if (formElement && submitButtonForm) {
     });
 }
 
-// 7. Handle edit mode for list cards
-document.addEventListener('command', (event) => {
-    
-    const targetElement = event.target;
-
-    switch (event.command) {
-        case '--edit':
-            targetElement.classList.add('editing');
-            break;
-            
-        case '--cancel':
-            targetElement.classList.remove('editing');
-            break;
-    }
-});
-
 // 8. Handle adding or removing a house from multiple lists via API
 const manageMultipleListsForm = document.querySelector('.js-manage-lists-form');
 

@@ -1,41 +1,14 @@
 {% assign mainclass = "favorites-detail" %}
 {% layout "layouts/main-layout.liquid" %}
 {% block content %}
-<section class="list-detail-header">
-    <a href="/favorieten" class="btn-back">Terug naar alle lijstjes</a>
+<article class="heading max-width">
+    <h1 class="breathingspace">{{ list.title }}</h1>
+    <p>Je hebt {{ houses.size }} huizen in dit lijstje</p>
+    <p class="favorite-paragraph breathingspace">{{ list.description }}</p>
+    <span class="orangeline breathingspace"></span>
+</article>
 
-    <article class="list-card-main" id="list-card-{{ list.id }}">
-        <form action="/favorieten/{{ list.id }}?_method=PATCH" method="POST" class="edit-list-form">
-            <section class="card-view-mode">
-                <h2>
-                    {% if list.icon %}
-                    <span class="icon">{{ list.icon }}</span>
-                    {% endif %}
-                    <span class="title-text">{{ list.title }}</span>
-                </h2>
-                <p class="desc-text">{{ list.description | default: "Geen beschrijving opgegeven." }}</p>
-                
-                <button type="button" class="btn-edit" commandfor="list-card-{{ list.id }}" command="--edit">Lijstje aanpassen</button>
-            </section>
-
-            <section class="card-edit-mode">
-                <input type="text" name="title" value="{{ list.title }}" required>
-                <textarea name="description">{{ list.description }}</textarea>
-                <input type="text" name="icon" value="{{ list.icon }}" placeholder="icoon code">
-                <button type="submit" class="btn-save">Opslaan</button>
-                
-                {% comment %}
-                    Something new: invoker commands
-                    https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API
-                {% endcomment %}
-                <button type="button" class="btn-cancel" commandfor="list-card-{{ list.id }}" command="--cancel">Annuleren</button>
-            </section>
-        </form>
-    </article>
-</section>
-<h3>Huizen in dit lijstje ({{ houses.size }})</h3>
-
-<section class="house-grid">
+<section class="house-grid breathingspace max-width">
     {% for house in houses %}
         {% render 'partials/house-card.liquid', house: house %}
     {% else %}
