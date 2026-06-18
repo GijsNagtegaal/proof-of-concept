@@ -92,6 +92,7 @@ if (urlParameters.get('success') === 'true' && messageZone && listLink) {
         messageZone.setAttribute('hidden', ''); 
     }, 5000);
 }
+
 // 5. Toggle favorite button styling optimistically
 const favoriteLink = document.querySelector('.js-favorite-link');
 

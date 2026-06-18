@@ -299,7 +299,7 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
             }
         }
 
-        res.json({ success: true, active_count: listsToAdd.length });
+        res.redirect('/favorieten');
     } catch (error) {
         console.error("Manage API error:", error);
         res.status(500).json({ success: false, error: error.message });
