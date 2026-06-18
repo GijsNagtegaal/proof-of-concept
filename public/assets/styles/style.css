@@ -649,7 +649,6 @@ article.house-card {
     .funda-skeleton-wrapper {
         border-radius: var(--small-radius) var(--small-radius) 0 0;
     }
-
 }
 
 section.house-specs {
@@ -1110,7 +1109,6 @@ a.gallery-item {
     overflow: hidden;
     background-color: #ffffff;
     will-change: auto;
-    border-radius: var(--small-radius);
 
     &[data-loading="true"] {
         background-color: #f3f5f7;

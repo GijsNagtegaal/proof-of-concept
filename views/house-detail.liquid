@@ -1,4 +1,4 @@
-{% assign mainclass = "detail" %}
+{% assign class = "detail" %}
 {% assign is_saved = false %}
 {% assign saved_list_id = nil %}
 {% for list in lists %}
@@ -40,7 +40,7 @@
 
 
     {% render 'partials/breadcrumbs.liquid' house: house, current_house: current_house %}
-    
+
     {% comment %}
         Section displaying a gallery, mobile first uses the poster image and the gallery
     {% endcomment %}

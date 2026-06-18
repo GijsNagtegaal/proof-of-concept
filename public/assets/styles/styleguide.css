@@ -341,7 +341,7 @@ section.popover {
 
 
 
-a:has(img, picture):not(.svg):not(.gallery-item) {
+a:has(img, picture):not(.svg):not(.gallery-item):not(.extras > a) {
 
     display: block;
     overflow: hidden;
