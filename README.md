@@ -26,6 +26,15 @@ A few things i have kept in mind is:
 - All of the pages are build mobile first and responsive
 - [WCAG](https://github.com/GijsNagtegaal/proof-of-concept/issues/10) and [performance](https://github.com/GijsNagtegaal/proof-of-concept/issues/27) tests
 
+## Performance
+
+I have focussed a lot on the performance of this site even got confetti from google: https://github.com/GijsNagtegaal/proof-of-concept/issues/30
+
+<img width="1019" height="776" alt="Screenshot 2026-06-15 at 14 57 28" src="https://github.com/user-attachments/assets/85accdc8-ace7-4be2-aeec-8fd62fbf47e3" />
+
+you can check the full performance audit here: [https://github.com/GijsNagtegaal/proof-of-concept/issues/30](https://github.com/GijsNagtegaal/proof-of-concept/issues/30)
+
+
 # Pages 
 
 ## Homes overview
@@ -59,9 +68,6 @@ For people who dont want animations i have created this media query:
 https://github.com/GijsNagtegaal/proof-of-concept/blob/e0a4fbc4ddbed24f4352bf439447b22369ca78b5/public/assets/styles/styleguide.css#L29-L85
 
 when javascript is not available the phone link and descriptions are always fully shown becuase i use defensive javascript.
-
-## Favorites overview
-<img width="1512" height="660" alt="Screenshot 2026-06-17 at 10 40 33" src="https://github.com/user-attachments/assets/3ea8490b-835c-4326-b5b5-3772a282347b" />
 
 ## Favorites detail
 <img width="1507" height="551" alt="Screenshot 2026-06-18 at 07 59 37" src="https://github.com/user-attachments/assets/7b5943d4-3b60-4b1b-ade3-fd9fbbb7a03d" />
