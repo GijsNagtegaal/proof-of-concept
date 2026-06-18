@@ -1,5 +1,3 @@
-
-
 # Funda detailpage + favorite list
 
 ## Inhoudsopgave
@@ -17,7 +15,7 @@ I have created a detail page and add to favorites flow, my main focus was to mak
 ## Usage
 as a user on funda i want to be able to add a house to any favorite list i have, this should be easy and smooth.
 
-## Kenmerken
+## Features
 I have created this application with NodeJs, express, liquid, css and vanilla javascript. 
 
 A few things i have kept in mind is:
@@ -30,7 +28,7 @@ A few things i have kept in mind is:
 
 # Pages 
 
-## Home overview
+## Homes overview
 <img width="1512" height="864" alt="Screenshot 2026-06-17 at 10 37 02" src="https://github.com/user-attachments/assets/ddfc4ffa-fa86-44c5-9292-d4bb4217bd7a" />
 
 ## House detail
@@ -39,10 +37,34 @@ A few things i have kept in mind is:
 <img width="1512" height="853" alt="Screenshot 2026-06-17 at 10 39 28" src="https://github.com/user-attachments/assets/c73f80cf-4d52-4acf-ae89-f53c7cfdfac6" />
 <img width="1512" height="776" alt="Screenshot 2026-06-17 at 10 39 21" src="https://github.com/user-attachments/assets/59dd6b90-17cf-4653-a436-b0f6e6776ff2" />
 
+
+Pleasurable UI
+
+A nice skeleton loading state for images when they are not loaded yet:
+
+https://github.com/user-attachments/assets/adc73d7a-45b3-4b56-be14-891ca6b2f520
+
+The issue where its documented: 
+https://github.com/GijsNagtegaal/proof-of-concept/issues/32
+
+I have also created a view transition from image to image:
+
+
+https://github.com/user-attachments/assets/750bf065-e65b-4527-bf2c-db4bbaec23b6
+
+
+Progressive enhancement
+
+For people who dont want animations i have created this media query: 
+https://github.com/GijsNagtegaal/proof-of-concept/blob/e0a4fbc4ddbed24f4352bf439447b22369ca78b5/public/assets/styles/styleguide.css#L29-L85
+
+when javascript is not available the phone link and descriptions are always fully shown becuase i use defensive javascript.
+
 ## Favorites overview
 <img width="1512" height="660" alt="Screenshot 2026-06-17 at 10 40 33" src="https://github.com/user-attachments/assets/3ea8490b-835c-4326-b5b5-3772a282347b" />
 
 ## Favorites detail
+<img width="1507" height="551" alt="Screenshot 2026-06-18 at 07 59 37" src="https://github.com/user-attachments/assets/7b5943d4-3b60-4b1b-ade3-fd9fbbb7a03d" />
 
 ## Manage favorites
 
@@ -70,6 +92,9 @@ https://github.com/user-attachments/assets/bd140548-eb0e-40ee-85ff-cb73d7f8400e
 ## Header
 <img width="1512" height="64" alt="Screenshot 2026-06-17 at 10 36 48" src="https://github.com/user-attachments/assets/47eab1eb-5138-46d6-aedd-a43d406a215f" />
 
+# Quick note
+
+The view transitions and loading states and skeleton loading works on all pages
 
 ## Bronnen
 
