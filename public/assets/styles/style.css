@@ -829,7 +829,7 @@ section.house-card {
             }
 
             &:has(input[type="checkbox"]:checked) {
-                border: 3px solid var(--primary);
+                border: 2px solid var(--primary);
 
                 span {
                     color: var(--dark-text);
@@ -838,7 +838,7 @@ section.house-card {
             
             &:has(input[type="checkbox"]:not(:checked)) {
                 background-color: var(--main-background);
-                border: 1px solid var(--dark-text);
+                border: 2px solid var(--dark-text);
             }
 
             input[type="checkbox"] {
