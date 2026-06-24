@@ -148,7 +148,7 @@ async function loadListsMiddleware(req, res, next) {
     }
 }
 
-// Middleware to fetch and enrich a specific house by city and slug, handling 404s.
+// Middleware to fetch and enrich a specific house bsy city and slug, handling 404s.
 async function loadHouseMiddleware(req, res, next) {
     try {
         const { city, house_slug } = req.params;
@@ -308,27 +308,40 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
 
 // Renders the details and houses of a specific favorite list matched by its slug.
 app.get('/favorieten/:list_slug', async (req, res) => {
-    try {
-        const { list_slug } = req.params;
-        const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
+try {
+    const serverResponse = await fetch('/favorieten/lijsten-beheren', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            house_id: houseIdentifier, 
+            selected_lists: selectedListsArray,
+            unselected_lists: unselectedListsArray
+        })
+    });
+
+    if (serverResponse.ok) {
+        const redirectUrl = new URL(serverResponse.url);
         
-        const listsResponse = await fetch(url);
-        if (!listsResponse.ok) throw new Error('API fetch failed');
+        redirectUrl.searchParams.set('success', 'true');
 
-        const lists = (await listsResponse.json()).data || [];
-        const list = lists.find(l => slugify(l.title) === list_slug);
-
-        if (!list) return res.status(404).render('404.liquid');
-
-        const filteredHouses = (list.houses || [])
-            .map(item => item.f_houses_id)
-            .filter(Boolean)
-            .map(house => enrichHouseData(house));
-
-        res.render('favorites-detail.liquid', { list: { ...list, slug: list_slug }, houses: filteredHouses });
+        window.location.href = redirectUrl.toString();
+        
+    } else {
+        throw new Error('Server returned an error');
+    }
     } catch (error) {
-        console.error("Error loading specific list details:", error);
-        res.status(500).render('404.liquid');
+        console.error('Update error:', error);
+        
+        submitButton.classList.remove('btn-loading');
+        submitButton.disabled = false;
+        
+        listCheckboxes.forEach(function(checkbox) {
+            checkbox.disabled = false;
+        });
+        
+        updateButtonUserInterface(); 
+        
+        alert('Fout bij het bijwerken van lijsten. Probeer opnieuw.');
     }
 });
 

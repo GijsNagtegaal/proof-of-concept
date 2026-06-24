@@ -1,4 +1,4 @@
-// 1. Reveal hidden phone numbers on click
+// Reveal hidden phone number on click
 const phoneLink = document.getElementById('phone-reveal-link');
 if (phoneLink) {
     phoneLink.classList.add('js-enabled');
@@ -12,7 +12,7 @@ if (phoneLink) {
     });
 }
 
-// 2. Toggle between short and full description text
+// Toggle between short and full description text also change the content
 const toggleButton = document.querySelector('.description-toggle-btn');
 const excerptContent = document.querySelector('.excerpt-text');
 const fullContent = document.querySelector('.full-text');
@@ -43,7 +43,9 @@ if (toggleButton && excerptContent && fullContent) {
     });
 }
 
-// 3. Hide loading skeletons when images finish loading natively
+// Hide loading skeletons when images finish loading, this is done with javasript image.complete which returns true or false
+// Based on true or false it adds the css class and shows the skeleton
+
 const skeletonImages = document.querySelectorAll(".funda-skeleton-wrapper img");
 if (skeletonImages.length > 0) {
     skeletonImages.forEach(function(image) {
@@ -66,11 +68,12 @@ if (skeletonImages.length > 0) {
     });
 }
 
-// 4. Display temporary success message from URL parameters
+// Display success message for 5 seconds, activates when the url params include "succes" and the message zone and list link is on the page
+// When all is true toggle the attribute hidden and cleans the url
+
 const urlParameters = new URLSearchParams(window.location.search);
 const messageZone = document.getElementById('status-message-zone');
 const listLink = document.getElementById('status-list-link');
-
 if (urlParameters.get('success') === 'true' && messageZone && listLink) {
 
     const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -93,7 +96,7 @@ if (urlParameters.get('success') === 'true' && messageZone && listLink) {
     }, 5000);
 }
 
-// 5. Toggle favorite button styling optimistically
+// Toggle save button, saved or unsaved
 const favoriteLink = document.querySelector('.js-favorite-link');
 
 if (favoriteLink) {
@@ -108,7 +111,7 @@ if (favoriteLink) {
     });
 }
 
-// 6. Show loading state on form submission
+// Show loading state on form submission
 const formElement = document.querySelector('form[action="/favorieten/lijsten-beheren"]');
 const submitButtonForm = document.querySelector('.btn-submit-save');
 
@@ -120,7 +123,9 @@ if (formElement && submitButtonForm) {
     });
 }
 
-// 8. Handle adding or removing a house from multiple lists via API
+// toggles the submit button to a "delete all" state if no lists are checked
+// then event prevent defaults the form submit to send checked/unchecked lists via a post to the api
+
 const manageMultipleListsForm = document.querySelector('.js-manage-lists-form');
 
 if (manageMultipleListsForm) {
@@ -180,19 +185,10 @@ if (manageMultipleListsForm) {
                     unselected_lists: unselectedListsArray
                 })
             });
-            
-            const responseData = await serverResponse.json();
 
-            if (serverResponse.ok && responseData.success) {
-                const targetUrl = responseData.redirect_url || window.location.pathname;
-                const cleanRedirectUrl = targetUrl.replace('/lijsten-beheren', '') || '/';
-                const redirectUrl = new URL(cleanRedirectUrl, window.location.origin);
-
+            if (serverResponse.ok) {
+                const redirectUrl = new URL(serverResponse.url);
                 redirectUrl.searchParams.set('success', 'true');
-
-                if (responseData.title) redirectUrl.searchParams.set('title', responseData.title);
-                if (responseData.slug) redirectUrl.searchParams.set('slug', responseData.slug);
-
                 window.location.href = redirectUrl.toString();
             } else {
                 throw new Error('Server returned an error');
