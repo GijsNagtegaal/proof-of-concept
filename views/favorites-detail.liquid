@@ -3,13 +3,16 @@
 {% block content %}
 <article class="heading max-width">
     <h1 class="breathingspace">{{ list.title }}</h1>
-    <p>Je hebt {{ houses.size }} huizen in dit lijstje</p>
+    
+    <p>Je hebt {{ list.enriched_houses.size }} huizen in dit lijstje</p>
+    
     <p class="favorite-paragraph breathingspace">{{ list.description }}</p>
     <span class="orangeline breathingspace"></span>
 </article>
 
 <section class="house-grid breathingspace max-width">
-    {% for house in houses %}
+    
+    {% for house in list.enriched_houses %}
         {% render 'partials/house-card.liquid', house: house %}
     {% else %}
         <p class="no-results">Er zijn nog geen huizen aan dit lijstje toegevoegd.</p>

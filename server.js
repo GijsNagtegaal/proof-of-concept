@@ -308,40 +308,42 @@ app.post('/favorieten/lijsten-beheren', async (req, res) => {
 
 // Renders the details and houses of a specific favorite list matched by its slug.
 app.get('/favorieten/:list_slug', async (req, res) => {
-try {
-    const serverResponse = await fetch('/favorieten/lijsten-beheren', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            house_id: houseIdentifier, 
-            selected_lists: selectedListsArray,
-            unselected_lists: unselectedListsArray
-        })
-    });
-
-    if (serverResponse.ok) {
-        const redirectUrl = new URL(serverResponse.url);
+    try {
+        const { list_slug } = req.params;
         
-        redirectUrl.searchParams.set('success', 'true');
-
-        window.location.href = redirectUrl.toString();
+        // Fetch all lists with their associated house data
+        const url = `${api}f_list?fields=*,houses.*,houses.f_houses_id.*,houses.f_houses_id.poster_image.*,houses.f_houses_id.gallery.*`;
+        const listResponse = await fetch(url);
         
-    } else {
-        throw new Error('Server returned an error');
-    }
+        if (!listResponse.ok) throw new Error(`Lists API fetch failed`);
+        
+        const lists = (await listResponse.json()).data || [];
+        
+        // Find the specific list by matching the slugified title
+        const targetList = lists.find(list => slugify(list.title) === list_slug);
+
+        if (!targetList) {
+            return res.status(404).render('404.liquid');
+        }
+
+        // Enrich the houses in this specific list
+        const enrichedHouses = (targetList.houses || [])
+            .map(item => item.f_houses_id)
+            .filter(Boolean)
+            .map(house => enrichHouseData(house));
+
+        const formattedList = { 
+            ...targetList, 
+            slug: list_slug, 
+            enriched_houses: enrichedHouses 
+        };
+
+        // Render the detail page 
+        res.render('favorites-detail.liquid', { list: formattedList });
+        
     } catch (error) {
-        console.error('Update error:', error);
-        
-        submitButton.classList.remove('btn-loading');
-        submitButton.disabled = false;
-        
-        listCheckboxes.forEach(function(checkbox) {
-            checkbox.disabled = false;
-        });
-        
-        updateButtonUserInterface(); 
-        
-        alert('Fout bij het bijwerken van lijsten. Probeer opnieuw.');
+        console.error("Error loading specific list detail:", error);
+        res.status(500).render('404.liquid');
     }
 });
 
@@ -479,4 +481,4 @@ app.use((err, req, res, next) => {
     res.status(500).render('404.liquid');
 });
 
-app.listen(8000, () => console.log('Server started: http://localhost:8000'));
+app.listen(8002, () => console.log('Server started: http://localhost:8002'));
